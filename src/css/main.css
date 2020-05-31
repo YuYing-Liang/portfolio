@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Libre+Baskerville&family=Playfair+Display:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap');
+
+:root {
+    --primary-colour: linen;
+    /* --primary-colour: #FBEEC1; */
+    --secondary-colour: #BC986A;
+    --tertiary-colour: #DAAD86;
+    --accent-colour: #659DBD;
+    --dark-colour: #424242;
+}
+
+body {
+    background-color: white;
+    font-family: 'Libre Baskerville', serif;
+}
+
+body::-webkit-scrollbar{
+    display: block;
+    width: 0.85rem;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus {
+    outline: none;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--dark-colour);
+    border-radius: 1.5rem;
+}
+
+/* .container {
+    max-width: 100%;
+} */

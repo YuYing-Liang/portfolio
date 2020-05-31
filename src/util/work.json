@@ -1,0 +1,61 @@
+[
+    {
+        "title": "RBC: Technical Systems Analyst",
+        "subtitle": "My first deep dive into fintech, making APIs and working with some great people!",
+        "date": "Summer 2019",
+        "des": "Working at RBC was really fun! I learned a lot about how large companies use Agile and DevOps (jenkins, kafka, github etc.) to streamline their products. Here, I created an API in Java (Maven & Springboot) for merchants to update the settings on their payment processing systems. I also contributed to internal software by making an onboarding slackbot for my team and a BIN checking system for QA testing. This was my first time working with APIs, React, Node, Flask and OAuth security and I learned a lot. Overall I had a good time, not to mention the amazing view on the 31st floor 😄. ",
+        "skills": [
+            "Java", "SpringBoot", "Maven", "REST APIs", "Agile", "DevOps", "Javascript", "Python (Flask)"
+        ],
+        "rating": "😊🤯👩🏻‍💻🏙 💻🚴‍♀️",
+        "website": "",
+        "image": "rbc.jpg"
+    },
+    {
+        "title": "Seismic Design Team",
+        "subtitle": "Making a structural engineering team's website",
+        "date": "September 2019",
+        "des": "Seismic makes structures out of balsa (very weak) wood and tests them out in extreme shake conditions. I pioneered the creation of their new website last year making it more informative and user friendly. Since then, the website has attracted more members and sponsors to the team.",
+        "skills": [
+            "ReactJS", "HTML & CSS", "Bootstrap"
+        ],
+        "rating": "🏗🏢🌃📚🤝",
+        "website": "http://seismic.skule.ca/",
+        "image": "seismic.jpg"
+    },
+    {
+        "title": "Engineering Science Club (Dinner Dance)",
+        "subtitle": "Custom registration and checkout system for an engineering dance",
+        "date": "October 2019",
+        "des": "As an engineer, a dinner dance is the best way to relax and enjoy the little free time you have. That's why the dance registration is extremely important leading up to the event! I made a new and organized checkout and registration system for EngSci Club using PHP and Stripe API. This made it simple to keep track of participants and transactions. It also has been adapted by older students and will hopefully be reused in future years!",
+        "skills": [
+            "HTML & CSS", "PHP", "Stripe API", "SQL Databases"
+        ],
+        "rating": "💃👗👩🏻‍💻💵📚💜",
+        "image": "engsci_club.png"
+    },
+    {
+        "title": "UTAT Space Review",
+        "subtitle": "Want the most interesting news of about the space industry? Look no further than UTAT's Space Review ~",
+        "date": "January 2020",
+        "des": "The University of Toronto's Aerospace Team (UTAT) gained a new subdivision - Policy - last year. Since then, dedicated members have been writing articles about space news and history. I created a platform that synced their articles written in Google Docs onto a simple and usable site. This allowed for easy integration and publishing 😊.",
+        "skills": [
+            "ReactJS", "Google Docs & Sheets API", "Material UI"
+        ],
+        "rating": "👩‍🚀🙌🌑🌎☄️🚀",
+        "website": "http://space-review.utat.ca/",
+        "image": "utat.jpg"
+    }, 
+    {
+        "title": "In Progress: UofT Frosh 2T0 Web Team",
+        "subtitle": "WHO ARE WE??? ENGINEERRSSSS",
+        "date": "Summer 2020",
+        "des": "The 2020 Frosh Orientation Website is extra important this year because the event is ~virtual~. This year we are doing our best to make Frosh accessible and available remotely to as many incoming first years as possible. I'll be working on registration, payment and event connectivity. This year is going to be interesting and I'm excitteeddd.",
+        "skills": [
+            "ReactJS", "Firebase"
+        ],
+        "rating": "⚙️👩‍💻📱🖥️💜💛",
+        "website": "",
+        "image": "frosh2T0.jpg"
+    }
+]

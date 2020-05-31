@@ -1,0 +1,139 @@
+:root {
+    --dark: #A17947;
+}
+
+.landing {
+    width: 75%;
+    margin: 2.5rem auto;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 5rem;
+}
+
+.landing img {
+    width: 100%;
+}
+
+#typed {
+    position: absolute;
+    right: 12.5%;
+    top: 45%;
+    font-size: 25px;
+    text-align: right;
+}
+
+.skills-section {
+    padding: 2.5rem;
+    background-color: #424242;
+    color: var(--tertiary-colour);
+    font-family: 'playfair display';
+}
+
+.skills-section h2 {
+    text-align: center;
+    font-size: 50px;
+}
+
+.skills-section h3 {
+    font-size: 35px;
+}
+
+.example-skills {
+    list-style-type: none;
+    margin: 0.5rem auto;
+    line-height: 180%;
+}
+
+.large{
+    font-size: 40px;
+    line-height: 250%;
+    width: 75%;
+}
+
+.small {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    font-size: 25px;
+    vertical-align: top;
+}
+
+#gradient {
+    display: inline-block;
+    margin:  0 1.75rem 0 3.5rem;
+    width: 1.15rem;
+    height: 75%;
+    border-radius: 0.5rem;
+    background: linear-gradient(to bottom, var(--secondary-colour) , var(--primary-colour));
+    position: relative;
+}
+
+#gradient::before, #gradient::after {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Source Sans Pro';
+    position: absolute;
+    left: -85px;
+    width: 80px;
+    text-align: right;
+}
+
+#gradient::before {
+    content: 'more comfortable';
+    top: 0px;
+}
+
+#gradient::after {
+    content: 'less comfortable';
+    bottom: 0px;
+}
+
+#resume {
+    margin: 1.5rem 0;
+    display: block;
+    background: var(--tertiary-colour);
+    border: 0.125rem solid var(--dark);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Poppins';
+    font-weight: 700;
+    color: var(--dark);
+    cursor: pointer;
+    transition: 0.3s ease-in;
+    text-decoration: none;
+    padding: 0.75rem;
+    max-width: 20%;
+    text-align: center;
+}
+
+#resume:hover {
+    background-color: var(--dark);
+    color: var(--tertiary-colour);
+}
+
+#resume svg, .next-section svg{ margin-left: 0.5rem;}
+
+.next-section {
+    max-width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+.next-section a {color: black; transition: 0.2s ease-in-out;}
+.next-section a:hover {color: var(--dark-colour);}
+
+.next-section img {
+    width: 100%;
+    filter: opacity(0.5);
+}
+
+.text {
+    position: absolute;
+    left: 2.5rem;
+    bottom: 10%;
+    font-family: 'Playfair Display';
+}
+.text h1 {font-size: 40px; margin-left: 0;}
+.text p {font-size: 20px; margin-left: 0;}

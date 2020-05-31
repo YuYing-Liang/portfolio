@@ -1,0 +1,24 @@
+footer {
+    padding: 0 2.5rem;
+    font-size: 20px;
+}
+
+footer p {
+    display: inline-block;
+    font-family: 'Playfair Display';
+    font-weight: 600;
+}
+
+ul.socials {
+    list-style-type: none;
+    font-size: 25px;
+    display: inline-block;
+}
+
+ul.socials li{
+    display: inline-block;
+    margin-right: 1.5rem;
+}
+
+ul.socials li a { color: black; transition: 0.2s ease-in;}
+ul.socials li a:hover { color: var(--tertiary-colour)}
