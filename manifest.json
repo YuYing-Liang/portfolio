@@ -1,9 +1,9 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "YuYing Liang Portfolio",
+  "name": "Personal Website for YuYing Liang",
   "icons": [
     {
-      "src": "logo.jpg",
+      "src": "logo.png",
       "type": "image/jpg",
       "sizes": "512x512"
     }
