@@ -1,0 +1,372 @@
+{"frames": [
+
+{
+	"filename": "character_femalePerson_attack0.png",
+	"frame": {"x":0,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_attack1.png",
+	"frame": {"x":192,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_attack2.png",
+	"frame": {"x":384,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_attackKick.png",
+	"frame": {"x":576,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_back.png",
+	"frame": {"x":768,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_behindBack.png",
+	"frame": {"x":960,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_cheer0.png",
+	"frame": {"x":1152,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_cheer1.png",
+	"frame": {"x":1344,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_climb0.png",
+	"frame": {"x":1536,"y":0,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_climb1.png",
+	"frame": {"x":0,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_down.png",
+	"frame": {"x":192,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_drag.png",
+	"frame": {"x":384,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_duck.png",
+	"frame": {"x":576,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_fall.png",
+	"frame": {"x":768,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_fallDown.png",
+	"frame": {"x":960,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_hang.png",
+	"frame": {"x":1152,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_hit.png",
+	"frame": {"x":1344,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_hold.png",
+	"frame": {"x":1536,"y":256,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_hurt.png",
+	"frame": {"x":0,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_idle.png",
+	"frame": {"x":192,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_interact.png",
+	"frame": {"x":384,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_jump.png",
+	"frame": {"x":576,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_kick.png",
+	"frame": {"x":768,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_rope.png",
+	"frame": {"x":960,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_run0.png",
+	"frame": {"x":1152,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_run1.png",
+	"frame": {"x":1344,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_run2.png",
+	"frame": {"x":1536,"y":512,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_shove.png",
+	"frame": {"x":0,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_shoveBack.png",
+	"frame": {"x":192,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_show.png",
+	"frame": {"x":384,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_side.png",
+	"frame": {"x":576,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_slide.png",
+	"frame": {"x":768,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_switch0.png",
+	"frame": {"x":960,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_switch1.png",
+	"frame": {"x":1152,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_talk.png",
+	"frame": {"x":1344,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_think.png",
+	"frame": {"x":1536,"y":768,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk0.png",
+	"frame": {"x":0,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk1.png",
+	"frame": {"x":192,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk2.png",
+	"frame": {"x":384,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk3.png",
+	"frame": {"x":576,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk4.png",
+	"frame": {"x":768,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk5.png",
+	"frame": {"x":960,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk6.png",
+	"frame": {"x":1152,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_walk7.png",
+	"frame": {"x":1344,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+},
+{
+	"filename": "character_femalePerson_wide.png",
+	"frame": {"x":1536,"y":1024,"w":192,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":192,"h":256},
+	"sourceSize": {"w":192,"h":256}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "character.png",
+	"format": "RGBA8888",
+	"size": {"w":1728,"h":1280},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:87a26fb38db21bb1c14842abb075035b:7f9ef792075e79ba2c9a900281dafb8c:42e475aa4a03af306bdc7acb5ff91d19$"
+}
+}
