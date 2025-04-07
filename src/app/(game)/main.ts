@@ -26,7 +26,10 @@ const config: Phaser.Types.Core.GameConfig = {
     },
   },
   physics: {
-    default: "arcade",
+    default: "matter",
+    matter: {
+      debug: true,
+    },
   },
   parent: "game-container",
   backgroundColor: "#ADD8E6",

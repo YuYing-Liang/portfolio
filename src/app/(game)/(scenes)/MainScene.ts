@@ -3,40 +3,58 @@ import { EventBus } from "../EventBus";
 import { Scene } from "phaser";
 
 export class MainScene extends Scene {
-  camera: Phaser.Cameras.Scene2D.Camera | undefined;
-  player!: Player;
-  bricks!: Phaser.GameObjects.TileSprite;
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private player!: Phaser.Physics.Matter.Sprite;
+  private isTouchingGround = false;
 
   constructor() {
     super("MainScene");
   }
 
+  init() {
+    this.cursors = this.input.keyboard!.createCursorKeys();
+  }
+
   preload() {
     this.load.baseURL = "/game/";
+    this.load.atlas("character", "character/character.png", "character/character.json");
     this.load.image("sun", "sun.png");
-    this.load.image("ground", "ground.png");
-    this.load.image("player", "player.png");
-    this.load.image("playerLeft", "player-left.png");
-    this.load.image("playerRight", "player-right.png");
-    this.load.image("brick", "brick.png");
+    this.load.image("tiles", "tilesheet.png");
+    this.load.tilemapTiledJSON("level1tilemap", "level1.json");
   }
 
   create() {
-    this.camera = this.cameras.main;
+    this.createCharacterAnimations();
+    const map = this.make.tilemap({ key: "level1tilemap" });
+    const tileset = map.addTilesetImage("game-tileset", "tiles");
+
+    if (tileset == null) {
+      console.log("Unable to create tileset");
+      return;
+    }
+
+    const ground = map.createLayer("Tile Layer 1", tileset);
+    if (ground == null) {
+      console.log("Unable to create ground");
+      return;
+    }
+
+    ground.setCollisionByProperty({ collides: true });
+    this.matter.world.convertTilemapLayer(ground);
+    this.matter.world.setBounds(0, 0, map.widthInPixels, this.scale.height, 4);
+
+    this.player = this.matter.add
+      .sprite(256, this.scale.height - 256, "character")
+      .play("player-idle")
+      .setFixedRotation()
+      .setOnCollide((data: MatterJS.ICollisionPair) => {
+        this.isTouchingGround = true;
+      });
+
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, this.scale.height);
+    this.cameras.main.startFollow(this.player);
+
     const sun = this.add.image(this.scale.baseSize.width - 128, 128, "sun");
-    const ground = this.add.tileSprite(
-      this.scale.baseSize.width / 2,
-      this.scale.baseSize.height - 36,
-      this.scale.baseSize.width,
-      0,
-      "ground",
-    );
-
-    this.bricks = this.add.tileSprite(300, this.scale.baseSize.height - 140 - 200, 210, 0, "brick");
-    this.bricks.setSize(210, 70);
-    this.physics.add.existing(this.bricks);
-
-    this.player = new Player(this);
 
     this.tweens.add({
       targets: sun,
@@ -49,12 +67,49 @@ export class MainScene extends Scene {
     EventBus.emit("current-scene-ready", this);
   }
 
-  update(time: number, delta: number): void {
-    this.player.update(time, this.bricks);
+  update() {
+    const speed = 10;
+    if (this.cursors.left.isDown || this.cursors.right.isDown) {
+      if (this.cursors.left.isDown) {
+        this.player.setVelocityX(-speed);
+        this.player.setFlipX(true);
+      } else {
+        this.player.setVelocityX(speed);
+        this.player.setFlipX(false);
+      }
+      this.player.play("player-walk", true);
+    } else {
+      this.player.setVelocityX(0);
+      this.player.play("player-idle", true);
+    }
 
-    this.physics.overlap(this.player, this.bricks, (_player, _bricks) => {
-      this.player.y = this.bricks.y + (this.bricks.height + this.player.height) / 2;
-      console.log("collided");
+    const spaceJustPressed = Phaser.Input.Keyboard.JustDown(this.cursors.up);
+    if (spaceJustPressed && this.isTouchingGround) {
+      this.player.setVelocityY(-speed * 1.5);
+      this.isTouchingGround = false;
+    }
+  }
+
+  private createCharacterAnimations() {
+    this.anims.create({
+      key: "player-idle",
+      frames: [
+        {
+          key: "character",
+          frame: "character_femalePerson_idle.png",
+        },
+      ],
+    });
+    this.anims.create({
+      key: "player-walk",
+      frameRate: 10,
+      frames: this.anims.generateFrameNames("character", {
+        start: 1,
+        end: 7,
+        prefix: "character_femalePerson_walk",
+        suffix: ".png",
+      }),
+      repeat: -1,
     });
   }
 }
