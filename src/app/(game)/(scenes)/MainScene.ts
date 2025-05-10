@@ -33,14 +33,14 @@ export class MainScene extends Scene {
       return;
     }
 
-    const ground = map.createLayer("Tile Layer 1", tileset);
-    if (ground == null) {
+    const layer1 = map.createLayer("Tile Layer 1", tileset);
+    if (layer1 == null) {
       console.log("Unable to create ground");
       return;
     }
 
-    ground.setCollisionByProperty({ collides: true });
-    this.matter.world.convertTilemapLayer(ground);
+    layer1.setCollisionByProperty({ collides: true });
+    this.matter.world.convertTilemapLayer(layer1);
     this.matter.world.setBounds(0, 0, map.widthInPixels, this.scale.height, 4);
 
     this.player = this.matter.add
@@ -77,7 +77,11 @@ export class MainScene extends Scene {
         this.player.setVelocityX(speed);
         this.player.setFlipX(false);
       }
-      this.player.play("player-walk", true);
+      if (this.isTouchingGround) {
+        this.player.play("player-walk", true);
+      } else {
+        this.player.play("player-idle", true);
+      }
     } else {
       this.player.setVelocityX(0);
       this.player.play("player-idle", true);
