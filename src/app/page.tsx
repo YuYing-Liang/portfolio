@@ -1,7 +1,7 @@
 "use client";
 import { ActionIcon, Center, Container, Flex, Group, Image, Paper, Stack, Text, Title } from "@mantine/core";
-import React, { FC, MouseEventHandler, useState } from "react";
-import { DynamicTablerIcon, IconProps } from "./(components)/Icon";
+import React, { type FC, type MouseEventHandler, useState } from "react";
+import { DynamicTablerIcon, type IconProps } from "./(components)/Icon";
 import { useViewportSize } from "@mantine/hooks";
 
 const SkillDescriptions: Record<string, { description: string; icon: IconProps["name"] }> = {
@@ -66,7 +66,7 @@ export default function SplashPage() {
 
   return (
     <Stack
-      className={`min-h-screen h-${!isScreenLandscape || (!isScreenLandscape && isScreenExtraShort && Math.abs(width - height) < 50) ? "full" : "screen"} min-w-screen w-full justify-between bg-[var(--mantine-color-beige-0)] pt-8`}
+      className={`min-h-screen h-${!isScreenLandscape || (!isScreenLandscape && isScreenExtraShort && Math.abs(width - height) < 100) ? "full" : "screen"} min-w-screen w-full justify-between bg-[var(--mantine-color-beige-0)] pt-8`}
     >
       <Center className="h-[90%] w-full">
         <Flex
@@ -76,18 +76,24 @@ export default function SplashPage() {
           gap={{ base: "xl", md: isScreenWideAndShort ? "100px" : "xl" }}
         >
           <Container className={!isScreenWidthXXs ? "relative" : "flex flex-col items-center gap-4"}>
-            <Image src="headshot.jpg" radius={200} w={isScreenWidthXs ? 175 : isScreenLandscapeAndNarrow ? 200 : 250} />
+            <Image
+              src="headshot.jpg"
+              alt="profile-picture"
+              radius={200}
+              w={isScreenWidthXs ? 175 : isScreenLandscapeAndNarrow ? 200 : 250}
+            />
             <Title
               order={titleSize}
               ff="monospace"
-              className={`${!isScreenWidthXXs ? "absolute bottom-[5%] left-[40%]" : ""} w-[${isScreenWidthLg && !isScreenWidthXXs ? "125%" : "100%"}] text-[var(--mantine-color-beige-5)]`}
+              w={isScreenWidthXXs || isScreenWideAndShort ? "100%" : isScreenWidthLg ? "115%" : "130%"}
+              className={`${!isScreenWidthXXs ? "absolute bottom-[5%] left-[40%]" : ""} text-[var(--mantine-color-beige-5)]`}
             >
-              Hi, I'm YuYing 👋
+              Hi, I&apos;m YuYing 👋
             </Title>
           </Container>
           <Stack gap="lg">
             <Title order={titleSize} ff="monospace">
-              I'm a
+              I&apos;m a
             </Title>
             <Title order={titleSize} ff="monospace">
               🤖 Robotics
@@ -100,12 +106,12 @@ export default function SplashPage() {
             </Title>
           </Stack>
           <Stack align="center">
-            <Group>
+            <Group justify={isScreenWidthXXXs ? "center" : undefined}>
               {Object.entries(SkillDescriptions).map(([skillName, skillData]) => (
                 <IconButton
                   key={skillName}
                   icon={skillData.icon}
-                  size={Math.max(width, height) < 1080 ? 35 : 40}
+                  size={Math.max(width, height) < 1080 ? 32 : 40}
                   onClick={setSkill(skillName)}
                   isActive={displaySkill === skillName}
                 />
@@ -136,7 +142,7 @@ export default function SplashPage() {
         <Group gap="xs">
           <IconLink icon="IconBrandGithub" link="https://github.com/YuYing-Liang/porfolio" />
           <IconLink icon="IconBrandLinkedin" link="https://www.linkedin.com/in/yuying-liang/" />
-          <Image src="logo-block.png" h={32} />
+          <Image src="logo-block.png" alt="logo" h={32} />
         </Group>
       </Group>
     </Stack>
@@ -151,7 +157,8 @@ const IconButton: FC<{
 }> = (props) => (
   <ActionIcon
     component="button"
-    className={`h-[${props.size + 10}px] w-[${props.size + 10}px]`}
+    w={props.size + 10}
+    h={props.size + 10}
     bg={props.isActive ? "var(--mantine-color-pink-5)" : "transparent"}
     onClick={props.onClick}
   >

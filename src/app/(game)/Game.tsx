@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
-import Phaser from "phaser";
+import type Phaser from "phaser";
 import { StartGame } from "./main";
 import { EventBus } from "./EventBus";
 
@@ -8,9 +8,8 @@ export interface IRefPhaserGame {
   scene: Phaser.Scene | null;
 }
 
-
-const PhaserGame = forwardRef<IRefPhaserGame, {}>(function PhaserGame({}, ref) {
-  const game = useRef<Phaser.Game | null>(null!);
+const PhaserGame = forwardRef<IRefPhaserGame, object>(function PhaserGame({}, ref) {
+  const game = useRef<Phaser.Game | null>(null);
 
   useLayoutEffect(() => {
     if (game.current === null) {

@@ -1,5 +1,5 @@
 import { Container, Title } from "@mantine/core";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 
 const Blog: NextPage = () => {
   return (

@@ -8,6 +8,7 @@ export type IconProps = {
 };
 
 export const DynamicTablerIcon = ({ name, color, className, size = 24 }: IconProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const IconComponent = (TablerIcons as unknown as Record<string, React.FC<any>>)[name];
 
   if (!IconComponent) {

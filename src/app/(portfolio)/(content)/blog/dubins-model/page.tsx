@@ -14,7 +14,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import Image from "next/image";
 
 const DubinsModel: NextPage = () => {
@@ -24,9 +24,9 @@ const DubinsModel: NextPage = () => {
         <h1 className="overflow-wrap w-[65%] text-[100px] leading-[100%]">
           Dubins Model: an interactive explanation and simulation
         </h1>
-        <img
+        <Image
           src="https://media.springernature.com/lw685/springer-static/image/chp%3A10.1007%2F978-981-19-2635-8_80/MediaObjects/520264_1_En_80_Fig1_HTML.png"
-          width="30%"
+          width="30"
           alt="Dubins Model"
         />
       </Group>
@@ -57,18 +57,18 @@ const DubinsModel: NextPage = () => {
           <ListItem>Turn Right</ListItem>
           <ListItem>Stop</ListItem>
         </List>
-        <Text>You can technically go backwards too, but driving in reverse isn't very safe is it?</Text>
+        <Text>You can technically go backwards too, but driving in reverse isn&apos;t very safe is it?</Text>
         <Text>
           Note that your vehicle <b>cannot</b> pivot on the spot (or else we could just choose the straight-line path to
           each pose and turn on the spot, but what fun is that? 😛). So we have to make wide turns based on the
-          vehicle's minimum turning radius.
+          vehicle&apos;s minimum turning radius.
         </Text>
         <Text>So how do we find the shortest path between two poses?</Text>
-        <Text>This is where Dubin's model comes in:</Text>
-        <Text>It's an algorithm that can calculate the shortest path given the above constraints ^</Text>
+        <Text>This is where Dubin&apos;s model comes in:</Text>
+        <Text>It&apos;s an algorithm that can calculate the shortest path given the above constraints ^</Text>
         <Text>
-          Now let's think, if these <a href="#movementList">(*)</a> are the only movements we can do, what are all the
-          possible paths we can take?
+          Now let&apos;s think, if these <a href="#movementList">(*)</a> are the only movements we can do, what are all
+          the possible paths we can take?
         </Text>
         {/* TODO: insert table with graphics for each type of movement */}
         <Text>Insert table here</Text>
@@ -119,13 +119,13 @@ const DubinsModel: NextPage = () => {
         <Text>
           You can move your vehicle in more variations but try coming up with ones that are unique to the the ones
           above. Do the variations you came up with lead to a shorter path? Can they be reduced down to the variations
-          we've laid out?
+          we&apos;ve laid out?
         </Text>
         <Text>So using this rule, we can solve the previous problem:</Text>
         {/* TODO: insert solution from TODO #1 */}
         <Text>Insert solution here</Text>
         <Text>But how did we get to this conclusion?</Text>
-        <Text>We can solve Dubin's model using linear algebra concepts and geometry.</Text>
+        <Text>We can solve Dubin&apos;s model using linear algebra concepts and geometry.</Text>
         <Text>
           How we do this is by defining the problem as a set of constraints. Then using a constraint solver to uncover
           the solutions.

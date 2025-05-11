@@ -45,7 +45,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     if (this.upKeyDownStartTime !== undefined) {
-      const isMovingInX = this.keyLeft?.isDown || this.keyRight?.isDown;
+      const isMovingInX = this.keyLeft?.isDown ?? this.keyRight?.isDown;
       const a = isMovingInX ? 0.002 : 0.005;
       const k = isMovingInX ? 223.60679775 : 141.421356237;
       const y = Math.min(this.groundY, this.groundY - 150 + a * (time - this.upKeyDownStartTime - k) ** 2);

@@ -22,7 +22,7 @@ import {
   IconMap2,
   IconMathMaxMin,
 } from "@tabler/icons-react";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 export const metadata = {
   title: "Projects - YuYing Liang",
@@ -35,7 +35,7 @@ export default function Projects() {
     <Container px={0} fluid>
       <Stack justify="space-evenly" gap="lg" className="h-screen">
         <Stack justify="center" className="h-[70%]">
-          <Title order={1}>Hi, I'm YuYing</Title>
+          <Title order={1}>Hi, I&apos;m YuYing</Title>
           <Text size="lg" className="bg-gradient-to-r from-primary to-dark to-35% bg-clip-text text-transparent">
             I like writing code and building things.
           </Text>

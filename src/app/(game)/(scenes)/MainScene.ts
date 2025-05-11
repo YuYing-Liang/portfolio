@@ -1,4 +1,4 @@
-import { Player } from "../(sprites)/Player";
+// import { type Player } from "../(sprites)/Player";
 import { EventBus } from "../EventBus";
 import { Scene } from "phaser";
 
@@ -47,7 +47,7 @@ export class MainScene extends Scene {
       .sprite(256, this.scale.height - 256, "character")
       .play("player-idle")
       .setFixedRotation()
-      .setOnCollide((data: MatterJS.ICollisionPair) => {
+      .setOnCollide(() => {
         this.isTouchingGround = true;
       });
 
