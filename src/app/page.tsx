@@ -32,7 +32,7 @@ const SkillDescriptions: Record<string, { description: string; icon: IconProps["
     icon: "IconDatabaseStar",
     description: `
     From my time creating web apps, I've gained experience with relational (postgres) and non-relational (mongoDB, firestore) databases.
-    I've grown to prefer relational databases because I have yet to see a situation where the data is entirely not related.
+    Overtime, I've grown to prefer relational databases because I've noticed that data in most applications is usually related in some capacity.
   `,
   },
   robots: {
@@ -88,21 +88,21 @@ export default function SplashPage() {
               w={isScreenWidthXXs || isScreenWideAndShort ? "100%" : isScreenWidthLg ? "115%" : "130%"}
               className={`${!isScreenWidthXXs ? "absolute bottom-[5%] left-[40%]" : ""} text-[var(--mantine-color-beige-5)]`}
             >
-              Hi, I&apos;m YuYing 👋
+              {"Hi, I'm YuYing 👋"}
             </Title>
           </Container>
           <Stack gap="lg">
             <Title order={titleSize} ff="monospace">
-              I&apos;m a
+              {"I'm a"}
             </Title>
             <Title order={titleSize} ff="monospace">
-              🤖 Robotics
+              {"🤖 Robotics"}
             </Title>
             <Title order={titleSize} ff="monospace">
-              💻 Software
+              {"💻 Software"}
             </Title>
             <Title order={titleSize} ff="monospace">
-              👩‍💻 Developer
+              {"👩‍💻 Developer"}
             </Title>
           </Stack>
           <Stack align="center">
@@ -120,7 +120,17 @@ export default function SplashPage() {
             <Paper
               shadow="sm"
               p={isScreenWidthSm ? "xs" : isSkillSelected && !isScreenWideAndShort ? "xl" : "md"}
-              w={isScreenWidthSm ? "75vw" : isScreenWidthMd ? "35vw" : isSkillSelected ? "25vw" : "100%"}
+              w={
+                isScreenWidthXs
+                  ? "80vw"
+                  : isScreenWidthSm
+                    ? "60vw"
+                    : isScreenWidthMd
+                      ? "35vw"
+                      : isSkillSelected
+                        ? "25vw"
+                        : "100%"
+              }
               bg="var(--mantine-color-pink-2)"
               fz="md"
               className="text-center"
@@ -130,8 +140,8 @@ export default function SplashPage() {
           </Stack>
         </Flex>
       </Center>
-      <Group p="md" justify={isScreenWidthXXXs ? "center" : "space-between"}>
-        <Group gap="xs">
+      <Group p="md" justify="space-between">
+        <Group gap="xs" className={isScreenWidthXXs ? "w-full justify-center" : ""}>
           <Text size="md" fw={600} className="text-[var(--mantine-color-tan-9)]">
             Made with
           </Text>
@@ -139,7 +149,7 @@ export default function SplashPage() {
           <IconLink icon="IconBrandTailwind" link="https://tailwindcss.com/" />
           <IconLink icon="IconBrandTabler" link="https://tabler.io/" />
         </Group>
-        <Group gap="xs">
+        <Group gap="xs" className={isScreenWidthXXs ? "w-full justify-center" : ""}>
           <IconLink icon="IconBrandGithub" link="https://github.com/YuYing-Liang/porfolio" />
           <IconLink icon="IconBrandLinkedin" link="https://www.linkedin.com/in/yuying-liang/" />
           <Image src="logo-block.png" alt="logo" h={32} />
