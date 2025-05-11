@@ -8,11 +8,8 @@ export interface IRefPhaserGame {
   scene: Phaser.Scene | null;
 }
 
-// interface IProps {
-//   currentActiveScene?: (scene_instance: Phaser.Scene) => void;
-// }
 
-export const PhaserGame = forwardRef<IRefPhaserGame, {}>(function PhaserGame({}, ref) {
+const PhaserGame = forwardRef<IRefPhaserGame, {}>(function PhaserGame({}, ref) {
   const game = useRef<Phaser.Game | null>(null!);
 
   useLayoutEffect(() => {
@@ -55,3 +52,9 @@ export const PhaserGame = forwardRef<IRefPhaserGame, {}>(function PhaserGame({},
 
   return <div id="game-container"></div>;
 });
+
+export function Game() {
+  const phaserRef = useRef<IRefPhaserGame | null>(null);
+
+  return <PhaserGame ref={phaserRef} />;
+}
