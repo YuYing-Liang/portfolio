@@ -1,4 +1,4 @@
-export interface BookDimensions {
+export interface BookPoseAndDimensions {
   id: string;
   width: number;
   height: number;

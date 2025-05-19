@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { type BookDimensions } from "./types";
+import { type BookPoseAndDimensions } from "./types";
 
 export const generateRandomBookSizes = (shelves: { amount: number; width: number; thickness: number; gap: number }) => {
   const BOOK_DIMENSIONS = {
@@ -13,7 +13,7 @@ export const generateRandomBookSizes = (shelves: { amount: number; width: number
     },
   };
   const shelfSpace = shelves.thickness + shelves.gap;
-  const books: BookDimensions[] = [];
+  const books: BookPoseAndDimensions[] = [];
   let bookY = shelves.gap;
 
   for (let i = 0; i < (shelves.width / BOOK_DIMENSIONS.width.min) * shelves.amount; i++) {

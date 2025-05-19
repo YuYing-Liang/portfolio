@@ -3,9 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useMantineTheme } from "@mantine/core";
 import { useEffect, useState, type FC } from "react";
-import { Group, type KonvaNodeEvents, Label, Rect, Text } from "react-konva";
+import { Group, type KonvaNodeEvents, Label, Layer, Rect, Text } from "react-konva";
 import { generateRandomBookSizes } from "../utils";
-import { type BookDimensions } from "../types";
+import { type BookPoseAndDimensions } from "../types";
+import { useMouse } from "@mantine/hooks";
 
 interface ShelfProps {
   parentHeight: number;
@@ -17,36 +18,53 @@ interface ShelfProps {
 }
 
 export const Shelf: FC<ShelfProps> = (props) => {
-  const theme = useMantineTheme();
-  const [books, setBooks] = useState<BookDimensions[]>([]);
-
   const shelfSpace = props.shelfThickness + props.shelfGap;
-  const numShelves = Math.floor((props.height - props.shelfThickness) / shelfSpace);
   const shelfOffset = {
     x: (props.parentWidth - props.width) / 2,
     y: (props.parentHeight - props.height) / 2,
   };
+  const initialShelves = Math.floor((props.height - props.shelfThickness) / shelfSpace);
+
+  const theme = useMantineTheme();
+  const [books, setBooks] = useState<BookPoseAndDimensions[]>([]);
+  const [numShelves, setNumShelves] = useState<number>(initialShelves);
+  const [draggingBook, setDraggingBook] = useState<BookPoseAndDimensions | undefined>();
 
   useEffect(() => {
     setBooks(
       generateRandomBookSizes({
-        amount: numShelves,
+        amount: initialShelves,
         width: props.width,
         gap: props.shelfGap,
         thickness: props.shelfThickness,
       }),
     );
-  }, [props.width, props.shelfGap, props.shelfThickness, numShelves]);
+  }, [props.width, props.shelfGap, props.shelfThickness, initialShelves]);
+
+  useEffect(() => {
+    const lastBook = books.at(-1);
+    if (lastBook === undefined) return;
+    const numberOfShelvesNeeded = Math.ceil((lastBook.y + lastBook.height) / shelfSpace);
+    if (numberOfShelvesNeeded != numShelves) {
+      setNumShelves(numberOfShelvesNeeded);
+    }
+  }, [books, numShelves, shelfSpace]);
 
   const handleDragBookStart: KonvaNodeEvents["onDragStart"] = (event) => {
-    setBooks((_books) =>
-      _books.map((book) => (book.id === event.target.attrs.id ? { ...book, isDragging: true } : book)),
-    );
+    const draggingBookIndex = books.findIndex((book) => book.id === event.target.attrs.id);
+    setDraggingBook(books[draggingBookIndex]);
+    setBooks((_books) => {
+      const newBooks = [..._books];
+      newBooks[draggingBookIndex]!.isDragging = true;
+      return newBooks;
+    });
   };
 
   const handleDragBookMove: KonvaNodeEvents["onDragMove"] = (event) => {
     const currentBookIndex = books.findIndex((book) => book.id === event.target.attrs.id);
     const currentBook = books[currentBookIndex]!;
+    const currentPos = event.target.getPosition();
+    setDraggingBook({ ...currentBook, ...currentPos } as BookPoseAndDimensions);
 
     const leftBookIndex =
       currentBookIndex == 0 || books[currentBookIndex - 1]!.x > currentBook.x ? currentBookIndex : currentBookIndex - 1;
@@ -59,15 +77,12 @@ export const Shelf: FC<ShelfProps> = (props) => {
     const leftBook = books[leftBookIndex]!;
     const leftBookX = leftBook.x;
     const rightBookX = books[rightBookIndex]!.x;
-    const currentPos = event.target.getPosition();
 
     const isAtEndOfShelf =
       currentBook.x == 0 || currentBookIndex >= books.length - 1 || books[currentBookIndex + 1]!.x == 0;
     const isDraggingUp =
       !isAtEndOfShelf && currentPos.y < currentBook.y + currentBook.height - shelfSpace - props.shelfThickness;
     const isDraggingDown = !isAtEndOfShelf && currentPos.y > currentBook.y + currentBook.height + props.shelfThickness;
-
-    console.log(isDraggingUp, isDraggingDown);
 
     let bookIndexToSnap = currentBookIndex;
 
@@ -93,7 +108,6 @@ export const Shelf: FC<ShelfProps> = (props) => {
       x: bookToSnap.x,
       y: bookToSnap.y + bookToSnap.height - currentBook.height,
     });
-    event.target.moveToTop();
 
     if (bookIndexToSnap != currentBookIndex) {
       setBooks((_books) => {
@@ -137,6 +151,7 @@ export const Shelf: FC<ShelfProps> = (props) => {
 
   const handleDragBookEnd: KonvaNodeEvents["onDragEnd"] = () => {
     setBooks((_books) => _books.map((book) => (book.isDragging ? { ...book, isDragging: false } : book)));
+    setDraggingBook(undefined);
   };
 
   return (
@@ -168,6 +183,9 @@ export const Shelf: FC<ShelfProps> = (props) => {
             {...book}
           />
         ))}
+        {draggingBook !== undefined && (
+          <Rect fill={theme.colors.dark[1]} stroke={theme.colors.dark[7]} strokeWidth={2} {...draggingBook} />
+        )}
       </Group>
     </Group>
   );
