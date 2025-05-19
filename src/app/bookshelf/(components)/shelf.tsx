@@ -61,32 +61,73 @@ export const Shelf: FC<ShelfProps> = (props) => {
     const rightBookX = books[rightBookIndex]!.x;
     const currentPos = event.target.getPosition();
 
-    const isDraggingLeft = leftBookIndex != currentBookIndex && currentPos.x - leftBookX < leftBook.width / 2;
-    const isDraggingRight = rightBookIndex != currentBookIndex && rightBookX - currentPos.x < currentBook.width / 2;
-    const bookIndexToSnap = isDraggingLeft ? leftBookIndex : isDraggingRight ? rightBookIndex : currentBookIndex;
+    const isAtEndOfShelf =
+      currentBook.x == 0 || currentBookIndex >= books.length - 1 || books[currentBookIndex + 1]!.x == 0;
+    const isDraggingUp =
+      !isAtEndOfShelf && currentPos.y < currentBook.y + currentBook.height - shelfSpace - props.shelfThickness;
+    const isDraggingDown = !isAtEndOfShelf && currentPos.y > currentBook.y + currentBook.height + props.shelfThickness;
 
+    console.log(isDraggingUp, isDraggingDown);
+
+    let bookIndexToSnap = currentBookIndex;
+
+    if (isDraggingUp || isDraggingDown) {
+      let distance = 100000;
+      for (let i = 0; i < books.length; i++) {
+        const book = books[i]!;
+        if (Math.abs(book.x - currentBook.x) > 100) continue;
+        const distance_between_book_and_drag = Math.pow(currentPos.x - book.x, 2) + Math.pow(currentPos.y - book.y, 2);
+        if (distance_between_book_and_drag < distance) {
+          bookIndexToSnap = i;
+          distance = distance_between_book_and_drag;
+        }
+      }
+    } else {
+      const isDraggingLeft = leftBookIndex != currentBookIndex && currentPos.x - leftBookX < leftBook.width / 2;
+      const isDraggingRight = rightBookIndex != currentBookIndex && rightBookX - currentPos.x < currentBook.width / 2;
+      bookIndexToSnap = isDraggingLeft ? leftBookIndex : isDraggingRight ? rightBookIndex : currentBookIndex;
+    }
+
+    const bookToSnap = books[bookIndexToSnap]!;
     event.target.setPosition({
-      x: books[bookIndexToSnap]!.x,
-      y: currentBook.y,
+      x: bookToSnap.x,
+      y: bookToSnap.y + bookToSnap.height - currentBook.height,
     });
+    event.target.moveToTop();
 
     if (bookIndexToSnap != currentBookIndex) {
       setBooks((_books) => {
         const newBooks = [..._books];
 
-        const bookToSnapCopy = { ...newBooks[bookIndexToSnap]! };
-        newBooks[bookIndexToSnap] = { ...newBooks[currentBookIndex]! };
-        newBooks[currentBookIndex] = bookToSnapCopy;
+        if (isDraggingUp || isDraggingDown) {
+          newBooks.splice(bookIndexToSnap, 0, { ...currentBook });
+          newBooks.splice(currentBookIndex + (isDraggingUp ? 1 : 0), 1);
+        } else {
+          const bookToSnapCopy = { ...newBooks[bookIndexToSnap]! };
+          newBooks[bookIndexToSnap] = { ...newBooks[currentBookIndex]! };
+          newBooks[currentBookIndex] = bookToSnapCopy;
+        }
 
         const smallerIndex = Math.min(bookIndexToSnap, currentBookIndex);
-        const largerIndex = Math.max(bookIndexToSnap, currentBookIndex);
+        const largerIndex =
+          isDraggingUp || isDraggingDown ? books.length - 1 : Math.max(bookIndexToSnap, currentBookIndex);
+        let bookY = books[smallerIndex]!.y + books[smallerIndex]!.height;
         for (let i = smallerIndex; i <= largerIndex; i++) {
+          const lastBook = newBooks[i - 1]!;
+          const _currentBook = newBooks[i]!;
+          let x =
+            i == 0 ||
+            (!isDraggingUp && !isDraggingDown && lastBook.y + lastBook.height != _currentBook.y + _currentBook.height)
+              ? 0
+              : lastBook.x + lastBook.width;
+          if (x + _currentBook.width > props.width) {
+            x = 0;
+            bookY += shelfSpace;
+          }
           newBooks[i] = {
-            ...newBooks[i]!,
-            x:
-              i == 0 || newBooks[i - 1]!.y + newBooks[i - 1]!.height != newBooks[i]!.y + newBooks[i]!.height
-                ? 0
-                : newBooks[i - 1]!.x + newBooks[i - 1]!.width,
+            ..._currentBook,
+            x,
+            y: bookY - _currentBook.height,
           };
         }
         return newBooks;
@@ -94,7 +135,7 @@ export const Shelf: FC<ShelfProps> = (props) => {
     }
   };
 
-  const handleDragBookEnd: KonvaNodeEvents["onDragEnd"] = (event) => {
+  const handleDragBookEnd: KonvaNodeEvents["onDragEnd"] = () => {
     setBooks((_books) => _books.map((book) => (book.isDragging ? { ...book, isDragging: false } : book)));
   };
 
