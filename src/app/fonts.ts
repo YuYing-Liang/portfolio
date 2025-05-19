@@ -1,4 +1,4 @@
-import { STIX_Two_Text, Space_Mono, Work_Sans } from "next/font/google";
+import { Libre_Baskerville, Space_Mono, Work_Sans } from "next/font/google";
 
 export const sans = Work_Sans({
   subsets: ["latin"],
@@ -12,7 +12,7 @@ export const mono = Space_Mono({
   variable: "--font-mono",
 });
 
-export const serif = STIX_Two_Text({
+export const serif = Libre_Baskerville({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-serif",
