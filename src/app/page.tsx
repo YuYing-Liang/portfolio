@@ -152,7 +152,7 @@ export default function SplashPage() {
         <Group gap="xs" className={isScreenWidthXXs ? "w-full justify-center" : ""}>
           <IconLink icon="IconBrandGithub" link="https://github.com/YuYing-Liang/porfolio" />
           <IconLink icon="IconBrandLinkedin" link="https://www.linkedin.com/in/yuying-liang/" />
-          <Image src="logo-block.png" alt="logo" h={32} />
+          <Image src="logo-block.png" alt="logo" h={32} w={32} fit="contain" />
         </Group>
       </Group>
     </Stack>
