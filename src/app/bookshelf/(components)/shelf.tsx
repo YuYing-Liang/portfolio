@@ -167,6 +167,10 @@ export const Shelf: FC<ShelfProps> = (props) => {
             y={shelf * shelfSpace}
             offsetY={-props.shelfGap}
             cornerRadius={5}
+            shadowBlur={10}
+            shadowColor={theme.colors.tan?.[9]}
+            shadowOpacity={0.25}
+            shadowOffset={{ x: 5, y: 5 }}
           />
         ))}
       <Group>
