@@ -3,10 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useMantineTheme } from "@mantine/core";
 import { useEffect, useState, type FC } from "react";
-import { Group, type KonvaNodeEvents, Label, Layer, Rect, Text } from "react-konva";
+import { Group, type KonvaNodeEvents, Rect } from "react-konva";
 import { generateRandomBookSizes } from "../utils";
 import { type BookPoseAndDimensions } from "../types";
-import { useMouse } from "@mantine/hooks";
 
 interface ShelfProps {
   parentHeight: number;
