@@ -9,6 +9,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         primaryColor: "purple",
         colors: {
           purple: [
+            "#EADDFB",
+            "#CDBAF0",
             "#A894DB",
             "#9C85D6",
             "#8F75D1",
@@ -17,8 +19,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
             "#6A47C2",
             "#603DB8",
             "#5838A8",
-            "#503399",
-            "#482E8A",
           ],
           pink: [
             "#F9F1F5",
