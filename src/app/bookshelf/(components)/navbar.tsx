@@ -11,12 +11,15 @@ export interface NavbarProps {
 
 export const Navbar: FC<NavbarProps> = (props) => {
   return (
-    <Group gap="xs" className="absolute left-1/2 top-[25px] ml-[-144px]">
+    <Group gap="xs" className="absolute left-1/2 top-[25px] ml-[-165px]">
       <ActionIcon variant="subtle" size="lg" radius="xl" onClick={() => console.log("clicked sync!")}>
         <DynamicTablerIcon name="IconRefresh" color="black" />
       </ActionIcon>
       <ActionIcon variant="subtle" size="lg" radius="xl" onClick={() => console.log("clicked settings!")}>
         <DynamicTablerIcon name="IconSettings" color="black" />
+      </ActionIcon>
+      <ActionIcon variant="subtle" size="lg" radius="xl" onClick={() => console.log("clicked add!")}>
+        <DynamicTablerIcon name="IconPlus" color="black" />
       </ActionIcon>
       <SegmentedControl
         withItemsBorders={false}
