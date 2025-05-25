@@ -5,7 +5,7 @@ import { BookList } from "../(components)/book-list";
 
 export const Library = () => {
   return (
-    <Group gap="lg" className="absolute left-0 top-[100px] h-[85%] w-screen items-start justify-center">
+    <Group gap="lg" className="absolute left-0 top-[125px] h-[85%] w-screen items-start justify-center">
       <StackList stacks={[{ name: "Steven King Books" }, { name: "Fantasy Novels" }]} />
       <Stack className="w-[65%]">
         <FilterBar />

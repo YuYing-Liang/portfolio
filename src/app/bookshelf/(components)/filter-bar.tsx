@@ -3,24 +3,18 @@ import {
   Button,
   Divider,
   Group,
-  Menu,
   Pill,
   PillGroup,
   Popover,
+  SegmentedControl,
   Select,
   Stack,
   Text,
   TextInput,
-  Title,
 } from "@mantine/core";
-import { type FC } from "react";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 
-interface FilterBarProps {
-  addStacks?: boolean;
-}
-
-export const FilterBar: FC<FilterBarProps> = (props) => {
+export const FilterBar = () => {
   return (
     <Stack>
       <Group justify="space-between">
@@ -75,6 +69,12 @@ export const FilterBar: FC<FilterBarProps> = (props) => {
                 </Text>
                 <Select
                   checkIconPosition="right"
+                  placeholder="Select property ..."
+                  data={["author", "date published", "review", "title"]}
+                  clearable
+                />
+                <Select
+                  checkIconPosition="right"
                   clearable
                   placeholder="Select ordering ..."
                   data={["alphabetically", "ascending", "descending", "most recent", "least recent"]}
@@ -98,23 +98,73 @@ export const FilterBar: FC<FilterBarProps> = (props) => {
               </Stack>
             </Popover.Dropdown>
           </Popover>
+
+          <Popover shadow="sm" closeOnClickOutside={false} width={250} position="bottom-start">
+            <Popover.Target>
+              <ActionIcon size="input-sm" variant="light">
+                <DynamicTablerIcon name="IconChartDonut" size={20} />
+              </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown className="p-3">
+              <Stack gap="xs">
+                <Text size="sm" fw={600}>
+                  Add Statistic
+                </Text>
+                <Select
+                  label="Property"
+                  checkIconPosition="right"
+                  placeholder="Select property ..."
+                  data={["author", "date published", "review", "title"]}
+                  clearable
+                />
+                <Select
+                  label="Operation"
+                  checkIconPosition="right"
+                  clearable
+                  placeholder="Select operation ..."
+                  data={["average", "sum", "range"]}
+                />
+                <Select
+                  label="Grouped by"
+                  checkIconPosition="right"
+                  clearable
+                  placeholder="Grouped by ..."
+                  data={["author", "date published", "review", "title"]}
+                />
+                <Select
+                  label="Ordered by"
+                  checkIconPosition="right"
+                  clearable
+                  placeholder="Order by ..."
+                  data={["alphabetically", "ascending", "descending", "most recent", "least recent"]}
+                />
+                <Select
+                  label="Display method"
+                  checkIconPosition="right"
+                  placeholder="Display method"
+                  data={["text", "icon", "pie chart", "bar chart", "scale"]}
+                  searchable
+                  clearable
+                />
+                <Button variant="light" size="xs" w="fit-content" className="self-end">
+                  Add Stat
+                </Button>
+              </Stack>
+            </Popover.Dropdown>
+          </Popover>
         </Group>
-        <Group gap="xs">
-          <ActionIcon size="input-sm" variant="light">
-            <DynamicTablerIcon name="IconChartDonut" size={20} />
-          </ActionIcon>
-          <ActionIcon size="input-sm" variant="light">
-            <DynamicTablerIcon name="IconLayout" size={20} />
-          </ActionIcon>
-          <Button variant="light" leftSection={<DynamicTablerIcon name="IconPlus" size={20} />}>
-            {"Book"}
-          </Button>
-          {props.addStacks && (
-            <Button variant="light" leftSection={<DynamicTablerIcon name="IconPlus" size={20} />}>
-              {"Stack"}
-            </Button>
-          )}
-        </Group>
+        <SegmentedControl
+          size="sm"
+          radius="md"
+          defaultValue="grid"
+          data={[
+            { label: <DynamicTablerIcon name="IconLayoutGrid" size={20} />, value: "grid" },
+            { label: <DynamicTablerIcon name="IconLayoutList" size={20} />, value: "list" },
+          ]}
+        />
+        {/* <ActionIcon size="input-sm" variant="light">
+          <DynamicTablerIcon name="IconLayout" size={20} />
+        </ActionIcon> */}
       </Group>
       <PillGroup>
         <Pill withRemoveButton size="xl" fz="sm" bg="var(--mantine-color-purple-1)">

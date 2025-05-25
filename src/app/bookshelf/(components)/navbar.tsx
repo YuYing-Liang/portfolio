@@ -1,4 +1,4 @@
-import { ActionIcon, Group, SegmentedControl } from "@mantine/core";
+import { ActionIcon, Group, Menu, SegmentedControl } from "@mantine/core";
 import { type FC } from "react";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 
@@ -18,9 +18,17 @@ export const Navbar: FC<NavbarProps> = (props) => {
       <ActionIcon variant="subtle" size="lg" radius="xl" onClick={() => console.log("clicked settings!")}>
         <DynamicTablerIcon name="IconSettings" color="black" />
       </ActionIcon>
-      <ActionIcon variant="subtle" size="lg" radius="xl" onClick={() => console.log("clicked add!")}>
-        <DynamicTablerIcon name="IconPlus" color="black" />
-      </ActionIcon>
+      <Menu shadow="lg">
+        <Menu.Target>
+          <ActionIcon variant="subtle" size="lg" radius="xl" onClick={() => console.log("clicked add!")}>
+            <DynamicTablerIcon name="IconPlus" color="black" />
+          </ActionIcon>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item leftSection={<DynamicTablerIcon name="IconBook2" size={20} />}> Add Book </Menu.Item>
+          <Menu.Item leftSection={<DynamicTablerIcon name="IconStack2" size={20} />}> Add Stack </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
       <SegmentedControl
         withItemsBorders={false}
         size="md"
