@@ -7,6 +7,7 @@ export type NavbarTabs = "bookshelf" | "library";
 export interface NavbarProps {
   currentTab: NavbarTabs;
   onTabChange: (newTab: NavbarTabs) => void;
+  onAddBook: () => void;
 }
 
 export const Navbar: FC<NavbarProps> = (props) => {
@@ -25,7 +26,9 @@ export const Navbar: FC<NavbarProps> = (props) => {
           </ActionIcon>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item leftSection={<DynamicTablerIcon name="IconBook2" size={20} />}> Add Book </Menu.Item>
+          <Menu.Item leftSection={<DynamicTablerIcon name="IconBook2" size={20} />} onClick={props.onAddBook}>
+            {"Add Book"}
+          </Menu.Item>
           <Menu.Item leftSection={<DynamicTablerIcon name="IconStack2" size={20} />}> Add Stack </Menu.Item>
         </Menu.Dropdown>
       </Menu>

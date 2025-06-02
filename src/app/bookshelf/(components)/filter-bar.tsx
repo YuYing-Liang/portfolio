@@ -162,27 +162,37 @@ export const FilterBar = () => {
             { label: <DynamicTablerIcon name="IconLayoutList" size={20} />, value: "list" },
           ]}
         />
-        {/* <ActionIcon size="input-sm" variant="light">
-          <DynamicTablerIcon name="IconLayout" size={20} />
-        </ActionIcon> */}
       </Group>
-      <PillGroup>
-        <Pill withRemoveButton size="xl" fz="sm" bg="var(--mantine-color-purple-1)">
-          {"property1: value"}
-        </Pill>
-        <Pill withRemoveButton size="xl" fz="sm" bg="var(--mantine-color-purple-1)">
-          {"property2 ≥ value and property2 < value"}
-        </Pill>
-        <Pill withRemoveButton size="xl" fz="sm" bg="var(--mantine-color-purple-1)">
-          {"property3 ≤ value"}
-        </Pill>
-        <Pill withRemoveButton size="xl" fz="sm" bg="var(--mantine-color-pink-2)">
-          {"order: alphabetical"}
-        </Pill>
-        <Pill withRemoveButton size="xl" fz="sm" bg="var(--mantine-color-indigo-1)">
-          {"group: author"}
-        </Pill>
-      </PillGroup>
+      <Stack gap="5px">
+        <PillGroup gap={3}>
+          <Pill withRemoveButton size="lg" fz="xs" bg="var(--mantine-color-purple-1)" radius="sm">
+            <strong>{"property1"}</strong>
+            {": value"}
+          </Pill>
+          <Pill withRemoveButton size="lg" fz="xs" bg="var(--mantine-color-purple-1)" radius="sm">
+            <strong>{"property2"}</strong>
+            {" ≥ value and "}
+            <strong>{"property2"}</strong>
+            {" < value"}
+          </Pill>
+          <Pill withRemoveButton size="lg" fz="xs" bg="var(--mantine-color-purple-1)" radius="sm">
+            <strong>{"property3"}</strong>
+            {" ≤ value"}
+          </Pill>
+        </PillGroup>
+        <PillGroup gap={3}>
+          <Pill withRemoveButton size="lg" fz="xs" bg="var(--mantine-color-pink-2)" radius="sm">
+            <strong>{"order"}</strong>
+            {": alphabetical"}
+          </Pill>
+        </PillGroup>
+        <PillGroup gap={3}>
+          <Pill withRemoveButton size="lg" fz="xs" bg="var(--mantine-color-indigo-1)" radius="sm">
+            <strong>{"group"}</strong>
+            {": author"}
+          </Pill>
+        </PillGroup>
+      </Stack>
     </Stack>
   );
 };
