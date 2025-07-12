@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Bookshelf } from "./(pages)/bookshelf";
 import { Library } from "./(pages)/library";
 import { useDisclosure } from "@mantine/hooks";
-import { BookModal } from "./(components)/book";
+import { BookModal } from "./(components)/(books)/book-modal";
 
 export default function BookshelfHomepage() {
   const [currentTab, setCurrentTab] = useState<NavbarTabs>("bookshelf");

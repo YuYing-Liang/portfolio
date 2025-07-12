@@ -10,19 +10,19 @@ export interface BookPoseAndDimensions {
 export type BookRating = 0 | 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 4.5 | 5;
 
 export type Book = {
-  id: string;
+  id?: string;
   title: string;
   author: string;
-  pages: number;
-  size: [number, number, number]; //width x length x depth
-  summary: string;
-  publish_date: Date;
+  pages?: number;
+  size?: [number, number, number]; // width x length x depth
+  summary?: string;
+  publish_date?: Date;
   audience_rating: number;
-  cover_image: string;
-  spine_image: string;
-  imported: string | undefined;
-  properties: BookProperty[];
-  reviews: BookReview[];
+  cover_image?: string;
+  spine_image?: string;
+  imported?: string | undefined;
+  properties?: BookProperty[];
+  reviews?: BookReview[];
 };
 
 export type BookPropertyTypes = "text" | "number" | "checkbox" | "multi" | "select";
@@ -46,8 +46,8 @@ export type BookReview = {
 export type BookStack = {
   id: string;
   name: string;
-  filters: BookStackFilter<BookStackFilterTypes>[];
-  statistics: BookStackStatistics[];
+  filters?: BookStackFilter<BookStackFilterTypes>[];
+  statistics?: BookStackStatistics[];
 };
 
 export type BookStackFilterTypes = "filter" | "order_by" | "group_by";

@@ -4,8 +4,8 @@
 import { useMantineTheme } from "@mantine/core";
 import { useEffect, useState, type FC } from "react";
 import { Group, type KonvaNodeEvents, Rect } from "react-konva";
-import { generateRandomBookSizes } from "../utils";
-import { type BookPoseAndDimensions } from "../types";
+import { generateRandomBookSizes } from "../../utils";
+import { type BookPoseAndDimensions } from "../../types";
 
 interface ShelfProps {
   parentHeight: number;

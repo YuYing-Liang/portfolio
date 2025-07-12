@@ -1,7 +1,7 @@
 import { Center, SimpleGrid, Title } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { Layer, Stage } from "react-konva";
-import { Shelf } from "../(components)/shelf";
+import { Shelf } from "../(components)/(bookshelf)/shelf";
 import { serif } from "../../fonts";
 
 export const Bookshelf = () => {
