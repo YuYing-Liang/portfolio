@@ -10,6 +10,7 @@ const config = {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
   },
   output: "export",
+  transpilePackages: ['three'],
 };
 
 export default config;
