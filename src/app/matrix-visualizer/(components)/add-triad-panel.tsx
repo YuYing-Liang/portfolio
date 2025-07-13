@@ -18,7 +18,12 @@ export const AddTriadPanel = () => {
         searchable
       />
       <MatrixData editable matrixData={newTriadData} setMatrixData={setNewTriadData} />
-      <Button variant="light" size="xs" p="xs" leftSection={<DynamicTablerIcon name="IconPlus" size={20} />}>
+      <Button
+        variant="light"
+        size="xs"
+        classNames={{ section: "m-[5px]" }}
+        leftSection={<DynamicTablerIcon name="IconPlus" size={18} />}
+      >
         {"Add Triad"}
       </Button>
     </Paper>

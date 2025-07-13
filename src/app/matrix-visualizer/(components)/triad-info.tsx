@@ -1,4 +1,4 @@
-import { Button, Paper, Select, Space, Text } from "@mantine/core";
+import { Button, Paper, Select, Space, Text, Group } from "@mantine/core";
 import { MatrixData } from "./matrix-data";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 
@@ -16,9 +16,25 @@ export const TriadInfoPanel = () => {
         searchable
       />
       <MatrixData editable={false} matrixData={[0, 0, 0, 0, 0, 0]} />
-      <Button variant="light" size="xs" p="xs" leftSection={<DynamicTablerIcon name="IconPencil" size={20} />}>
-        {"Edit Triad"}
-      </Button>
+      <Group gap="sm">
+        <Button
+          variant="light"
+          size="xs"
+          classNames={{ section: "m-[5px]" }}
+          leftSection={<DynamicTablerIcon name="IconPencil" size={18} />}
+        >
+          {"Edit"}
+        </Button>
+        <Button
+          variant="light"
+          color="red"
+          size="xs"
+          classNames={{ section: "m-[5px]" }}
+          leftSection={<DynamicTablerIcon name="IconTrash" size={18} />}
+        >
+          {"Delete"}
+        </Button>
+      </Group>
     </Paper>
   );
 };
