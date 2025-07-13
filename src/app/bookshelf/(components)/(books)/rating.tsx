@@ -7,6 +7,7 @@ interface RatingProps {
   rating: BookRating;
 }
 
+// TODO: replace with Mantine Rating: https://mantine.dev/core/rating/
 export const Rating: FC<RatingProps> = (props) => {
   return (
     <Group gap="3px" my="xs">

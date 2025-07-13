@@ -47,7 +47,7 @@ export const Triad: FC<TriadProps> = (props) => {
       <Axis axis="y" />
       <Axis axis="z" />
       <mesh position={[0, 0, AXIS_CYLINDER_Z_OFFSET]}>
-        <sphereGeometry args={[AXIS_RADIUS * 2.5, 32, 32]} />
+        <sphereGeometry args={[AXIS_RADIUS * 3, 32, 32]} />
         <meshStandardMaterial color="lightblue" side={DoubleSide}/>
       </mesh>
     </group>
