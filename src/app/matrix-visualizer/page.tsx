@@ -2,7 +2,8 @@
 import { Canvas } from "@react-three/fiber";
 import { Triad } from "./(3d)/triad";
 import { Scene } from "./(3d)/scene";
-import { AddMatrixPanel } from "./(components)/add-matrix-panel";
+import { AddTriadPanel } from "./(components)/add-triad-panel";
+import { TriadInfoPanel } from "./(components)/triad-info";
 
 export default function MatrixVisualizer() {
   return (
@@ -11,7 +12,8 @@ export default function MatrixVisualizer() {
         <Scene />
         <Triad />
       </Canvas>
-      <AddMatrixPanel />
+      <AddTriadPanel />
+      <TriadInfoPanel />
     </div>
   );
 }

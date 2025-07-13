@@ -1,4 +1,4 @@
-import { Text, NumberInput, Flex } from "@mantine/core";
+import { Text, NumberInput, Flex, Badge } from "@mantine/core";
 import { type FC } from "react";
 import { type TriadPose } from "../types";
 
@@ -9,7 +9,7 @@ interface MatrixDataProps {
 }
 
 export const MatrixData: FC<MatrixDataProps> = (props) => (
-  <Flex gap="xs" direction="column" wrap="wrap" h="115px" my="sm">
+  <Flex gap="xs" direction="column" wrap="wrap" h="110px" my="sm">
     {["x", "y", "z", "rx", "ry", "rz"].map((matrixProperty, i) =>
       props.editable ? (
         <NumberInput
@@ -28,7 +28,14 @@ export const MatrixData: FC<MatrixDataProps> = (props) => (
           w="85px"
         />
       ) : (
-        <Text key={matrixProperty}>{`${matrixProperty}: ${props.matrixData[i]}`}</Text>
+        <Badge
+          key={matrixProperty}
+          classNames={{ root: "normal-case block", label: "text-left" }}
+          radius="md"
+          size="lg"
+          w="85px"
+          variant="default"
+        >{`${matrixProperty}: ${props.matrixData[i]}`}</Badge>
       ),
     )}
   </Flex>
