@@ -5,7 +5,7 @@ export const Scene = () => (
   <>
     <OrbitControls />
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -10, 0]} receiveShadow>
-      <planeGeometry args={[100, 100, 500, 500]} />
+      <planeGeometry args={[500, 500, 1000, 1000]} />
       <meshStandardMaterial color="#fff" side={DoubleSide} wireframe />
     </mesh>
     <ambientLight intensity={0.5} />

@@ -1,26 +1,24 @@
-import { Text, NumberInput, Flex, Badge } from "@mantine/core";
+import { Text, NumberInput, Badge } from "@mantine/core";
 import { type FC } from "react";
-import { type TriadPose } from "../types";
+import type { EulerAngleOrders, TriadPoseDisplayProps } from "../../types";
 
-interface MatrixDataProps {
-  editable: boolean;
-  matrixData: TriadPose;
-  setMatrixData?: (matrixData: TriadPose) => void;
+interface EulerPoseProps extends TriadPoseDisplayProps {
+  angleOrder: EulerAngleOrders
 }
 
-export const MatrixData: FC<MatrixDataProps> = (props) => (
-  <Flex gap="xs" direction="column" wrap="wrap" h="110px" my="sm">
+export const EulerPose: FC<EulerPoseProps> = (props) => (
+  <div className="grid grid-flow-col grid-rows-3 gap-1">
     {["x", "y", "z", "rx", "ry", "rz"].map((matrixProperty, i) =>
       props.editable ? (
         <NumberInput
           key={matrixProperty}
           leftSection={<Text>{`${matrixProperty}:`}</Text>}
-          rightSection={<></>}
+          hideControls
           placeholder="0"
           value={props.matrixData[i]}
           onChange={(newValue) => {
             if (props.setMatrixData === undefined) return;
-            const newMatrix: MatrixDataProps["matrixData"] = [...props.matrixData];
+            const newMatrix: EulerPoseProps["matrixData"] = [...props.matrixData];
             newMatrix[i] = typeof newValue === "string" ? parseFloat(newValue) : newValue;
             props.setMatrixData(newMatrix);
           }}
@@ -30,13 +28,17 @@ export const MatrixData: FC<MatrixDataProps> = (props) => (
       ) : (
         <Badge
           key={matrixProperty}
-          classNames={{ root: "normal-case block", label: "text-left" }}
-          radius="md"
+          classNames={{ root: "normal-case block", label: "text-right font-medium" }}
+          radius="sm"
           size="lg"
           w="85px"
           variant="default"
-        >{`${matrixProperty}: ${props.matrixData[i]}`}</Badge>
+          px="5px"
+          leftSection={<Text>{`${matrixProperty}:`}</Text>}
+        >
+          {props.matrixData[i]}
+        </Badge>
       ),
     )}
-  </Flex>
+  </div>
 );
