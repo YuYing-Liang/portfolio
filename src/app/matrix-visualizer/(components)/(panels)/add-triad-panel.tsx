@@ -1,8 +1,8 @@
 import { Button, Paper, Text, Select, Group, SegmentedControl } from "@mantine/core";
-import { DynamicTablerIcon } from "../../(components)/Icon";
-import { Pose } from "./pose";
+import { DynamicTablerIcon } from "../../../(components)/Icon";
+import { Pose } from "../(pose-display)/pose";
 import { useState } from "react";
-import type { TriadPoseDisplayParams, TriadPose, TriadPoseDisplayType, EulerAngleOrders } from "../types";
+import type { TriadPoseDisplayParams, TriadPose, TriadPoseDisplayType, EulerAngleOrders } from "../../types";
 
 export const AddTriadPanel = () => {
   const [newTriadData, setNewTriadData] = useState<TriadPose>([0, 0, 0, 0, 0, 0]);

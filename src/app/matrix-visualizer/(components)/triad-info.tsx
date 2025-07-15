@@ -1,5 +1,5 @@
 import { Paper, Select, Text, Group, Box, ActionIcon, Stack, SegmentedControl } from "@mantine/core";
-import { Pose } from "./pose";
+import { Pose } from "./(pose-display)/pose";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { motion } from "framer-motion";
 import { type MutableRefObject, type FC, useState } from "react";

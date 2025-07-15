@@ -1,7 +1,7 @@
 import { type FC } from "react";
-import type { EulerAngleOrders, TriadPoseDisplayProps, TriadPoseDisplayType } from "../types";
-import { EulerPose } from "./(pose-display)/euler";
-import { MatrixDisplay } from "./(pose-display)/homogenous-matrix";
+import type { EulerAngleOrders, TriadPoseDisplayProps, TriadPoseDisplayType } from "../../types";
+import { EulerPose } from "./euler";
+import { MatrixDisplay } from "./homogenous-matrix";
 
 interface PoseProps extends TriadPoseDisplayProps {
   displayType: TriadPoseDisplayType;
