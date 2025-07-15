@@ -1,13 +1,16 @@
-import { Text, NumberInput, Badge } from "@mantine/core";
+import { Text, NumberInput, Badge, ColorSwatch } from "@mantine/core";
 import { type FC } from "react";
 import type { EulerAngleOrders, TriadPoseDisplayProps } from "../../types";
 
 interface EulerPoseProps extends TriadPoseDisplayProps {
-  angleOrder: EulerAngleOrders
+  angleOrder: EulerAngleOrders;
 }
 
 export const EulerPose: FC<EulerPoseProps> = (props) => (
-  <div className="grid grid-flow-col grid-rows-3 gap-1">
+  <div className="grid grid-flow-col grid-rows-3 items-center gap-1">
+    <ColorSwatch color="red" size={20} />
+    <ColorSwatch color="blue" size={20} />
+    <ColorSwatch color="green" size={20} />
     {["x", "y", "z", "rx", "ry", "rz"].map((matrixProperty, i) =>
       props.editable ? (
         <NumberInput

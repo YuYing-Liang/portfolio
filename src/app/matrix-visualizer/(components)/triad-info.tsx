@@ -23,10 +23,10 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
       dragElastic={false}
       dragTransition={{ velocity: 0 }}
     >
-      <Paper shadow="sm" p="sm" pl="5px">
-        <Group align="center" gap="5px">
-          <DynamicTablerIcon name="IconGripVertical" size={20} className="mt-[2px]" />
-          <Stack gap={0}>
+      <Paper shadow="sm" p="sm" pt="5px">
+        <Stack align="center" gap={0}>
+          <DynamicTablerIcon name="IconGripHorizontal" size={20} />
+          <Stack gap="xs">
             <Group gap="xs" align="center" justify="space-between">
               <Text fw={600}>Matrix name</Text>
               <Group gap="3px">
@@ -38,49 +38,43 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                 </ActionIcon>
               </Group>
             </Group>
-            <Group gap="xs">
-              <Stack gap="2px">
-                <Group gap="5px">
-                  <SegmentedControl
-                    size="xs"
-                    data={["euler", "matrix"]}
-                    onChange={(type) =>
-                      setPoseDisplayParams({ ...poseDisplayParams, type: type as TriadPoseDisplayType })
-                    }
-                    value={poseDisplayParams.type}
-                  />
-                  <Select
-                    size="xs"
-                    w="75px"
-                    data={["xyz", "zyz"]}
-                    onChange={(order) =>
-                      setPoseDisplayParams({ ...poseDisplayParams, angleOrder: order as EulerAngleOrders })
-                    }
-                    value={poseDisplayParams.angleOrder}
-                  />
-                </Group>
-                <Select
-                  label="Matrix with respect to"
-                  placeholder="None (base frame)"
-                  data={["None (base frame)", "Matrix id 123 (parent)", "Ground", "TCP"]}
-                  size="xs"
-                  searchable
-                />
-              </Stack>
-              <Stack gap={0}>
-                <Text size="sm" fw={500}>
-                  {poseDisplayParams.type === "euler" ? "Pose" : "Matrix"}
-                </Text>
-                <Pose
-                  editable={false}
-                  matrixData={[0, 0, 0, 0, 0, 0]}
-                  displayType={poseDisplayParams.type}
-                  angleOrder={poseDisplayParams.angleOrder}
-                />
-              </Stack>
+            <Group gap="5px">
+              <SegmentedControl
+                size="xs"
+                data={["euler", "matrix"]}
+                onChange={(type) => setPoseDisplayParams({ ...poseDisplayParams, type: type as TriadPoseDisplayType })}
+                value={poseDisplayParams.type}
+              />
+              <Select
+                size="xs"
+                w="75px"
+                data={["xyz", "zyz"]}
+                onChange={(order) =>
+                  setPoseDisplayParams({ ...poseDisplayParams, angleOrder: order as EulerAngleOrders })
+                }
+                value={poseDisplayParams.angleOrder}
+              />
             </Group>
+            <Select
+              label="Matrix with respect to"
+              placeholder="None (base frame)"
+              data={["None (base frame)", "Matrix id 123 (parent)", "Ground", "TCP"]}
+              size="xs"
+              searchable
+            />
+            <Stack gap={0}>
+              <Text size="sm" fw={500}>
+                {poseDisplayParams.type === "euler" ? "Pose" : "Matrix"}
+              </Text>
+              <Pose
+                editable={false}
+                matrixData={[0, 0, 0, 0, 0, 0]}
+                displayType={poseDisplayParams.type}
+                angleOrder={poseDisplayParams.angleOrder}
+              />
+            </Stack>
           </Stack>
-        </Group>
+        </Stack>
       </Paper>
     </motion.div>
   );
