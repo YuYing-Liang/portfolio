@@ -18,3 +18,9 @@ export const getMatricesByParentId = async (id: Matrix["parent"]) => {
     ? await db.matrices.filter((matrix) => matrix.parent === undefined).toArray()
     : await db.matrices.where({ parent: id }).toArray();
 };
+
+export const getAllMatrixNamesAndIds = async () => {
+  return await db.matrices.toArray().then((rows) =>
+    rows.map(({ id, name }) => ({ id, name }))
+  );
+}

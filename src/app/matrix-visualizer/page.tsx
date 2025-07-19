@@ -19,7 +19,7 @@ export default function MatrixVisualizer() {
         <TriadGroup />
       </Canvas>
       <AddTriadPanel />
-      <TreePanel />
+      {/* <TreePanel /> */}
       <TriadInfoPanel parentRef={matrixVisualizerRef} />
     </div>
   );
