@@ -1,14 +1,26 @@
-import { Button, Paper, Text, Select, Group, SegmentedControl } from "@mantine/core";
+import { Button, Paper, Text, Select, Group, SegmentedControl, Input } from "@mantine/core";
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
 import { useState } from "react";
-import type { TriadPoseDisplayParams, TriadPose, TriadPoseDisplayType, EulerAngleOrders } from "../../types";
+import {
+  type TriadPoseDisplayParams,
+  type TriadPose,
+  type TriadPoseDisplayType,
+  type EulerAngleOrders,
+  type TriadPropertiesForm,
+} from "../../types";
+import { DEFAULT_AXIS_COLORS } from "../../constants";
 
 export const AddTriadPanel = () => {
   const [newTriadData, setNewTriadData] = useState<TriadPose>([0, 0, 0, 0, 0, 0]);
   const [poseDisplayParams, setPoseDisplayParams] = useState<TriadPoseDisplayParams>({
     type: "euler",
     angleOrder: "xyz",
+  });
+  const [properties, setProperties] = useState<TriadPropertiesForm>({
+    colors: [DEFAULT_AXIS_COLORS.x, DEFAULT_AXIS_COLORS.y, DEFAULT_AXIS_COLORS.z, DEFAULT_AXIS_COLORS.sphere],
+    name: "",
+    parent: undefined,
   });
 
   return (
@@ -36,6 +48,7 @@ export const AddTriadPanel = () => {
         size="xs"
         searchable
       />
+      <Input placeholder="Matrix name" size="xs" mt="5px" />
       <Pose
         editable
         matrixData={newTriadData}

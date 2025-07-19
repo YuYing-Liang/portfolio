@@ -1,5 +1,6 @@
 import { type FC } from "react";
 import { DoubleSide } from "three";
+import { DEFAULT_AXIS_COLORS } from "../constants";
 
 interface TriadProps {
   x?: number;
@@ -48,7 +49,7 @@ export const Triad: FC<TriadProps> = (props) => {
       <Axis axis="z" />
       <mesh position={[0, 0, AXIS_CYLINDER_Z_OFFSET]}>
         <sphereGeometry args={[AXIS_RADIUS * 3, 32, 32]} />
-        <meshStandardMaterial color="lightblue" side={DoubleSide}/>
+        <meshStandardMaterial color={DEFAULT_AXIS_COLORS.sphere} side={DoubleSide} />
       </mesh>
     </group>
   );
@@ -57,12 +58,6 @@ export const Triad: FC<TriadProps> = (props) => {
 interface AxisProps {
   axis: "x" | "y" | "z";
 }
-
-const AXIS_COLORS = {
-  x: "red",
-  y: "green",
-  z: "blue",
-};
 
 const AXIS_LENGTH = 1;
 const AXIS_RADIUS = 0.025;
@@ -79,11 +74,11 @@ const Axis: FC<AxisProps> = (props) => (
   <group rotation={AXIS_ROTATION[props.axis]} position={[0, 0, 0]} name={`${props.axis}-axis`}>
     <mesh position={[0, AXIS_LENGTH / 2 - AXIS_CYLINDER_Z_OFFSET, AXIS_CYLINDER_Z_OFFSET]}>
       <cylinderGeometry args={[AXIS_RADIUS, AXIS_RADIUS, AXIS_LENGTH, 32]} />
-      <meshStandardMaterial color={AXIS_COLORS[props.axis]} side={DoubleSide} />
+      <meshStandardMaterial color={DEFAULT_AXIS_COLORS[props.axis]} side={DoubleSide} />
     </mesh>
     <mesh position={[0, AXIS_LENGTH - AXIS_CYLINDER_Z_OFFSET, AXIS_CYLINDER_Z_OFFSET]}>
       <coneGeometry args={[0.05, AXIS_LENGTH / 6, 32]} />
-      <meshStandardMaterial color={AXIS_COLORS[props.axis]} />
+      <meshStandardMaterial color={DEFAULT_AXIS_COLORS[props.axis]} />
     </mesh>
   </group>
 );
