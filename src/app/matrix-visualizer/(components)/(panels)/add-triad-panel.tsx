@@ -38,14 +38,12 @@ export const AddTriadPanel = () => {
           }
           return errors;
         }}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
+        validateOnChange={true}
+        onSubmit={async (values, { validateForm }) => {
+          await validateForm(values);
         }}
       >
-        {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, setFieldValue }) => (
+        {({ values, errors, handleChange, handleSubmit }) => (
           <form onSubmit={handleSubmit}>
             <Text fw={600}>Add triad to scene</Text>
             <Group gap="5px">
@@ -66,6 +64,16 @@ export const AddTriadPanel = () => {
                 }}
                 value={values.angleOrder}
               />
+              {values.type === "matrix" && (
+                <Button
+                  variant="light"
+                  size="xs"
+                  classNames={{ section: "m-[5px]" }}
+                  leftSection={<DynamicTablerIcon name="IconClipboard" size={18} />}
+                >
+                  {"Paste"}
+                </Button>
+              )}
             </Group>
             {matrixNamesAndIds.length > 0 && (
               <Select
@@ -82,7 +90,14 @@ export const AddTriadPanel = () => {
                 searchable
               />
             )}
-            <Input name="name" placeholder="Matrix name" size="xs" mt="5px" onChange={handleChange} />
+            <Input
+              name="name"
+              error={errors.name}
+              placeholder="Matrix name"
+              size="xs"
+              mt="5px"
+              onChange={handleChange}
+            />
             <Pose
               editable
               pose={values.pose}

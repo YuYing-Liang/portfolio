@@ -11,12 +11,10 @@ interface MatrixDisplayProps {
 }
 
 export const MatrixDisplay: FC<MatrixDisplayProps> = (props) => {
-  const matrix = [1, 2.96, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-
   return (
-    <div className="grid grid-flow-row grid-cols-4 gap-1">
+    <div className="grid grid-flow-col grid-rows-4 gap-1">
       {props.editable
-        ? matrix.map((elem, i) => (
+        ? props.matrixElements.map((elem, i) => (
             <NumberInput
               key={i}
               radius="sm"
@@ -32,7 +30,7 @@ export const MatrixDisplay: FC<MatrixDisplayProps> = (props) => {
               }}
             />
           ))
-        : matrix.map((elem, i) => (
+        : props.matrixElements.map((elem, i) => (
             <Badge key={i} radius="sm" size="md" variant="default" w={50}>
               {elem}
             </Badge>

@@ -5,16 +5,15 @@ export const convertEulerPoseToMatrix = (pose: TriadPose, angleOrder: EulerAngle
   const [x, y, z, alpha, beta, gamma] = pose;
   const matrix = new Matrix4();
 
-  matrix.setPosition(x, y, z);
-
   if (angleOrder === "ZYZ") {
     const [rx, ry, rz] = convert_ZYZ_to_XYZ([alpha, beta, gamma]);
     matrix.makeRotationFromEuler(new Euler(rx, ry, rz, "XYZ"));
   } else {
     matrix.makeRotationFromEuler(new Euler(alpha, beta, gamma, angleOrder));
   }
+  matrix.setPosition(x, y, z);
 
-  return matrix.toArray();
+  return roundArray<Matrix4Tuple>(matrix.toArray(), 4);
 };
 
 export const convertMatrixToEulerPose = (matrixTuple: Matrix4Tuple, angleOrder: EulerAngleOrders): TriadPose => {
@@ -52,4 +51,8 @@ export const convert_ZYZ_to_XYZ = (zyzRotation: TriadRotation): TriadRotation =>
   const euler = new Euler().setFromQuaternion(combinedQuaternion, "XYZ");
 
   return [euler.x, euler.y, euler.z];
+};
+
+export const roundArray = <T extends number[]>(array: T, precision = 2): T => {
+  return array.map((element: number) => Number(element.toFixed(precision))) as T;
 };
