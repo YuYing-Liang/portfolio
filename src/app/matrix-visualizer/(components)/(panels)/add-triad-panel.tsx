@@ -13,6 +13,7 @@ import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getAllMatrixNamesAndIds } from "../../(database)/queries";
+import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
@@ -20,7 +21,7 @@ const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   pose: [0, 0, 0, 0, 0, 0],
   colors: [DEFAULT_AXIS_COLORS.x, DEFAULT_AXIS_COLORS.y, DEFAULT_AXIS_COLORS.z, DEFAULT_AXIS_COLORS.sphere],
   type: "euler",
-  angleOrder: "xyz",
+  angleOrder: "XYZ",
 };
 
 export const AddTriadPanel = () => {
@@ -51,11 +52,8 @@ export const AddTriadPanel = () => {
               <SegmentedControl
                 size="xs"
                 data={["euler", "matrix"]}
-                onChange={(value) => {
-                  handleChange({ target: { name: "type", value } })
-                  // if (value === "euler") {
-                  //   setFieldValue("pose", )
-                  // }
+                onChange={async (value) => {
+                  handleChange({ target: { name: "type", value } });
                 }}
                 value={values.type}
               />
@@ -63,26 +61,34 @@ export const AddTriadPanel = () => {
                 size="xs"
                 w="75px"
                 data={["XYZ", "ZYZ"]}
-                onChange={(value) => handleChange({ target: { name: "angleOrder", value } })}
+                onChange={(value) => {
+                  handleChange({ target: { name: "angleOrder", value } });
+                }}
                 value={values.angleOrder}
               />
             </Group>
-            <Select
-              label="Parent Triad"
-              placeholder="None (base frame)"
-              data={matrixNamesAndIds.map((matrix) => ({
-                value: matrix.id.toString(),
-                label: matrix.name,
-              }))}
-              onChange={(value) => handleChange({ target: { name: "parent", value } })}
-              size="xs"
-              searchable
-            />
+            {matrixNamesAndIds.length > 0 && (
+              <Select
+                label="Parent Triad"
+                placeholder="None (base frame)"
+                data={matrixNamesAndIds.map((matrix) => ({
+                  value: matrix.id.toString(),
+                  label: matrix.name,
+                }))}
+                onChange={(value) => {
+                  handleChange({ target: { name: "parent", value } });
+                }}
+                size="xs"
+                searchable
+              />
+            )}
             <Input name="name" placeholder="Matrix name" size="xs" mt="5px" onChange={handleChange} />
             <Pose
               editable
-              matrixData={values.pose}
-              setMatrixData={(matrixData) => handleChange({ target: { name: "pose", value: matrixData } })}
+              pose={values.pose}
+              setPose={(pose) => {
+                handleChange({ target: { name: "pose", value: pose } });
+              }}
               angleOrder={values.angleOrder}
               displayType={values.type}
             />

@@ -18,15 +18,15 @@ export const EulerPose: FC<EulerPoseProps> = (props) => (
           leftSection={<Text>{`${matrixProperty}:`}</Text>}
           hideControls
           placeholder="0"
-          value={props.matrixData[i]}
-          onChange={(newValue) => {
-            if (props.setMatrixData === undefined) return;
-            const newMatrix: EulerPoseProps["matrixData"] = [...props.matrixData];
-            newMatrix[i] = typeof newValue === "string" ? parseFloat(newValue) : newValue;
-            props.setMatrixData(newMatrix);
-          }}
+          value={props.pose[i]}
           size="xs"
           w="85px"
+          onChange={(newValue) => {
+            if (props.setPose === undefined) return;
+            const newPose: EulerPoseProps["pose"] = [...props.pose];
+            newPose[i] = typeof newValue === "string" ? parseFloat(newValue) : newValue;
+            props.setPose(newPose);
+          }}
         />
       ) : (
         <Badge
@@ -39,7 +39,7 @@ export const EulerPose: FC<EulerPoseProps> = (props) => (
           px="5px"
           leftSection={<Text>{`${matrixProperty}:`}</Text>}
         >
-          {props.matrixData[i]}
+          {props.pose[i]}
         </Badge>
       ),
     )}

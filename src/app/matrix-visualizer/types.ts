@@ -1,12 +1,13 @@
 import { type EulerOrder } from "three";
 
 export type TriadRotation = [rx: number, ry: number, rz: number];
-export type TriadPose = [x: number, y: number, z: number, rx: number, ry: number, rz: number];
+export type TriadPosition = [x: number, y: number, z: number];
+export type TriadPose = [...TriadPosition, ...TriadRotation];
 
 export interface TriadPoseDisplayProps {
   editable: boolean;
-  matrixData: TriadPose;
-  setMatrixData?: (matrixData: TriadPose) => void;
+  pose: TriadPose;
+  setPose?: (pose: TriadPose) => void;
 }
 
 export type TriadPoseDisplayType = "matrix" | "euler";

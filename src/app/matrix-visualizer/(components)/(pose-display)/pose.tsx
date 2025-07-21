@@ -2,12 +2,26 @@ import { type FC } from "react";
 import type { EulerAngleOrders, TriadPoseDisplayProps, TriadPoseDisplayType } from "../../types";
 import { EulerPose } from "./euler";
 import { MatrixDisplay } from "./homogenous-matrix";
+import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
 
 interface PoseProps extends TriadPoseDisplayProps {
   displayType: TriadPoseDisplayType;
   angleOrder: EulerAngleOrders;
 }
 
-export const Pose: FC<PoseProps> = (props) => (
-  <div className="my-1">{props.displayType === "euler" ? <EulerPose {...props} /> : <MatrixDisplay {...props} />}</div>
-);
+export const Pose: FC<PoseProps> = (props) => {
+  return (
+    <div className="my-1">
+      {props.displayType === "euler" ? (
+        <EulerPose {...props} />
+      ) : (
+        <MatrixDisplay
+          editable={props.editable}
+          angleOrder={props.angleOrder}
+          matrixElements={convertEulerPoseToMatrix(props.pose, props.angleOrder)}
+          setMatrixElements={(matrixElements) => convertMatrixToEulerPose(matrixElements, props.angleOrder)}
+        />
+      )}
+    </div>
+  );
+};

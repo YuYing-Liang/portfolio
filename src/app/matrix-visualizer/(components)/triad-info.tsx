@@ -68,7 +68,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
               </Text>
               <Pose
                 editable={false}
-                matrixData={[0, 0, 0, 0, 0, 0]}
+                pose={[0, 0, 0, 0, 0, 0]}
                 displayType={poseDisplayParams.type}
                 angleOrder={poseDisplayParams.angleOrder}
               />
