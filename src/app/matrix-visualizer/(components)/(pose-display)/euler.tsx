@@ -8,9 +8,9 @@ interface EulerPoseProps extends TriadPoseDisplayProps {
 
 export const EulerPose: FC<EulerPoseProps> = (props) => (
   <div className="grid grid-flow-col grid-rows-3 items-center gap-1">
-    <ColorSwatch color="red" size={20} />
-    <ColorSwatch color="blue" size={20} />
-    <ColorSwatch color="green" size={20} />
+    <ColorSwatch color={props.colors.x} size={20} />
+    <ColorSwatch color={props.colors.y} size={20} />
+    <ColorSwatch color={props.colors.z} size={20} />
     {["x", "y", "z", "rx", "ry", "rz"].map((matrixProperty, i) =>
       props.editable ? (
         <NumberInput

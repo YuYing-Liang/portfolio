@@ -1,10 +1,9 @@
 import { type FC } from "react";
 import type { EulerAngleOrders, TriadPoseDisplayProps } from "../../types";
-import { Badge, NumberInput } from "@mantine/core";
+import { Badge, ColorSwatch, NumberInput, Space } from "@mantine/core";
 import { type Matrix4Tuple } from "three";
 
-interface MatrixDisplayProps {
-  editable: TriadPoseDisplayProps["editable"];
+interface MatrixDisplayProps extends Pick<TriadPoseDisplayProps, "editable" | "colors"> {
   angleOrder: EulerAngleOrders;
   matrixElements: Matrix4Tuple;
   setMatrixElements: (matrix: Matrix4Tuple) => void;
@@ -12,7 +11,11 @@ interface MatrixDisplayProps {
 
 export const MatrixDisplay: FC<MatrixDisplayProps> = (props) => {
   return (
-    <div className="grid grid-flow-col grid-rows-4 gap-1">
+    <div className="grid grid-flow-col grid-rows-4 items-center gap-1">
+      <ColorSwatch color={props.colors.x} size={20} />
+      <ColorSwatch color={props.colors.y} size={20} />
+      <ColorSwatch color={props.colors.z} size={20} />
+      <Space/>
       {props.editable
         ? props.matrixElements.map((elem, i) => (
             <NumberInput

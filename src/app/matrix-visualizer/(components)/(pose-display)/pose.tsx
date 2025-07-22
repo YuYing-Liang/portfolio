@@ -16,7 +16,7 @@ export const Pose: FC<PoseProps> = (props) => {
         <EulerPose {...props} />
       ) : (
         <MatrixDisplay
-          editable={props.editable}
+          {...props}
           angleOrder={props.angleOrder}
           matrixElements={convertEulerPoseToMatrix(props.pose, props.angleOrder)}
           setMatrixElements={(matrixElements) => convertMatrixToEulerPose(matrixElements, props.angleOrder)}

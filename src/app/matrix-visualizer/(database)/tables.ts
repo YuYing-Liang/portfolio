@@ -1,10 +1,10 @@
-import { type TriadPose } from "../types";
+import { type TriadAxisColors, type TriadPose } from "../types";
 
 export interface Matrix {
   name: string;
   parent?: number;
   pose: TriadPose; // [x, y, z, rx, ry, rz]
-  colors: [x: string, y: string, z: string, origin: string]; // [x axis, y axis, z axis, origin sphere]
+  colors: TriadAxisColors
 }
 
 export interface MatrixWithId extends Matrix {

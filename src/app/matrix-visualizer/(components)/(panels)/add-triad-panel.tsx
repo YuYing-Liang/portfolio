@@ -1,25 +1,30 @@
-import { Button, Paper, Text, Select, Group, SegmentedControl, Input } from "@mantine/core";
+import {
+  Button,
+  Paper,
+  Text,
+  Select,
+  Group,
+  SegmentedControl,
+  InputWrapper,
+  TextInput,
+  ColorSwatch,
+} from "@mantine/core";
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
-import { useState } from "react";
 import {
   type TriadPoseDisplayParams,
-  type TriadPose,
-  type TriadPoseDisplayType,
-  type EulerAngleOrders,
 } from "../../types";
 import { DEFAULT_AXIS_COLORS } from "../../constants";
 import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
-import { getAllMatrixNamesAndIds } from "../../(database)/queries";
-import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
+import { addMatrix, getAllMatrixNamesAndIds } from "../../(database)/queries";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
   parent: undefined,
   pose: [0, 0, 0, 0, 0, 0],
-  colors: [DEFAULT_AXIS_COLORS.x, DEFAULT_AXIS_COLORS.y, DEFAULT_AXIS_COLORS.z, DEFAULT_AXIS_COLORS.sphere],
+  colors: DEFAULT_AXIS_COLORS,
   type: "euler",
   angleOrder: "XYZ",
 };
@@ -39,8 +44,14 @@ export const AddTriadPanel = () => {
           return errors;
         }}
         validateOnChange={true}
-        onSubmit={async (values, { validateForm }) => {
-          await validateForm(values);
+        onSubmit={async (values) => {
+          console.log("Submitting triad:", values);
+          await addMatrix({
+            name: values.name.trim(),
+            colors: values.colors,
+            pose: values.pose,
+            parent: values.parent,
+          })
         }}
       >
         {({ values, errors, handleChange, handleSubmit }) => (
@@ -71,7 +82,7 @@ export const AddTriadPanel = () => {
                   classNames={{ section: "m-[5px]" }}
                   leftSection={<DynamicTablerIcon name="IconClipboard" size={18} />}
                 >
-                  {"Paste"}
+                  {"Paste Matrix"}
                 </Button>
               )}
             </Group>
@@ -90,20 +101,36 @@ export const AddTriadPanel = () => {
                 searchable
               />
             )}
-            <Input
-              name="name"
-              error={errors.name}
-              placeholder="Matrix name"
-              size="xs"
-              mt="5px"
-              onChange={handleChange}
-            />
+            <Group mt="5px" gap="0.25rem">
+              <ColorSwatch color={values.colors.sphere} size={20} />
+              <InputWrapper error={errors.name}>
+                <TextInput
+                  name="name"
+                  value={values.name}
+                  error={errors.name !== undefined}
+                  placeholder="Matrix name"
+                  size="xs"
+                  onChange={handleChange}
+                />
+              </InputWrapper>
+              {values.type === "matrix" && (
+                <Button
+                  variant="light"
+                  size="xs"
+                  classNames={{ section: "m-[5px]" }}
+                  leftSection={<DynamicTablerIcon name="IconCopy" size={18} />}
+                >
+                  {"Copy Matrix"}
+                </Button>
+              )}
+            </Group>
             <Pose
               editable
               pose={values.pose}
               setPose={(pose) => {
                 handleChange({ target: { name: "pose", value: pose } });
               }}
+              colors={values.colors}
               angleOrder={values.angleOrder}
               displayType={values.type}
             />

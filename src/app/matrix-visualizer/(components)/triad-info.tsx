@@ -4,6 +4,7 @@ import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { motion } from "framer-motion";
 import { type MutableRefObject, type FC, useState } from "react";
 import { type TriadPoseDisplayType, type TriadPoseDisplayParams, type EulerAngleOrders } from "../types";
+import { DEFAULT_AXIS_COLORS } from "../constants";
 
 interface TriadInfoPanel {
   parentRef: MutableRefObject<HTMLDivElement | null>;
@@ -12,7 +13,7 @@ interface TriadInfoPanel {
 export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
   const [poseDisplayParams, setPoseDisplayParams] = useState<TriadPoseDisplayParams>({
     type: "euler",
-    angleOrder: "xyz",
+    angleOrder: "XYZ",
   });
 
   return (
@@ -67,6 +68,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                 {poseDisplayParams.type === "euler" ? "Pose" : "Matrix"}
               </Text>
               <Pose
+                colors={DEFAULT_AXIS_COLORS}
                 editable={false}
                 pose={[0, 0, 0, 0, 0, 0]}
                 displayType={poseDisplayParams.type}
