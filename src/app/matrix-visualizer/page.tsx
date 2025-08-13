@@ -7,12 +7,14 @@ import { useRef } from "react";
 import { TreePanel } from "./(components)/(panels)/tree-panel";
 import { TriadGroup } from "./(3d)/triad-group";
 import { Triad } from "./(3d)/triad";
+import { useAppStore } from "./states";
 
 export default function MatrixVisualizer() {
   const matrixVisualizerRef = useRef<HTMLDivElement | null>(null);
+  const triadInfoPanelVisibility = useAppStore((state) => state.triadInfoPanel.visibility);
 
   return (
-    <div ref={matrixVisualizerRef} className="h-screen w-screen">
+    <div ref={matrixVisualizerRef} className="fixed left-0 top-0 h-screen w-screen">
       <Canvas>
         <Scene />
         <Triad />
@@ -20,7 +22,7 @@ export default function MatrixVisualizer() {
       </Canvas>
       <AddTriadPanel />
       {/* <TreePanel /> */}
-      <TriadInfoPanel parentRef={matrixVisualizerRef} />
+      {triadInfoPanelVisibility && <TriadInfoPanel parentRef={matrixVisualizerRef} />}
     </div>
   );
 }

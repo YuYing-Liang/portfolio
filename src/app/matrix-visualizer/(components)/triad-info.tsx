@@ -1,16 +1,18 @@
-import { Paper, Select, Text, Group, Box, ActionIcon, Stack, SegmentedControl } from "@mantine/core";
+import { Paper, Select, Text, Group, ActionIcon, Stack, SegmentedControl } from "@mantine/core";
 import { Pose } from "./(pose-display)/pose";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { motion } from "framer-motion";
 import { type MutableRefObject, type FC, useState } from "react";
 import { type TriadPoseDisplayType, type TriadPoseDisplayParams, type EulerAngleOrders } from "../types";
 import { DEFAULT_AXIS_COLORS } from "../constants";
+import { useAppStore } from "../states";
 
 interface TriadInfoPanel {
   parentRef: MutableRefObject<HTMLDivElement | null>;
 }
 
 export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
+  const triadInfoPanelState = useAppStore((state) => state.triadInfoPanel);
   const [poseDisplayParams, setPoseDisplayParams] = useState<TriadPoseDisplayParams>({
     type: "euler",
     angleOrder: "XYZ",
@@ -18,11 +20,15 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
 
   return (
     <motion.div
-      className="absolute right-[25px] top-[25px] z-10 cursor-grab active:cursor-grabbing"
+      className={`absolute z-10 cursor-grab active:cursor-grabbing`}
       drag
       dragConstraints={props.parentRef}
       dragElastic={false}
       dragTransition={{ velocity: 0 }}
+      style={{
+        left: Math.round(triadInfoPanelState.x) + 50,
+        top: Math.round(triadInfoPanelState.y) - 325,
+      }}
     >
       <Paper shadow="sm" p="sm" pt="5px">
         <Stack align="center" gap={0}>
@@ -49,7 +55,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
               <Select
                 size="xs"
                 w="75px"
-                data={["xyz", "zyz"]}
+                data={["XYZ", "ZYZ"]}
                 onChange={(order) =>
                   setPoseDisplayParams({ ...poseDisplayParams, angleOrder: order as EulerAngleOrders })
                 }
