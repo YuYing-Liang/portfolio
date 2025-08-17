@@ -1,5 +1,6 @@
+import { type Size } from "@react-three/fiber";
 import { type TriadRotation, type EulerAngleOrders, type TriadPose, type TriadPosition } from "./types";
-import { Matrix4, Euler, type Matrix4Tuple, Quaternion } from "three";
+import { Matrix4, Euler, type Matrix4Tuple, Quaternion, type Vector3 } from "three";
 
 export const convertEulerPoseToMatrix = (pose: TriadPose, angleOrder: EulerAngleOrders): Matrix4Tuple => {
   const [x, y, z, alpha, beta, gamma] = pose;
@@ -56,4 +57,8 @@ export const convert_ZYZ_to_XYZ = (zyzRotation: TriadRotation): TriadRotation =>
 
 export const roundArray = <T extends number[]>(array: T, precision = 2): T => {
   return array.map((element: number) => Number(element.toFixed(precision))) as T;
+};
+
+export const convert3DpositionTo2D = (vector3d: Vector3, canvasSize: Size): [number, number] => {
+  return [((vector3d.x + 1) / 2) * canvasSize.width, ((1 - vector3d.y) / 2) * canvasSize.height];
 };

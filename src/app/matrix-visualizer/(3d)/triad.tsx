@@ -5,6 +5,7 @@ import { useCursor } from "@react-three/drei";
 import { EffectComposer, Outline } from "@react-three/postprocessing";
 import { useTriadInfoPanelState } from "../states";
 import { useThree } from "@react-three/fiber";
+import { convert3DpositionTo2D } from "../helpers";
 
 interface TriadProps {
   x?: number;
@@ -62,12 +63,9 @@ export const Triad: FC<TriadProps> = (props) => {
   const handleClick = () => {
     setSelected((currentSelectState) => !currentSelectState);
     if (triadRefs.sphere.current !== null) {
-      const vector = triadRefs.sphere.current.position.clone().project(camera);
-      const x = ((vector.x + 1) / 2) * size.width;
-      const y = ((1 - vector.y) / 2) * size.height;
-      console.log(x, y);
+      const triadPosition = triadRefs.sphere.current.position.clone().project(camera);
       if (selected) triadInfoPanelState.hideTriadPanel();
-      else triadInfoPanelState.showTriadPanel([x, y]);
+      else triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size));
     }
   };
 
