@@ -3,7 +3,7 @@ import { DoubleSide, type Group, type Mesh, Object3D } from "three";
 import { DEFAULT_AXIS_COLORS } from "../constants";
 import { useCursor } from "@react-three/drei";
 import { EffectComposer, Outline } from "@react-three/postprocessing";
-import { useAppStore } from "../states";
+import { useTriadInfoPanelState } from "../states";
 import { useThree } from "@react-three/fiber";
 
 interface TriadProps {
@@ -35,7 +35,7 @@ const DEFAULT_TRIAD_PROPS: TriadPropsRequired = {
 
 export const Triad: FC<TriadProps> = (props) => {
   const { camera, size } = useThree();
-  const triadInfoPanelState = useAppStore((state) => state);
+  const triadInfoPanelState = useTriadInfoPanelState((state) => state);
 
   const [hovered, setHovered] = useState(false);
   const [selected, setSelected] = useState(false);
@@ -60,6 +60,7 @@ export const Triad: FC<TriadProps> = (props) => {
   useCursor(hovered);
 
   const handleClick = () => {
+    setSelected((currentSelectState) => !currentSelectState);
     if (triadRefs.sphere.current !== null) {
       const vector = triadRefs.sphere.current.position.clone().project(camera);
       const x = ((vector.x + 1) / 2) * size.width;
@@ -68,7 +69,6 @@ export const Triad: FC<TriadProps> = (props) => {
       if (selected) triadInfoPanelState.hideTriadPanel();
       else triadInfoPanelState.showTriadPanel([x, y]);
     }
-    setSelected((currentSelectState) => !currentSelectState);
   };
 
   return (

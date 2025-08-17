@@ -5,14 +5,14 @@ import { motion } from "framer-motion";
 import { type MutableRefObject, type FC, useState } from "react";
 import { type TriadPoseDisplayType, type TriadPoseDisplayParams, type EulerAngleOrders } from "../types";
 import { DEFAULT_AXIS_COLORS } from "../constants";
-import { useAppStore } from "../states";
+import { useTriadInfoPanelState } from "../states";
 
 interface TriadInfoPanel {
   parentRef: MutableRefObject<HTMLDivElement | null>;
 }
 
 export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
-  const triadInfoPanelState = useAppStore((state) => state.triadInfoPanel);
+  const triadInfoPanelState = useTriadInfoPanelState((state) => state);
   const [poseDisplayParams, setPoseDisplayParams] = useState<TriadPoseDisplayParams>({
     type: "euler",
     angleOrder: "XYZ",
