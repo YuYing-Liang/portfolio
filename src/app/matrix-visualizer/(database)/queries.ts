@@ -13,14 +13,25 @@ export const updateMatrix = async (id: number, matrix: Partial<Matrix>) => {
   return await db.matrices.update(id, matrix);
 };
 
+export const deleteMatrix = async (id: number) => {
+  return await db.matrices.delete(id);
+};
+
 export const getMatricesByParentId = async (id: Matrix["parent"]) => {
   return id === undefined
     ? await db.matrices.filter((matrix) => matrix.parent === undefined).toArray()
     : await db.matrices.where({ parent: id }).toArray();
 };
 
-export const getAllMatrixNamesAndIds = async () => {
-  return await db.matrices.toArray().then((rows) =>
-    rows.map(({ id, name }) => ({ id, name }))
-  );
-}
+export const getAllMatrixNamesAndIds = async (indicesToExclude?: number[]) => {
+  return await db.matrices.toArray().then((matrices) => {
+    const matrixData = [];
+
+    for (const matrix of matrices) {
+      if (indicesToExclude === undefined || (indicesToExclude !== undefined && !indicesToExclude.includes(matrix.id))) {
+        matrixData.push({ id: matrix.id, name: matrix.name });
+      }
+    }
+    return matrixData;
+  });
+};

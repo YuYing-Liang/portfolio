@@ -15,9 +15,7 @@ export const TriadGroup: FC<TriadGroupProps> = (props) => {
       position={triadData ? [triadData.pose[0], triadData.pose[1], triadData.pose[2]] : [0, 0, 0]}
       rotation={triadData ? [triadData.pose[3], triadData.pose[4], triadData.pose[5]] : [0, 0, 0]}
     >
-      {triadData && (
-        <Triad/>
-      )}
+      {triadData && <Triad id={props.id ?? 0} />}
       {triadChildren?.map((triad) => <TriadGroup key={triad.id} id={triad.id} />)}
     </group>
   );

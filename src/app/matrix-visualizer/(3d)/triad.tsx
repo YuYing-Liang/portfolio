@@ -8,6 +8,7 @@ import { useThree } from "@react-three/fiber";
 import { convert3DpositionTo2D } from "../helpers";
 
 interface TriadProps {
+  id: number;
   x?: number;
   y?: number;
   z?: number;
@@ -65,7 +66,7 @@ export const Triad: FC<TriadProps> = (props) => {
     if (triadRefs.sphere.current !== null) {
       const triadPosition = triadRefs.sphere.current.position.clone().project(camera);
       if (selected) triadInfoPanelState.hideTriadPanel();
-      else triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size));
+      else triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size), props.id);
     }
   };
 

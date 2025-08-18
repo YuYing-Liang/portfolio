@@ -11,14 +11,15 @@ import {
 } from "@mantine/core";
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
-import {
-  type TriadPoseDisplayParams,
-} from "../../types";
+import { type TriadPoseDisplayParams } from "../../types";
 import { DEFAULT_AXIS_COLORS } from "../../constants";
 import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
 import { addMatrix, getAllMatrixNamesAndIds } from "../../(database)/queries";
+import { useTriadInfoPanelState } from "../../states";
+import { useThree } from "@react-three/fiber";
+import { Vector3 } from "three";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
@@ -30,6 +31,7 @@ const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
 };
 
 export const AddTriadPanel = () => {
+  const hideInfoPanel = useTriadInfoPanelState((state) => state.hideTriadPanel);
   const matrixNamesAndIds = useLiveQuery(async () => await getAllMatrixNamesAndIds()) ?? [];
 
   return (
@@ -51,7 +53,11 @@ export const AddTriadPanel = () => {
             colors: values.colors,
             pose: values.pose,
             parent: values.parent,
-          })
+          });
+          hideInfoPanel();
+          // const triadPose = new Vector3(values.pose[0], values.pose[1], values.pose[2]);
+          // camera.position.set(triadPose.x, triadPose.y, triadPose.z + 5);
+          // camera.lookAt(triadPose);
         }}
       >
         {({ values, errors, handleChange, handleSubmit }) => (
@@ -61,7 +67,7 @@ export const AddTriadPanel = () => {
               <SegmentedControl
                 size="xs"
                 data={["euler", "matrix"]}
-                onChange={async (value) => {
+                onChange={(value) => {
                   handleChange({ target: { name: "type", value } });
                 }}
                 value={values.type}
@@ -94,9 +100,12 @@ export const AddTriadPanel = () => {
                   value: matrix.id.toString(),
                   label: matrix.name,
                 }))}
-                onChange={(value) => {
-                  handleChange({ target: { name: "parent", value } });
+                onChange={(parentId) => {
+                  handleChange({
+                    target: { name: "parent", value: parentId == null ? undefined : parseInt(parentId) },
+                  });
                 }}
+                value={values.parent?.toString() ?? "0"}
                 size="xs"
                 searchable
               />

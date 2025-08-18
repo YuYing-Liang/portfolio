@@ -17,7 +17,6 @@ export default function MatrixVisualizer() {
     <div ref={matrixVisualizerRef} className="fixed left-0 top-0 h-screen w-screen">
       <Canvas>
         <Scene />
-        <Triad />
         <TriadGroup />
       </Canvas>
       <AddTriadPanel />
