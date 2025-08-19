@@ -1,6 +1,6 @@
 import { type Size } from "@react-three/fiber";
 import { type TriadRotation, type EulerAngleOrders, type TriadPose, type TriadPosition } from "./types";
-import { Matrix4, Euler, type Matrix4Tuple, Quaternion, type Vector3 } from "three";
+import { Matrix4, Euler, type Matrix4Tuple, Quaternion, Vector3, type Object3D } from "three";
 
 export const convertEulerPoseToMatrix = (pose: TriadPose, angleOrder: EulerAngleOrders): Matrix4Tuple => {
   const [x, y, z, alpha, beta, gamma] = pose;
@@ -24,7 +24,7 @@ export const convertMatrixToEulerPose = (matrixTuple: Matrix4Tuple, angleOrder: 
   matrix.set(...matrixTuple);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44] = matrix.elements;
+  const [m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44] = matrixTuple;
   const position: TriadPosition = [m14, m24, m34];
 
   if (angleOrder === "ZYZ") {
@@ -61,4 +61,22 @@ export const roundArray = <T extends number[]>(array: T, precision = 2): T => {
 
 export const convert3DpositionTo2D = (vector3d: Vector3, canvasSize: Size): [number, number] => {
   return [((vector3d.x + 1) / 2) * canvasSize.width, ((1 - vector3d.y) / 2) * canvasSize.height];
+};
+
+export const getWorldMatrix = (object: Object3D): Matrix4 => {
+  const selectedTriadWorldPosition = new Vector3();
+  const selectedTriadWorldQuaternion = new Quaternion();
+  object.getWorldPosition(selectedTriadWorldPosition);
+  object.getWorldQuaternion(selectedTriadWorldQuaternion);
+  const selectedTriadWorldEuler = new Euler().setFromQuaternion(selectedTriadWorldQuaternion, "XYZ");
+  const selectedTriadWorldMatrix = convertEulerPoseToMatrix(
+    [
+      ...selectedTriadWorldPosition.toArray(),
+      selectedTriadWorldEuler.x,
+      selectedTriadWorldEuler.y,
+      selectedTriadWorldEuler.z,
+    ],
+    "XYZ",
+  );
+  return new Matrix4(...selectedTriadWorldMatrix);
 };

@@ -5,18 +5,21 @@ import { motion } from "framer-motion";
 import { type MutableRefObject, type FC } from "react";
 import { type TriadPoseDisplayParams } from "../types";
 import { BASE_FRAME_MATRIX, DEFAULT_AXIS_COLORS } from "../constants";
-import { useTriadInfoPanelState } from "../states";
+import { useStates3d, useTriadInfoPanelState } from "../states";
 import { useLiveQuery } from "dexie-react-hooks";
 import { deleteMatrix, getAllMatrixNamesAndIds, getMatrix } from "../(database)/queries";
 import { Formik } from "formik";
 import { type Matrix } from "../(database)/tables";
+import { Euler, Quaternion, Vector3 } from "three";
+import { convertEulerPoseToMatrix, convertMatrixToEulerPose, getWorldMatrix } from "../helpers";
 
 interface TriadInfoPanel {
   parentRef: MutableRefObject<HTMLDivElement | null>;
 }
 
 export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
-  const triadInfoPanelState = useTriadInfoPanelState((state) => state);
+  const states3d = useStates3d();
+  const triadInfoPanelState = useTriadInfoPanelState();
   const selectedMatrix = useLiveQuery(async () => await getMatrix(triadInfoPanelState.triadId));
   const matrixNamesAndIds =
     useLiveQuery(async () => await getAllMatrixNamesAndIds([triadInfoPanelState.triadId])) ?? [];
@@ -90,13 +93,33 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                     placeholder="None (base frame)"
                     data={matrixNamesAndIds.map((matrix) => ({
                       value: matrix.id.toString(),
-                      label: matrix.name,
+                      label: `${matrix.name} ${(values.parent === undefined ? matrix.id === 0 : matrix.id === values.parent) ? "(parent)" : ""}`,
                     }))}
+                    defaultValue={values.parent === undefined ? "0" : values.parent.toString()}
                     onChange={(value) => {
-                      handleChange({ target: { name: "parent", value } });
+                      if (value === null) {
+                        handleChange({ target: { name: "pose", value: selectedMatrix.pose } });
+                        return;
+                      }
+                      if ((values.parent === undefined && value === "0") || value === values.parent?.toString()) return;
+
+                      const selectedTriad = states3d.scene?.getObjectByName(`triad-${triadInfoPanelState.triadId}`);
+                      const selectedParentTriad = states3d.scene?.getObjectByName(`triad-${value}`);
+
+                      if (selectedTriad === undefined || selectedParentTriad === undefined) return;
+                      const selectedTriadWorldMatrix = getWorldMatrix(selectedTriad);
+                      const selectedParentWorldMatrix = getWorldMatrix(selectedParentTriad);
+
+                      const transformedMatrix = selectedTriadWorldMatrix
+                        .multiply(selectedParentWorldMatrix.invert())
+                        .toArray();
+                      const transformedPose = convertMatrixToEulerPose(transformedMatrix, "XYZ");
+
+                      handleChange({ target: { name: "pose", value: transformedPose } });
                     }}
                     size="xs"
                     searchable
+                    clearable
                   />
                 )}
                 <Stack gap={0}>
