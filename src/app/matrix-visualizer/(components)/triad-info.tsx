@@ -104,7 +104,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                     {values.type === "euler" ? "Pose" : "Matrix"}
                   </Text>
                   <Pose
-                    colors={DEFAULT_AXIS_COLORS}
+                    colors={values.colors}
                     editable={false}
                     pose={values.pose}
                     displayType={values.type}

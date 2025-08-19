@@ -1,3 +1,4 @@
+import { type Camera, type Scene } from "three";
 import { create } from "zustand";
 
 interface TriadInfoPanelState {
@@ -22,9 +23,28 @@ export const useTriadInfoPanelState = create<TriadInfoPanelState>((set) => ({
       triadId,
     }),
   hideTriadPanel: () => {
-    set((state) => ({
-      ...state,
+    set({
       visibility: false,
-    }));
+    });
   },
+}));
+
+interface States3d {
+  scene: Scene | null;
+  camera: Camera | null;
+  setCamera: (camera: Camera) => void;
+  setScene: (scene: Scene) => void;
+}
+
+export const useStates3d = create<States3d>((set) => ({
+  scene: null,
+  camera: null,
+  setCamera: (camera) =>
+    set({
+      camera,
+    }),
+  setScene: (scene) =>
+    set({
+      scene,
+    }),
 }));
