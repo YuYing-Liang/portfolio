@@ -88,7 +88,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                           variant="light"
                           size="md"
                           type="submit"
-                          disabled={selectedMatrix.id === BASE_FRAME_MATRIX.id}
+                          disabled={selectedMatrix.id === BASE_FRAME_MATRIX.id || disableSubmit}
                         >
                           <DynamicTablerIcon name="IconDeviceFloppy" size={16} />
                         </ActionIcon>
@@ -184,6 +184,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                       colors={values.colors}
                       displayType={values.type}
                       angleOrder={values.angleOrder}
+                      disableSubmit={setDisableSubmit}
                     />
                   </Stack>
                 </Stack>

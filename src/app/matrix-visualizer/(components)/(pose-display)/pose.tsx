@@ -7,6 +7,7 @@ import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helper
 interface PoseProps extends TriadPoseDisplayProps {
   displayType: TriadPoseDisplayType;
   angleOrder: EulerAngleOrders;
+  disableSubmit: (disable: boolean) => void;
 }
 
 export const Pose: FC<PoseProps> = (props) => {
@@ -19,9 +20,16 @@ export const Pose: FC<PoseProps> = (props) => {
           {...props}
           angleOrder={props.angleOrder}
           matrixElements={convertEulerPoseToMatrix(props.pose, props.angleOrder)}
-          setMatrixElements={(matrixElements) =>
-            props.setPose !== undefined ? props.setPose(convertMatrixToEulerPose(matrixElements, props.angleOrder)) : {}
-          }
+          setMatrixElements={(matrixElements) => {
+            if (props.setPose !== undefined) {
+              if (matrixElements.some((elem) => isNaN(elem))) {
+                props.disableSubmit(true);
+              } else {
+                props.setPose(convertMatrixToEulerPose(matrixElements, props.angleOrder));
+                props.disableSubmit(false);
+              }
+            }
+          }}
         />
       )}
     </div>

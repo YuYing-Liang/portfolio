@@ -32,14 +32,12 @@ export const MatrixDisplay: FC<MatrixDisplayProps> = (props) => {
                 error={inputFieldErrors[i]}
                 onChange={(value) => {
                   const newMatrix: Matrix4Tuple = [...props.matrixElements];
-                  newMatrix[i] = typeof value == "string" ? parseFloat(value) : value;
-                  if (isNaN(newMatrix[i])) {
-                    setInputFieldErrors((currentErrors) =>
-                      currentErrors.map((error, errorIndex) => (errorIndex === i ? true : error)),
-                    );
-                  } else {
-                    props.setMatrixElements(newMatrix);
-                  }
+                  const matrixElement = typeof value == "string" ? parseFloat(value) : value;
+                  setInputFieldErrors((currentErrors) =>
+                    currentErrors.map((error, errorIndex) => (errorIndex === i ? isNaN(matrixElement) : error)),
+                  );
+                  newMatrix[i] = matrixElement;
+                  props.setMatrixElements(newMatrix);
                 }}
               />
             ))

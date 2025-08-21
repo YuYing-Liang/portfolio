@@ -32,7 +32,7 @@ const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
 export const AddTriadPanel = () => {
   const hideInfoPanel = useTriadInfoPanelState((state) => state.hideTriadPanel);
   const matrixNamesAndIds = useLiveQuery(async () => await getAllMatrixNamesAndIds()) ?? [];
-  const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
+  const [matrixDisableSubmit, setMatrixDisableSubmit] = useState<boolean>(false);
 
   return (
     <Paper className="absolute left-[25px] top-[25px]" shadow="xs" p="sm">
@@ -145,8 +145,9 @@ export const AddTriadPanel = () => {
               colors={values.colors}
               angleOrder={values.angleOrder}
               displayType={values.type}
+              disableSubmit={setMatrixDisableSubmit}
             />
-            {errors.pose !== undefined && (
+            {errors.pose !== undefined && values.type === "euler" && (
               <Text size="sm" c="red">
                 {errors.pose}
               </Text>
@@ -155,7 +156,7 @@ export const AddTriadPanel = () => {
               type="submit"
               variant="light"
               size="xs"
-              disabled={disableSubmit}
+              disabled={values.type === "matrix" ? matrixDisableSubmit : errors.pose !== undefined}
               classNames={{ section: "m-[5px]" }}
               leftSection={<DynamicTablerIcon name="IconPlus" size={18} />}
             >
