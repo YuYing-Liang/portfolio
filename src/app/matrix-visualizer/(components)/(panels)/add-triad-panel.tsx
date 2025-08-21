@@ -12,14 +12,13 @@ import {
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
 import { type TriadPoseDisplayParams } from "../../types";
-import { DEFAULT_AXIS_COLORS } from "../../constants";
+import { DEFAULT_AXIS_COLORS, EULER_POSE_LABELS } from "../../constants";
 import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
 import { addMatrix, getAllMatrixNamesAndIds } from "../../(database)/queries";
 import { useTriadInfoPanelState } from "../../states";
-import { useThree } from "@react-three/fiber";
-import { Vector3 } from "three";
+import { useState } from "react";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
@@ -33,21 +32,25 @@ const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
 export const AddTriadPanel = () => {
   const hideInfoPanel = useTriadInfoPanelState((state) => state.hideTriadPanel);
   const matrixNamesAndIds = useLiveQuery(async () => await getAllMatrixNamesAndIds()) ?? [];
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
 
   return (
     <Paper className="absolute left-[25px] top-[25px]" shadow="xs" p="sm">
       <Formik
         initialValues={INITIAL_FORM_VALUES}
         validate={(values) => {
-          const errors: Partial<Matrix> = {};
+          const errors: Partial<Record<keyof Matrix, string | boolean[]>> = {};
           if (values.name === undefined || values.name.trim() === "") {
             errors.name = "Matrix name required";
+          }
+          const emptyPoseElementIndex = values.pose.findIndex((poseElement: number) => isNaN(poseElement));
+          if (emptyPoseElementIndex > -1) {
+            errors.pose = `${EULER_POSE_LABELS[values.angleOrder][emptyPoseElementIndex]} cannot be empty`;
           }
           return errors;
         }}
         validateOnChange={true}
         onSubmit={async (values) => {
-          console.log("Submitting triad:", values);
           await addMatrix({
             name: values.name.trim(),
             colors: values.colors,
@@ -143,10 +146,16 @@ export const AddTriadPanel = () => {
               angleOrder={values.angleOrder}
               displayType={values.type}
             />
+            {errors.pose !== undefined && (
+              <Text size="sm" c="red">
+                {errors.pose}
+              </Text>
+            )}
             <Button
               type="submit"
               variant="light"
               size="xs"
+              disabled={disableSubmit}
               classNames={{ section: "m-[5px]" }}
               leftSection={<DynamicTablerIcon name="IconPlus" size={18} />}
             >

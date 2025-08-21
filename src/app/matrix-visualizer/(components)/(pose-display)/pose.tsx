@@ -19,7 +19,9 @@ export const Pose: FC<PoseProps> = (props) => {
           {...props}
           angleOrder={props.angleOrder}
           matrixElements={convertEulerPoseToMatrix(props.pose, props.angleOrder)}
-          setMatrixElements={(matrixElements) => convertMatrixToEulerPose(matrixElements, props.angleOrder)}
+          setMatrixElements={(matrixElements) =>
+            props.setPose !== undefined ? props.setPose(convertMatrixToEulerPose(matrixElements, props.angleOrder)) : {}
+          }
         />
       )}
     </div>
