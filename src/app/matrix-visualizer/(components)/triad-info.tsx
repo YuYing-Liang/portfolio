@@ -4,14 +4,13 @@ import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { motion } from "framer-motion";
 import { type MutableRefObject, type FC } from "react";
 import { type TriadPoseDisplayParams } from "../types";
-import { BASE_FRAME_MATRIX, DEFAULT_AXIS_COLORS } from "../constants";
+import { BASE_FRAME_MATRIX } from "../constants";
 import { useStates3d, useTriadInfoPanelState } from "../states";
 import { useLiveQuery } from "dexie-react-hooks";
 import { deleteMatrix, getAllMatrixNamesAndIds, getMatrix } from "../(database)/queries";
 import { Formik } from "formik";
 import { type Matrix } from "../(database)/tables";
-import { Euler, Quaternion, Vector3 } from "three";
-import { convertEulerPoseToMatrix, convertMatrixToEulerPose, getWorldMatrix } from "../helpers";
+import { convertMatrixToEulerPose, getWorldMatrix } from "../helpers";
 
 interface TriadInfoPanel {
   parentRef: MutableRefObject<HTMLDivElement | null>;
@@ -27,6 +26,18 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
   const handleDeleteTriad = async () => {
     await deleteMatrix(triadInfoPanelState.triadId);
     triadInfoPanelState.hideTriadPanel();
+  };
+
+  const getTransformedTriadPose = (parentTriadId: string) => {
+    const selectedTriad = states3d.scene?.getObjectByName(`triad-${triadInfoPanelState.triadId}`);
+    const selectedParentTriad = states3d.scene?.getObjectByName(`triad-${parentTriadId}`);
+
+    if (selectedTriad === undefined || selectedParentTriad === undefined) return;
+    const selectedTriadWorldMatrix = getWorldMatrix(selectedTriad);
+    const selectedParentWorldMatrix = getWorldMatrix(selectedParentTriad);
+
+    const transformedMatrix = selectedTriadWorldMatrix.multiply(selectedParentWorldMatrix.invert()).toArray();
+    return convertMatrixToEulerPose(transformedMatrix, "XYZ");
   };
 
   return selectedMatrix !== undefined ? (
@@ -102,20 +113,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                         return;
                       }
                       if ((values.parent === undefined && value === "0") || value === values.parent?.toString()) return;
-
-                      const selectedTriad = states3d.scene?.getObjectByName(`triad-${triadInfoPanelState.triadId}`);
-                      const selectedParentTriad = states3d.scene?.getObjectByName(`triad-${value}`);
-
-                      if (selectedTriad === undefined || selectedParentTriad === undefined) return;
-                      const selectedTriadWorldMatrix = getWorldMatrix(selectedTriad);
-                      const selectedParentWorldMatrix = getWorldMatrix(selectedParentTriad);
-
-                      const transformedMatrix = selectedTriadWorldMatrix
-                        .multiply(selectedParentWorldMatrix.invert())
-                        .toArray();
-                      const transformedPose = convertMatrixToEulerPose(transformedMatrix, "XYZ");
-
-                      handleChange({ target: { name: "pose", value: transformedPose } });
+                      handleChange({ target: { name: "pose", value: getTransformedTriadPose(value) } });
                     }}
                     size="xs"
                     searchable
