@@ -14,6 +14,7 @@ export interface TriadPoseDisplayProps {
   colors: Omit<TriadAxisColors, "sphere">;
   editable: boolean;
   pose: TriadPose;
+  angleOrder: EulerAngleOrders;
   setPose?: (pose: TriadPose) => void;
 }
 

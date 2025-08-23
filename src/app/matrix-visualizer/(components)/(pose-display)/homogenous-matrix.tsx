@@ -1,10 +1,9 @@
 import { useState, type FC } from "react";
-import type { EulerAngleOrders, TriadPoseDisplayProps } from "../../types";
+import type { TriadPoseDisplayProps } from "../../types";
 import { Badge, ColorSwatch, NumberInput, Space, Stack, Text } from "@mantine/core";
 import { type Matrix4Tuple } from "three";
 
-interface MatrixDisplayProps extends Pick<TriadPoseDisplayProps, "editable" | "colors"> {
-  angleOrder: EulerAngleOrders;
+interface MatrixDisplayProps extends Pick<TriadPoseDisplayProps, "editable" | "colors" | "angleOrder"> {
   matrixElements: Matrix4Tuple;
   setMatrixElements: (matrix: Matrix4Tuple) => void;
 }
@@ -49,7 +48,7 @@ export const MatrixDisplay: FC<MatrixDisplayProps> = (props) => {
       </div>
       {inputFieldErrors.some((error) => error) && (
         <Text size="sm" c="red">
-          Matrix will not save if elements are empty
+          Cannot save matrix if elements are empty
         </Text>
       )}
     </Stack>

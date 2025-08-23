@@ -8,17 +8,22 @@ import {
   InputWrapper,
   TextInput,
   ColorSwatch,
+  ActionIcon,
+  ButtonGroup,
+  ActionIconGroup,
 } from "@mantine/core";
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
-import { type TriadPoseDisplayParams } from "../../types";
-import { DEFAULT_AXIS_COLORS, EULER_POSE_LABELS } from "../../constants";
+import { TriadPose, type TriadPoseDisplayParams } from "../../types";
+import { DEFAULT_AXIS_COLORS } from "../../constants";
 import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
 import { addMatrix, getAllMatrixNamesAndIds } from "../../(database)/queries";
 import { useTriadInfoPanelState } from "../../states";
 import { useState } from "react";
+import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
+import { type Matrix4Tuple } from "three";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
@@ -32,20 +37,16 @@ const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
 export const AddTriadPanel = () => {
   const hideInfoPanel = useTriadInfoPanelState((state) => state.hideTriadPanel);
   const matrixNamesAndIds = useLiveQuery(async () => await getAllMatrixNamesAndIds()) ?? [];
-  const [matrixDisableSubmit, setMatrixDisableSubmit] = useState<boolean>(false);
+  const [poseDisableSubmit, setPoseDisableSubmit] = useState<boolean>(false);
 
   return (
     <Paper className="absolute left-[25px] top-[25px]" shadow="xs" p="sm">
       <Formik
-        initialValues={INITIAL_FORM_VALUES}
+        initialValues={{ ...INITIAL_FORM_VALUES }}
         validate={(values) => {
-          const errors: Partial<Record<keyof Matrix, string | boolean[]>> = {};
+          const errors: Partial<Record<keyof Matrix, string>> = {};
           if (values.name === undefined || values.name.trim() === "") {
             errors.name = "Matrix name required";
-          }
-          const emptyPoseElementIndex = values.pose.findIndex((poseElement: number) => isNaN(poseElement));
-          if (emptyPoseElementIndex > -1) {
-            errors.pose = `${EULER_POSE_LABELS[values.angleOrder][emptyPoseElementIndex]} cannot be empty`;
           }
           return errors;
         }}
@@ -65,13 +66,52 @@ export const AddTriadPanel = () => {
       >
         {({ values, errors, handleChange, handleSubmit }) => (
           <form onSubmit={handleSubmit}>
-            <Text fw={600}>Add triad to scene</Text>
+            <Group justify="space-between" gap="xs" mb="xs">
+              <Text fw={600}>Add triad to scene</Text>
+              <ActionIconGroup>
+                <ActionIcon
+                  variant="default"
+                  size="md"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(
+                      `[${
+                        values.type == "euler"
+                          ? values.pose.toString()
+                          : convertEulerPoseToMatrix(values.pose, values.angleOrder).toString()
+                      }]`,
+                    );
+                  }}
+                >
+                  <DynamicTablerIcon name="IconCopy" size={16} />
+                </ActionIcon>
+                <ActionIcon
+                  variant="default"
+                  size="md"
+                  onClick={async () => {
+                    const poseStr = await navigator.clipboard.readText();
+                    let pose = poseStr
+                      .substring(1, poseStr.length - 1)
+                      .split(",")
+                      .filter((elem) => elem.trim() !== "")
+                      .map(Number);
+                    if (pose.length !== 6 && pose.length !== 16) return;
+                    if (pose.length === 16) {
+                      pose = convertMatrixToEulerPose(pose as Matrix4Tuple, values.angleOrder);
+                    }
+                    handleChange({ target: { name: "pose", value: pose } });
+                  }}
+                >
+                  <DynamicTablerIcon name="IconClipboard" size={16} />
+                </ActionIcon>
+              </ActionIconGroup>
+            </Group>
             <Group gap="5px">
               <SegmentedControl
                 size="xs"
                 data={["euler", "matrix"]}
                 onChange={(value) => {
                   handleChange({ target: { name: "type", value } });
+                  setPoseDisableSubmit(false);
                 }}
                 value={values.type}
               />
@@ -80,20 +120,12 @@ export const AddTriadPanel = () => {
                 w="75px"
                 data={["XYZ", "ZYZ"]}
                 onChange={(value) => {
+                  if (value == null) return;
                   handleChange({ target: { name: "angleOrder", value } });
+                  setPoseDisableSubmit(false);
                 }}
                 value={values.angleOrder}
               />
-              {values.type === "matrix" && (
-                <Button
-                  variant="light"
-                  size="xs"
-                  classNames={{ section: "m-[5px]" }}
-                  leftSection={<DynamicTablerIcon name="IconClipboard" size={18} />}
-                >
-                  {"Paste Matrix"}
-                </Button>
-              )}
             </Group>
             {matrixNamesAndIds.length > 0 && (
               <Select
@@ -115,7 +147,7 @@ export const AddTriadPanel = () => {
             )}
             <Group mt="5px" gap="0.25rem">
               <ColorSwatch color={values.colors.sphere} size={20} />
-              <InputWrapper error={errors.name}>
+              <InputWrapper error={errors.name} w="fit-content">
                 <TextInput
                   name="name"
                   value={values.name}
@@ -125,16 +157,13 @@ export const AddTriadPanel = () => {
                   onChange={handleChange}
                 />
               </InputWrapper>
-              {values.type === "matrix" && (
-                <Button
-                  variant="light"
-                  size="xs"
-                  classNames={{ section: "m-[5px]" }}
-                  leftSection={<DynamicTablerIcon name="IconCopy" size={18} />}
-                >
-                  {"Copy Matrix"}
-                </Button>
-              )}
+              <ActionIcon
+                variant="default"
+                size="md"
+                onClick={() => handleChange({ target: { name: "pose", value: INITIAL_FORM_VALUES.pose } })}
+              >
+                <DynamicTablerIcon name="IconRestore" size={16} />
+              </ActionIcon>
             </Group>
             <Pose
               editable
@@ -145,18 +174,13 @@ export const AddTriadPanel = () => {
               colors={values.colors}
               angleOrder={values.angleOrder}
               displayType={values.type}
-              disableSubmit={setMatrixDisableSubmit}
+              disableSubmit={setPoseDisableSubmit}
             />
-            {errors.pose !== undefined && values.type === "euler" && (
-              <Text size="sm" c="red">
-                {errors.pose}
-              </Text>
-            )}
             <Button
               type="submit"
               variant="light"
               size="xs"
-              disabled={values.type === "matrix" ? matrixDisableSubmit : errors.pose !== undefined}
+              disabled={poseDisableSubmit}
               classNames={{ section: "m-[5px]" }}
               leftSection={<DynamicTablerIcon name="IconPlus" size={18} />}
             >
