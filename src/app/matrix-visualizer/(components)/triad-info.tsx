@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Paper, SegmentedControl, Select, Stack, Text } from "@mantine/core";
+import { ActionIcon, ActionIconGroup, Group, Paper, SegmentedControl, Select, Stack, Text } from "@mantine/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Formik, type FormikHandlers } from "formik";
 import { motion } from "framer-motion";
@@ -7,10 +7,11 @@ import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { deleteMatrix, getAllMatrixNamesAndIds, getMatrix, updateMatrix } from "../(database)/queries";
 import { type Matrix } from "../(database)/tables";
 import { BASE_FRAME_MATRIX } from "../constants";
-import { convertMatrixToEulerPose, getWorldMatrix } from "../helpers";
+import { convertEulerPoseToMatrix, convertMatrixToEulerPose, getWorldMatrix } from "../helpers";
 import { useStates3d, useTriadInfoPanelState } from "../states";
 import { type TriadPoseDisplayParams } from "../types";
 import { Pose } from "./(pose-display)/pose";
+import { type Matrix4Tuple } from "three";
 
 interface TriadInfoPanel {
   parentRef: MutableRefObject<HTMLDivElement | null>;
@@ -129,6 +130,43 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                       }}
                       value={values.angleOrder}
                     />
+                    <ActionIconGroup>
+                      <ActionIcon
+                        variant="default"
+                        size="md"
+                        onClick={async () => {
+                          await navigator.clipboard.writeText(
+                            `[${
+                              values.type == "euler"
+                                ? values.pose.toString()
+                                : convertEulerPoseToMatrix(values.pose, values.angleOrder).toString()
+                            }]`,
+                          );
+                        }}
+                      >
+                        <DynamicTablerIcon name="IconCopy" size={16} />
+                      </ActionIcon>
+                      <ActionIcon
+                        variant="default"
+                        size="md"
+                        disabled={mode === "view"}
+                        onClick={async () => {
+                          const poseStr = await navigator.clipboard.readText();
+                          let pose = poseStr
+                            .substring(1, poseStr.length - 1)
+                            .split(",")
+                            .filter((elem) => elem.trim() !== "")
+                            .map(Number);
+                          if (pose.length !== 6 && pose.length !== 16) return;
+                          if (pose.length === 16) {
+                            pose = convertMatrixToEulerPose(pose as Matrix4Tuple, values.angleOrder);
+                          }
+                          handleChange({ target: { name: "pose", value: pose } });
+                        }}
+                      >
+                        <DynamicTablerIcon name="IconClipboard" size={16} />
+                      </ActionIcon>
+                    </ActionIconGroup>
                   </Group>
                   {matrixNamesAndIds.length > 0 &&
                     (mode == "view" ? (
@@ -154,22 +192,31 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                         clearable
                       />
                     ) : (
-                      <Select
-                        label="Parent Matrix"
-                        placeholder="None (base frame)"
-                        data={matrixNamesAndIds.map((matrix) => ({
-                          value: matrix.id.toString(),
-                          label: `${matrix.name} ${(values.parent === undefined ? matrix.id === 0 : matrix.id === values.parent) ? "(current parent)" : ""}`,
-                        }))}
-                        defaultValue={values.parent === undefined ? "0" : values.parent.toString()}
-                        onChange={(parentId) => {
-                          handleChange({
-                            target: { name: "parent", value: parentId == null ? undefined : parseInt(parentId) },
-                          });
-                        }}
-                        size="xs"
-                        searchable
-                      />
+                      <Group gap="5px" align="self-end">
+                        <Select
+                          label="Parent Matrix"
+                          placeholder="None (base frame)"
+                          data={matrixNamesAndIds.map((matrix) => ({
+                            value: matrix.id.toString(),
+                            label: `${matrix.name} ${(values.parent === undefined ? matrix.id === 0 : matrix.id === values.parent) ? "(current parent)" : ""}`,
+                          }))}
+                          defaultValue={values.parent === undefined ? "0" : values.parent.toString()}
+                          onChange={(parentId) => {
+                            handleChange({
+                              target: { name: "parent", value: parentId == null ? undefined : parseInt(parentId) },
+                            });
+                          }}
+                          size="xs"
+                          searchable
+                        />
+                        <ActionIcon
+                          variant="default"
+                          size="md"
+                          onClick={() => handleChange({ target: { name: "pose", value: selectedMatrix.pose } })}
+                        >
+                          <DynamicTablerIcon name="IconRestore" size={16} />
+                        </ActionIcon>
+                      </Group>
                     ))}
                   <Stack gap={0}>
                     <Text size="sm" fw={500}>

@@ -3,8 +3,6 @@ Web app that allows you to visualize coordinate frames with euler angles and hom
 You can add, update and delete a coordinate frame as well as triad naming, copy, paste, revert and grouping.
 
 ### Future Features
-- copy pose in triad info panel
-- paste pose in triad info panel (edit only)
 - change color of triad elements
 - tree view to visualize grouping
 - bounding box to visualize groups (show how which triads have the parent triad)
