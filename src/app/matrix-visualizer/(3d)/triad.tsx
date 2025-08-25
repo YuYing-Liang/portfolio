@@ -1,14 +1,15 @@
-import { type MutableRefObject, useRef, useState, type FC } from "react";
-import { DoubleSide, type Group, type Mesh, Object3D, Vector3 } from "three";
+import { useRef, useState, type FC } from "react";
+import { DoubleSide, type Group, Vector3 } from "three";
 import { DEFAULT_AXIS_COLORS } from "../constants";
 import { useCursor } from "@react-three/drei";
-import { EffectComposer, Outline } from "@react-three/postprocessing";
 import { useTriadInfoPanelState } from "../states";
 import { useThree } from "@react-three/fiber";
 import { convert3DpositionTo2D } from "../helpers";
+import { type TriadColors } from "../types";
 
 interface TriadProps {
   id: number;
+  colors?: TriadColors;
   x?: number;
   y?: number;
   z?: number;
@@ -24,6 +25,7 @@ interface TriadPropsRequired {
   rx: number;
   ry: number;
   rz: number;
+  colors: TriadColors;
 }
 
 const DEFAULT_TRIAD_PROPS: TriadPropsRequired = {
@@ -33,6 +35,7 @@ const DEFAULT_TRIAD_PROPS: TriadPropsRequired = {
   rx: 0,
   ry: 0,
   rz: 0,
+  colors: DEFAULT_AXIS_COLORS,
 };
 
 export const Triad: FC<TriadProps> = (props) => {
@@ -49,6 +52,7 @@ export const Triad: FC<TriadProps> = (props) => {
     rx: props.rx ?? DEFAULT_TRIAD_PROPS.rx,
     ry: props.ry ?? DEFAULT_TRIAD_PROPS.ry,
     rz: props.rz ?? DEFAULT_TRIAD_PROPS.rz,
+    colors: props.colors ?? DEFAULT_TRIAD_PROPS.colors,
   };
 
   useCursor(hovered);
@@ -85,12 +89,12 @@ export const Triad: FC<TriadProps> = (props) => {
         onPointerOut={() => setHovered(false)}
         onClick={handleClick}
       >
-        <Axis axis="x" id={props.id} />
-        <Axis axis="y" id={props.id} />
-        <Axis axis="z" id={props.id} />
+        <Axis axis="x" id={props.id} color={propsWithDefaults.colors.x} />
+        <Axis axis="y" id={props.id} color={propsWithDefaults.colors.y} />
+        <Axis axis="z" id={props.id} color={propsWithDefaults.colors.z} />
         <mesh name={`triad-${props.id}-sphere`} position={[0, 0, AXIS_CYLINDER_Z_OFFSET]} onClick={handleClick}>
           <sphereGeometry args={[AXIS_RADIUS * 3, 32, 32]} />
-          <meshStandardMaterial color={DEFAULT_AXIS_COLORS.sphere} side={DoubleSide} />
+          <meshStandardMaterial color={propsWithDefaults.colors.sphere} side={DoubleSide} />
         </mesh>
       </group>
     </>
@@ -99,6 +103,7 @@ export const Triad: FC<TriadProps> = (props) => {
 
 interface AxisProps {
   axis: "x" | "y" | "z";
+  color: string;
   id: TriadProps["id"];
 }
 
@@ -120,14 +125,14 @@ const Axis: FC<AxisProps> = (props) => (
       position={[0, AXIS_LENGTH / 2 - AXIS_CYLINDER_Z_OFFSET, AXIS_CYLINDER_Z_OFFSET]}
     >
       <cylinderGeometry args={[AXIS_RADIUS, AXIS_RADIUS, AXIS_LENGTH, 32]} />
-      <meshStandardMaterial color={DEFAULT_AXIS_COLORS[props.axis]} side={DoubleSide} />
+      <meshStandardMaterial color={props.color} side={DoubleSide} />
     </mesh>
     <mesh
       name={`triad-${props.id}-cone-${props.axis}-axis`}
       position={[0, AXIS_LENGTH - AXIS_CYLINDER_Z_OFFSET, AXIS_CYLINDER_Z_OFFSET]}
     >
       <coneGeometry args={[0.05, AXIS_LENGTH / 6, 32]} />
-      <meshStandardMaterial color={DEFAULT_AXIS_COLORS[props.axis]} />
+      <meshStandardMaterial color={props.color} />
     </mesh>
   </group>
 );

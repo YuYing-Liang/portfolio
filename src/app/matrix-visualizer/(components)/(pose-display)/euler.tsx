@@ -1,7 +1,8 @@
-import { Text, NumberInput, Badge, ColorSwatch, Stack } from "@mantine/core";
+import { Text, NumberInput, Badge, Stack } from "@mantine/core";
 import { useState, type FC } from "react";
 import type { TriadPoseDisplayProps } from "../../types";
 import { EULER_POSE_LABELS } from "../../constants";
+import { AxesColorSelection } from "../(common)/axes-color-selection";
 
 interface EulerPoseProps extends TriadPoseDisplayProps {
   disableSubmit: (disable: boolean) => void;
@@ -13,9 +14,7 @@ export const EulerPose: FC<EulerPoseProps> = (props) => {
   return (
     <Stack gap="5px">
       <div className="grid w-fit grid-flow-col grid-rows-3 items-center gap-1">
-        <ColorSwatch color={props.colors.x} size={20} />
-        <ColorSwatch color={props.colors.y} size={20} />
-        <ColorSwatch color={props.colors.z} size={20} />
+        <AxesColorSelection {...props} />
         {EULER_POSE_LABELS[props.angleOrder].map((poseElement, i) =>
           props.editable ? (
             <NumberInput

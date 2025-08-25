@@ -24,6 +24,7 @@ import { useTriadInfoPanelState } from "../../states";
 import { useState } from "react";
 import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
 import { type Matrix4Tuple } from "three";
+import { ColorSelection } from "../(common)/color-selection";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
@@ -146,7 +147,13 @@ export const AddTriadPanel = () => {
               />
             )}
             <Group mt="5px" gap="0.25rem">
-              <ColorSwatch color={values.colors.sphere} size={20} />
+              <ColorSelection
+                canSelect
+                color={values.colors.sphere}
+                setColor={(color) =>
+                  handleChange({ target: { name: "colors", value: { ...values.colors, sphere: color } } })
+                }
+              />
               <InputWrapper error={errors.name} w="fit-content">
                 <TextInput
                   name="name"
@@ -175,6 +182,9 @@ export const AddTriadPanel = () => {
               angleOrder={values.angleOrder}
               displayType={values.type}
               disableSubmit={setPoseDisableSubmit}
+              setTriadColors={(colors) =>
+                handleChange({ target: { name: "colors", value: { ...colors, sphere: values.colors.sphere } } })
+              }
             />
             <Button
               type="submit"

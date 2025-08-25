@@ -1,6 +1,6 @@
 import { type EulerOrder } from "three";
 
-export type TriadAxisColors = {
+export type TriadColors = {
   x: string;
   y: string;
   z: string;
@@ -10,12 +10,14 @@ export type TriadRotation = [rx: number, ry: number, rz: number];
 export type TriadPosition = [x: number, y: number, z: number];
 export type TriadPose = [...TriadPosition, ...TriadRotation];
 
+type TriadAxesColors = Omit<TriadColors, "sphere">;
 export interface TriadPoseDisplayProps {
-  colors: Omit<TriadAxisColors, "sphere">;
+  colors: TriadAxesColors;
   editable: boolean;
   pose: TriadPose;
   angleOrder: EulerAngleOrders;
   setPose?: (pose: TriadPose) => void;
+  setTriadColors?: (colors: TriadAxesColors) => void;
 }
 
 export type TriadPoseDisplayType = "matrix" | "euler";

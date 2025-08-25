@@ -12,6 +12,7 @@ import { useStates3d, useTriadInfoPanelState } from "../states";
 import { type TriadPoseDisplayParams } from "../types";
 import { Pose } from "./(pose-display)/pose";
 import { type Matrix4Tuple } from "three";
+import { ColorSelection } from "./(common)/color-selection";
 
 interface TriadInfoPanel {
   parentRef: MutableRefObject<HTMLDivElement | null>;
@@ -74,6 +75,7 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
               pose: values.pose,
               parent: values.parent,
             });
+            setMode("view");
           }}
         >
           {({ values, handleChange, handleSubmit }) => (
@@ -82,7 +84,16 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                 <DynamicTablerIcon name="IconGripHorizontal" size={20} />
                 <Stack gap="xs">
                   <Group gap="xs" align="center" justify="space-between">
-                    <Text fw={600}>{values.name}</Text>
+                    <Group gap="xs">
+                      <ColorSelection
+                        canSelect={mode === "edit"}
+                        color={values.colors.sphere}
+                        setColor={(color) =>
+                          handleChange({ target: { name: "colors", value: { ...values.colors, sphere: color } } })
+                        }
+                      />
+                      <Text fw={600}>{values.name}</Text>
+                    </Group>
                     <Group gap="3px">
                       {mode === "edit" && (
                         <ActionIcon
@@ -232,6 +243,9 @@ export const TriadInfoPanel: FC<TriadInfoPanel> = (props) => {
                       displayType={values.type}
                       angleOrder={values.angleOrder}
                       disableSubmit={setDisableSubmit}
+                      setTriadColors={(colors) =>
+                        handleChange({ target: { name: "colors", value: { ...colors, sphere: values.colors.sphere } } })
+                      }
                     />
                   </Stack>
                 </Stack>

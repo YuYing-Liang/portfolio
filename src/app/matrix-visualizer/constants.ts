@@ -2,10 +2,10 @@ import { type MatrixWithId } from "./(database)/tables";
 import { type PoseLabels, type EulerAngleOrders } from "./types";
 
 export const DEFAULT_AXIS_COLORS = {
-  x: "red",
-  y: "green",
-  z: "blue",
-  sphere: "lightblue",
+  x: "#FF0000",
+  y: "#00FF00",
+  z: "#0000FF",
+  sphere: "#ADD8E6",
 };
 
 export const BASE_FRAME_MATRIX: MatrixWithId = {
