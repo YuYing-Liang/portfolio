@@ -40,7 +40,7 @@ const DEFAULT_TRIAD_PROPS: TriadPropsRequired = {
 
 export const Triad: FC<TriadProps> = (props) => {
   const { camera, size } = useThree();
-  const triadInfoPanelState = useTriadInfoPanelState((state) => state);
+  const triadInfoPanelState = useTriadInfoPanelState();
 
   const [hovered, setHovered] = useState(false);
   const [selected, setSelected] = useState(false);

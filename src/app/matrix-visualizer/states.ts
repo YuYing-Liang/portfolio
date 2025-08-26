@@ -1,3 +1,4 @@
+import { type Size } from "@react-three/fiber";
 import { type Camera, type Scene } from "three";
 import { create } from "zustand";
 
@@ -30,13 +31,16 @@ export const useTriadInfoPanelState = create<TriadInfoPanelState>((set) => ({
 }));
 
 interface States3d {
+  size: Size | null;
   scene: Scene | null;
   camera: Camera | null;
   setCamera: (camera: Camera) => void;
   setScene: (scene: Scene) => void;
+  setSize: (size: Size) => void;
 }
 
 export const useStates3d = create<States3d>((set) => ({
+  size: null,
   scene: null,
   camera: null,
   setCamera: (camera) =>
@@ -46,5 +50,9 @@ export const useStates3d = create<States3d>((set) => ({
   setScene: (scene) =>
     set({
       scene,
+    }),
+  setSize: (size) =>
+    set({
+      size,
     }),
 }));
