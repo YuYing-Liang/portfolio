@@ -37,3 +37,10 @@ export type PoseLabels = [
   PoseLabelOptions,
   PoseLabelOptions,
 ];
+
+export type TriadTreeElement = {
+  value: string;
+  parent?: number;
+  label: string;
+  children: TriadTreeElement[];
+};

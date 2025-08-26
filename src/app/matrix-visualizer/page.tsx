@@ -24,7 +24,7 @@ export default function MatrixVisualizer() {
         <ObjectEffectsProvider />
       </Canvas>
       <AddTriadPanel />
-      {/* <TreePanel /> */}
+      <TreePanel />
       {triadInfoPanelVisibility && <TriadInfoPanel parentRef={matrixVisualizerRef} />}
     </div>
   );

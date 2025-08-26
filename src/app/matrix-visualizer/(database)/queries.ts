@@ -1,3 +1,5 @@
+import { isParentBase } from "../helpers";
+import { type TriadTreeElement } from "../types";
 import { db } from "./db";
 import type { Matrix } from "./tables";
 
@@ -33,5 +35,35 @@ export const getAllMatrixNamesAndIds = async (indicesToExclude?: number[]) => {
       }
     }
     return matrixData;
+  });
+};
+
+export const getMatrixTreeStructure = async () => {
+  return await db.matrices.toArray().then((matrices) => {
+    const matrixMap = new Map<number, TriadTreeElement>();
+
+    for (const matrix of matrices) {
+      if (matrix.id === 0) continue;
+      matrixMap.set(matrix.id, {
+        value: matrix.id.toString(),
+        label: matrix.name,
+        parent: matrix.parent,
+        children: [],
+      });
+    }
+
+    for (const matrix of matrixMap.values()) {
+      if (!isParentBase(matrix.parent)) {
+        matrixMap.get(matrix.parent)!.children.push(matrix);
+      }
+    }
+
+    for (const [matrixId, matrix] of matrixMap.entries()) {
+      if (!isParentBase(matrix.parent)) {
+        matrixMap.delete(matrixId);
+      }
+    }
+
+    return [...matrixMap.values()];
   });
 };

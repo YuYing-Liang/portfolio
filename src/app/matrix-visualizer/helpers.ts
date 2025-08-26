@@ -80,3 +80,7 @@ export const getWorldMatrix = (object: Object3D): Matrix4 => {
   );
   return new Matrix4(...selectedTriadWorldMatrix);
 };
+
+export const isParentBase = (parentId?: number) => {
+  return parentId === undefined || parentId === 0;
+};
