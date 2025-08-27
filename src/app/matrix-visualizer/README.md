@@ -3,7 +3,6 @@ Web app that allows you to visualize coordinate frames with euler angles and hom
 You can add, update and delete a coordinate frame as well as triad naming, copy, paste, revert and grouping.
 
 ### Future Features
-- tree view to visualize grouping
 - bounding box to visualize groups (show how which triads have the parent triad)
 - degree and radians selection (settings toolbar)
 - unit selection (settings toolbar)
@@ -14,6 +13,7 @@ You can add, update and delete a coordinate frame as well as triad naming, copy,
 - rotate triad in individual rx, ry and rz directions
 - proper selection management (click triad -> click out deselects, double click etc.)
 - possibly combining the info panel and tree view
+- duplicate triad
 
 ### Known Bugs
 - entering an empty value on the pose input fields saves the pose and causes the matrix view to be corrupted

@@ -62,7 +62,12 @@ export const TreePanel = () => {
                 variant={
                   triadInfoPanelState.visibility && triadInfoPanelState.triadId === parseInt(node.value)
                     ? "light"
-                    : "default"
+                    : "transparent"
+                }
+                color={
+                  triadInfoPanelState.visibility && triadInfoPanelState.triadId === parseInt(node.value)
+                    ? "purple"
+                    : "black"
                 }
                 onClick={() => handleClick(parseInt(node.value))}
               >
