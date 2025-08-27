@@ -1,6 +1,7 @@
 import { type Size } from "@react-three/fiber";
 import { type TriadRotation, type EulerAngleOrders, type TriadPose, type TriadPosition } from "./types";
 import { Matrix4, Euler, type Matrix4Tuple, Quaternion, Vector3, type Object3D } from "three";
+import { BASE_FRAME_MATRIX } from "./constants";
 
 export const convertEulerPoseToMatrix = (pose: TriadPose, angleOrder: EulerAngleOrders): Matrix4Tuple => {
   const [x, y, z, alpha, beta, gamma] = pose;
@@ -82,5 +83,5 @@ export const getWorldMatrix = (object: Object3D): Matrix4 => {
 };
 
 export const isParentBase = (parentId?: number) => {
-  return parentId === undefined || parentId === 0;
+  return parentId === undefined || parentId === BASE_FRAME_MATRIX.id;
 };

@@ -1,7 +1,7 @@
 import { isParentBase } from "../helpers";
 import { type TriadTreeElement } from "../types";
 import { db } from "./db";
-import type { Matrix } from "./tables";
+import type { Matrix, Setting } from "./tables";
 
 export const addMatrix = async (matrix: Matrix) => {
   return await db.matrices.add(matrix);
@@ -53,7 +53,7 @@ export const getMatrixTreeStructure = async () => {
     }
 
     for (const matrix of matrixMap.values()) {
-      if (!isParentBase(matrix.parent)) {
+      if (matrix.parent !== undefined && !isParentBase(matrix.parent)) {
         matrixMap.get(matrix.parent)!.children.push(matrix);
       }
     }
@@ -67,3 +67,11 @@ export const getMatrixTreeStructure = async () => {
     return [...matrixMap.values()];
   });
 };
+
+export const getAllSettings = async () => {
+  return await db.settings.toArray();
+}
+
+export const updateSetting = async (id: number, value: Setting["value"]) => {
+  return await db.settings.update(id, { value });
+}

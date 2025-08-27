@@ -9,6 +9,7 @@ import { TriadGroup } from "./(3d)/triad-group";
 import { useStates3d, useTriadInfoPanelState } from "./states";
 import { Provider3d } from "./(3d)/3d-provider";
 import { ObjectEffectsProvider } from "./(3d)/object-effects";
+import { SettingsToolbar } from "./(components)/(settings-toolbar)/settings-toolbar";
 
 export default function MatrixVisualizer() {
   const matrixVisualizerRef = useRef<HTMLDivElement | null>(null);
@@ -24,6 +25,7 @@ export default function MatrixVisualizer() {
         <ObjectEffectsProvider />
       </Canvas>
       <AddTriadPanel />
+      <SettingsToolbar />
       <TreePanel />
       {triadInfoPanelVisibility && <TriadInfoPanel parentRef={matrixVisualizerRef} />}
     </div>
