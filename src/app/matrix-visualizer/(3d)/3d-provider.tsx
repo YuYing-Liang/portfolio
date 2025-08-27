@@ -10,7 +10,7 @@ interface Provider3dProps {
 
 export const Provider3d: FC<Provider3dProps> = (props) => {
   const { camera, scene, size } = useThree();
-  const setCanvasSize = useStates3d((state) => state.setSize);
+  const { size: storedSize, setSize } = useStates3d();
 
   useEffect(() => {
     props.initializeCamera(camera);
@@ -19,8 +19,15 @@ export const Provider3d: FC<Provider3dProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    setCanvasSize(size);
-  }, [setCanvasSize, size]);
+    if (
+      size.width === storedSize?.width &&
+      size.height === storedSize?.height &&
+      size.top === storedSize?.top &&
+      size.left === storedSize?.left
+    )
+      return;
+    setSize(size);
+  }, [setSize, size]);
 
   return <></>;
 };
