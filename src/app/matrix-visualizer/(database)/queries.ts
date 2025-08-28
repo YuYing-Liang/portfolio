@@ -70,8 +70,12 @@ export const getMatrixTreeStructure = async () => {
 
 export const getAllSettings = async () => {
   return await db.settings.toArray();
-}
+};
 
 export const updateSetting = async (id: number, value: Setting["value"]) => {
   return await db.settings.update(id, { value });
-}
+};
+
+export const getSetting = async (id: number) => {
+  return await db.settings.get(id);
+};

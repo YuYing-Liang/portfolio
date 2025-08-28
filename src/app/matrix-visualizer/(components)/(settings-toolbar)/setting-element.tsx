@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { Setting } from "../../(database)/tables";
+import { type FC } from "react";
+import { type Setting } from "../../(database)/tables";
 import { Input, InputWrapper, SegmentedControl, Select, Slider, Stack, Switch, Text } from "@mantine/core";
 import { ColorSelection } from "../(common)/color-selection";
 
@@ -30,7 +30,7 @@ export const SettingElement: FC<SettingElementProps> = (props) => {
           allowDeselect={false}
           withCheckIcon={false}
           value={props.value}
-          onChange={(newValue) => (newValue !== null ? props.handleChange(props.id, newValue) : null)}
+          onChange={(newValue) => (newValue !== null ? props.handleChange(props.id, newValue) : {})}
           data={props.options}
         />
       );
@@ -61,11 +61,11 @@ export const SettingElement: FC<SettingElementProps> = (props) => {
             min={props.min}
             max={props.max}
             step={props.step}
-            labelAlwaysOn
+            label={null}
             marks={props.markers !== undefined ? props.markers.map((marker) => ({ value: marker })) : undefined}
             onChange={(newValue) => props.handleChange(props.id, newValue)}
           />
-          <Text size="xs">{props.name}</Text>
+          <Text size="xs">{`${props.name}: ${props.value}`}</Text>
         </Stack>
       );
     case "color":

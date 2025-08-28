@@ -1,7 +1,7 @@
 import Dexie, { type Table, type EntityTable } from "dexie";
 import type { MatrixWithId, Setting } from "./tables";
 import { BASE_FRAME_MATRIX } from "../constants";
-import { DEFAULT_SETTINGS } from "./versions";
+import { DEFAULT_SETTINGS, MOST_RECENT_VERSION } from "./versions";
 
 const db = new Dexie("Database") as Dexie & {
   matrices: EntityTable<MatrixWithId, "id">;
@@ -38,8 +38,8 @@ db.version(3)
   })
   .upgrade(async (tx) => {
     const settings = tx.table<Setting>("settings");
-    if (DEFAULT_SETTINGS[3] === undefined) return;
-    await settings.bulkPut(DEFAULT_SETTINGS[3]);
+    if (DEFAULT_SETTINGS[MOST_RECENT_VERSION] === undefined) return;
+    await settings.bulkPut(DEFAULT_SETTINGS[MOST_RECENT_VERSION]);
   });
 
 db.on("populate", async () => {

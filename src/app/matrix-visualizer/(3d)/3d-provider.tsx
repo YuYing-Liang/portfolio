@@ -2,6 +2,9 @@ import { useThree } from "@react-three/fiber";
 import { type FC, useEffect } from "react";
 import { type Scene, type Camera } from "three";
 import { useStates3d } from "../states";
+import { useLiveQuery } from "dexie-react-hooks";
+import { getSetting } from "../(database)/queries";
+import { DEFAULT_SETTINGS, MOST_RECENT_VERSION } from "../(database)/versions";
 
 interface Provider3dProps {
   initializeCamera: (camera: Camera) => void;
@@ -11,6 +14,7 @@ interface Provider3dProps {
 export const Provider3d: FC<Provider3dProps> = (props) => {
   const { camera, scene, size } = useThree();
   const { size: storedSize, setSize } = useStates3d();
+  const unitSetting = useLiveQuery(async () => await getSetting(DEFAULT_SETTINGS[MOST_RECENT_VERSION]![1]!.id));
 
   useEffect(() => {
     props.initializeCamera(camera);
@@ -27,7 +31,13 @@ export const Provider3d: FC<Provider3dProps> = (props) => {
     )
       return;
     setSize(size);
-  }, [setSize, size]);
+  }, [setSize, size, storedSize?.height, storedSize?.left, storedSize?.top, storedSize?.width]);
+
+  useEffect(() => {
+    if (unitSetting === undefined) return;
+    const userSettingScale = unitSetting.value as number;
+    scene.scale.set(userSettingScale, userSettingScale, userSettingScale);
+  }, [unitSetting]);
 
   return <></>;
 };

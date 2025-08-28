@@ -1,5 +1,6 @@
 import { type Setting } from "./tables";
 
+export const MOST_RECENT_VERSION = 3;
 export const DEFAULT_SETTINGS: Record<number, Setting[]> = {
   3: [
     {
