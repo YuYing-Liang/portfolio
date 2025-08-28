@@ -29,7 +29,7 @@ export const TreePanel = () => {
   };
 
   return (
-    <Paper className="absolute right-[25px] top-[25px] min-w-[250px]" shadow="xs" p="sm">
+    <Paper className="min-w-[250px]" shadow="xs" p="sm">
       <Title order={5}>Triad Tree</Title>
       <Tree
         data={matrixTreeStructure}

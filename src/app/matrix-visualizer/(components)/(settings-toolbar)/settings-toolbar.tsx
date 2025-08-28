@@ -8,7 +8,7 @@ export const SettingsToolbar = () => {
 
   return (
     <Paper
-      className="bg-blue-500 absolute left-1/2 top-[25px] flex w-[750px] -translate-x-1/2 transform items-center justify-center gap-2"
+      className="bg-blue-500 absolute left-1/2 top-[25px] flex w-[400px] -translate-x-1/2 transform items-center justify-center gap-2"
       shadow="xs"
       p="xs"
       radius="md"
