@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { type Setting } from "../../(database)/tables";
-import { Input, InputWrapper, SegmentedControl, Select, Slider, Stack, Switch, Text } from "@mantine/core";
+import { Input, InputWrapper, SegmentedControl, Select, Slider, Stack, Switch, Text, Tooltip } from "@mantine/core";
 import { ColorSelection } from "../(common)/color-selection";
 
 type SettingElementProps = Setting & {
@@ -70,7 +70,12 @@ export const SettingElement: FC<SettingElementProps> = (props) => {
       );
     case "color":
       return (
-        <ColorSelection canSelect color={props.value} setColor={(newColor) => props.handleChange(props.id, newColor)} />
+        <ColorSelection
+          canSelect
+          name={props.name}
+          color={props.value}
+          setColor={(newColor) => props.handleChange(props.id, newColor)}
+        />
       );
   }
 };

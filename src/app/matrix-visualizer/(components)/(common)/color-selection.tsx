@@ -1,9 +1,10 @@
-import { ColorPicker, ColorSwatch, Popover } from "@mantine/core";
+import { ColorPicker, ColorSwatch, Popover, Tooltip } from "@mantine/core";
 import { type FC, useState } from "react";
 
 interface ColorSelectionProps {
   canSelect: boolean;
   color: string;
+  name: string;
   setColor: (color: string) => void;
 }
 
@@ -19,11 +20,13 @@ export const ColorSelection: FC<ColorSelectionProps> = (props) => {
       onChange={props.canSelect ? setShowColorPicker : undefined}
     >
       <Popover.Target>
-        <ColorSwatch
-          color={props.color}
-          size={20}
-          onClick={() => (props.canSelect ? setShowColorPicker(!showColorPicker) : undefined)}
-        />
+        <Tooltip label={props.name}>
+          <ColorSwatch
+            color={props.color}
+            size={20}
+            onClick={() => (props.canSelect ? setShowColorPicker(!showColorPicker) : undefined)}
+          />
+        </Tooltip>
       </Popover.Target>
       <Popover.Dropdown>
         <ColorPicker

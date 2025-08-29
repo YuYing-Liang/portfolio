@@ -149,6 +149,7 @@ export const AddTriadPanel = () => {
             <Group mt="5px" gap="0.25rem">
               <ColorSelection
                 canSelect
+                name="Sphere color"
                 color={values.colors.sphere}
                 setColor={(color) =>
                   handleChange({ target: { name: "colors", value: { ...values.colors, sphere: color } } })

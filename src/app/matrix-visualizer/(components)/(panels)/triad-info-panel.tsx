@@ -65,13 +65,13 @@ export const TriadInfoPanel = () => {
         }}
       >
         {({ values, handleChange, handleSubmit }) => {
-          console.log(values);
           return (
             <form onSubmit={handleSubmit}>
               <Stack gap="xs">
                 <Group gap="xs" align="center" justify="space-between">
                   <Group gap="xs">
                     <ColorSelection
+                      name="Sphere color"
                       canSelect={mode === "edit"}
                       color={values?.colors?.sphere ?? "#808080"}
                       setColor={(color) =>
