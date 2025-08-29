@@ -1,3 +1,4 @@
+import { DEFAULT_PARENT_TRIAD_HIGHLIGHT_COLOR, DEFAULT_TRIAD_FOCUS_COLOR, UNIT_OPTIONS } from "../constants";
 import { type Setting } from "./tables";
 
 export const MOST_RECENT_VERSION = 3;
@@ -25,19 +26,19 @@ export const DEFAULT_SETTINGS: Record<number, Setting[]> = {
       name: "Unit",
       type: "options",
       value: "mm",
-      options: ["km", "m", "cm", "mm", "in", "ft", "yd", "mi"],
+      options: UNIT_OPTIONS,
     },
     {
       id: 4,
       name: "Triad focus color",
       type: "color",
-      value: "#00FFFF",
+      value: DEFAULT_TRIAD_FOCUS_COLOR,
     },
     {
       id: 5,
       name: "Parent triad focus color",
       type: "color",
-      value: "#C8A2C8",
+      value: DEFAULT_PARENT_TRIAD_HIGHLIGHT_COLOR,
     },
   ],
 };
