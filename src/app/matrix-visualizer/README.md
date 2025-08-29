@@ -12,7 +12,6 @@ You can add, update and delete a coordinate frame as well as triad naming, copy,
 - translate triad in individual x, y and z directions
 - rotate triad in individual rx, ry and rz directions
 - proper selection management (click triad -> click out deselects, double click etc.)
-- possibly combining the info panel and tree view
 - duplicate triad
 
 ### Known Bugs

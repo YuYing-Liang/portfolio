@@ -20,6 +20,18 @@ export const EULER_POSE_LABELS: Record<EulerAngleOrders, PoseLabels> = {
   ZYZ: ["x", "y", "z", "rz", "ry", "rz"],
 };
 
-export const UNIT_OPTIONS = ["km", "m", "cm", "mm", "in", "ft", "yd", "mi"];
+export const UNIT_OPTIONS: [string, string, string, string, string, string, string, string] = [
+  "km",
+  "m",
+  "cm",
+  "mm",
+  "in",
+  "ft",
+  "yd",
+  "mi",
+];
+export const UNIT_RATIOS: [number, number, number, number, number, number, number, number] = [
+  0.000001, 0.001, 0.1, 1, 0.0393701, 0.00328084, 0.00109361, 0.0000006214,
+];
 export const DEFAULT_TRIAD_FOCUS_COLOR = "#00FFFF";
 export const DEFAULT_PARENT_TRIAD_HIGHLIGHT_COLOR = "#C8A2C8";

@@ -43,7 +43,6 @@ export const Triad: FC<TriadProps> = (props) => {
   const triadInfoPanelState = useTriadInfoPanelState();
 
   const [hovered, setHovered] = useState(false);
-  const [selected, setSelected] = useState(false);
   const triadGroupRef = useRef<Group | null>(null);
   const propsWithDefaults: TriadPropsRequired = {
     x: props.x ?? DEFAULT_TRIAD_PROPS.x,
@@ -58,22 +57,18 @@ export const Triad: FC<TriadProps> = (props) => {
   useCursor(hovered);
 
   const handleClick = () => {
-    setSelected((currentSelectState) => !currentSelectState);
     if (triadGroupRef.current !== null) {
-      if (selected) triadInfoPanelState.hideTriadPanel();
-      else {
-        const triadPositionInWorldSpace = new Vector3();
-        triadGroupRef.current.getWorldPosition(triadPositionInWorldSpace);
-        camera.position.set(
-          triadPositionInWorldSpace.x + 1.5,
-          triadPositionInWorldSpace.y + 1.5,
-          triadPositionInWorldSpace.z + 3,
-        );
-        camera.lookAt(triadPositionInWorldSpace.x, triadPositionInWorldSpace.y, triadPositionInWorldSpace.z);
+      const triadPositionInWorldSpace = new Vector3();
+      triadGroupRef.current.getWorldPosition(triadPositionInWorldSpace);
+      camera.position.set(
+        triadPositionInWorldSpace.x + 1.5,
+        triadPositionInWorldSpace.y + 1.5,
+        triadPositionInWorldSpace.z + 3,
+      );
+      camera.lookAt(triadPositionInWorldSpace.x, triadPositionInWorldSpace.y, triadPositionInWorldSpace.z);
 
-        const triadPosition = triadGroupRef.current.position.clone().project(camera);
-        triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size), props.id);
-      }
+      const triadPosition = triadGroupRef.current.position.clone().project(camera);
+      triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size), props.id);
     }
   };
 

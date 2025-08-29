@@ -19,12 +19,13 @@ import { DEFAULT_AXIS_COLORS } from "../../constants";
 import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
-import { addMatrix, getAllMatrixNamesAndIds } from "../../(database)/queries";
+import { addMatrix, getAllMatrixNamesAndIds, getSetting } from "../../(database)/queries";
 import { useTriadInfoPanelState } from "../../states";
 import { useState } from "react";
 import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
 import { type Matrix4Tuple } from "three";
 import { ColorSelection } from "../(common)/color-selection";
+import { DEFAULT_SETTINGS, MOST_RECENT_VERSION } from "../../(database)/versions";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
@@ -39,6 +40,8 @@ export const AddTriadPanel = () => {
   const hideInfoPanel = useTriadInfoPanelState((state) => state.hideTriadPanel);
   const matrixNamesAndIds = useLiveQuery(async () => await getAllMatrixNamesAndIds()) ?? [];
   const [poseDisableSubmit, setPoseDisableSubmit] = useState<boolean>(false);
+
+  const unitSetting = useLiveQuery(async () => await getSetting(DEFAULT_SETTINGS[MOST_RECENT_VERSION]![2]!.id));
 
   return (
     <Paper className="absolute left-[25px] top-[25px]" shadow="xs" p="sm">
@@ -56,7 +59,10 @@ export const AddTriadPanel = () => {
           await addMatrix({
             name: values.name.trim(),
             colors: values.colors,
-            pose: values.pose,
+            pose: values.pose.map(
+              // store pose in mm
+              (poseElement) => poseElement / ((unitSetting?.value as number) ?? 1),
+            ) as Matrix["pose"],
             parent: values.parent,
           });
           hideInfoPanel();
