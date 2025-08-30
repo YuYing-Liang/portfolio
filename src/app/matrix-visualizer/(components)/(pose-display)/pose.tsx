@@ -1,12 +1,11 @@
 import { type FC } from "react";
-import type { EulerAngleOrders, TriadPoseDisplayProps, TriadPoseDisplayType } from "../../types";
+import type { TriadPoseDisplayProps, TriadPoseDisplayType } from "../../types";
 import { EulerPose } from "./euler";
 import { MatrixDisplay } from "./homogenous-matrix";
 import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
 
 interface PoseProps extends TriadPoseDisplayProps {
   displayType: TriadPoseDisplayType;
-  angleOrder: EulerAngleOrders;
   disableSubmit: (disable: boolean) => void;
 }
 

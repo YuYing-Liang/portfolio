@@ -1,15 +1,26 @@
 import { ActionIcon, ActionIconGroup, Group, Paper, SegmentedControl, Select, Stack, Text } from "@mantine/core";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Formik, type FormikHandlers } from "formik";
-import { motion } from "framer-motion";
-import { type FC, type MutableRefObject, useState } from "react";
+import { useFormik, type FormikHandlers } from "formik";
+import { useEffect, useState } from "react";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
-import { deleteMatrix, getAllMatrixNamesAndIds, getMatrix, updateMatrix } from "../../(database)/queries";
+import {
+  deleteMatrix,
+  getAllMatrixNamesAndIds,
+  getAllSettings,
+  getMatrix,
+  updateMatrix,
+} from "../../(database)/queries";
 import { type Matrix } from "../../(database)/tables";
-import { BASE_FRAME_MATRIX } from "../../constants";
-import { convertEulerPoseToMatrix, convertMatrixToEulerPose, getWorldMatrix } from "../../helpers";
+import { BASE_FRAME_MATRIX, UNIT_RATIOS, UnitOptions } from "../../constants";
+import {
+  convertDegressToRadians,
+  convertEulerPoseToMatrix,
+  convertMatrixToEulerPose,
+  convertPoseToDegrees,
+  getWorldMatrix,
+} from "../../helpers";
 import { useStates3d, useTriadInfoPanelState } from "../../states";
-import { type TriadPoseDisplayParams } from "../../types";
+import { TriadPose, type TriadPoseDisplayParams } from "../../types";
 import { Pose } from "../(pose-display)/pose";
 import { type Matrix4Tuple } from "three";
 import { ColorSelection } from "../(common)/color-selection";
@@ -19,10 +30,46 @@ export const TriadInfoPanel = () => {
   const triadInfoPanelState = useTriadInfoPanelState();
   const selectedMatrix = useLiveQuery(async () => await getMatrix(triadInfoPanelState.triadId), [triadInfoPanelState]);
   const matrixNamesAndIds =
-    useLiveQuery(async () => await getAllMatrixNamesAndIds([triadInfoPanelState.triadId])) ?? [];
+    useLiveQuery(async () => await getAllMatrixNamesAndIds([triadInfoPanelState.triadId]), [triadInfoPanelState]) ?? [];
+
+  const allSettings = useLiveQuery(async () => await getAllSettings());
+  const unitSetting = (allSettings?.find((setting) => setting.id === 3)?.value as UnitOptions) ?? "mm";
+  const angleSetting = allSettings?.find((setting) => setting.id === 1)?.value as string;
 
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [disableSubmit, setDisableSubmit] = useState<boolean>(false);
+
+  const valuesFromMatrix = {
+    ...selectedMatrix,
+    type: "euler",
+    angleOrder: "XYZ",
+    pose: convertPoseToDegrees(selectedMatrix?.pose, angleSetting),
+  } as Matrix & TriadPoseDisplayParams;
+
+  const triadForm = useFormik({
+    initialValues: valuesFromMatrix,
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      if (selectedMatrix === undefined) return;
+      await updateMatrix(selectedMatrix.id, {
+        name: values.name.trim(),
+        colors: values.colors,
+        pose: values.pose.map((poseElement, poseIndex) =>
+          poseIndex < 3
+            ? poseElement / UNIT_RATIOS[unitSetting]
+            : angleSetting === "deg"
+              ? convertDegressToRadians(poseElement)
+              : poseElement,
+        ) as Matrix["pose"],
+        parent: values.parent,
+      });
+      setMode("view");
+    },
+  });
+
+  useEffect(() => {
+    triadForm.setValues(valuesFromMatrix);
+  }, [selectedMatrix, mode]);
 
   const getTransformedTriadPose = (parentTriadId: string) => {
     const selectedTriad = states3d.scene?.getObjectByName(`triad-${triadInfoPanelState.triadId}`);
@@ -48,206 +95,187 @@ export const TriadInfoPanel = () => {
     } else setMode("view");
   };
 
+  console.log(triadForm.values);
   return (
     <Paper shadow="sm" p="sm" pt="5px">
-      <Formik
-        initialValues={{ ...selectedMatrix, type: "euler", angleOrder: "XYZ" } as Matrix & TriadPoseDisplayParams}
-        validateOnChange={true}
-        onSubmit={async (values) => {
-          if (selectedMatrix === undefined) return;
-          await updateMatrix(selectedMatrix.id, {
-            name: values.name.trim(),
-            colors: values.colors,
-            pose: values.pose,
-            parent: values.parent,
-          });
-          setMode("view");
-        }}
-      >
-        {({ values, handleChange, handleSubmit }) => {
-          return (
-            <form onSubmit={handleSubmit}>
-              <Stack gap="xs">
-                <Group gap="xs" align="center" justify="space-between">
-                  <Group gap="xs">
-                    <ColorSelection
-                      name="Sphere color"
-                      canSelect={mode === "edit"}
-                      color={values?.colors?.sphere ?? "#808080"}
-                      setColor={(color) =>
-                        handleChange({ target: { name: "colors", value: { ...values.colors, sphere: color } } })
-                      }
-                    />
-                    <Text fw={600}>{values.name}</Text>
-                  </Group>
-                  <Group gap="3px">
-                    {mode === "edit" && (
-                      <ActionIcon
-                        variant="light"
-                        size="md"
-                        type="submit"
-                        disabled={
-                          selectedMatrix === undefined || selectedMatrix.id === BASE_FRAME_MATRIX.id || disableSubmit
-                        }
-                      >
-                        <DynamicTablerIcon name="IconDeviceFloppy" size={16} />
-                      </ActionIcon>
-                    )}
-                    <ActionIcon
-                      variant="light"
-                      size="md"
-                      disabled={selectedMatrix === undefined || selectedMatrix.id === BASE_FRAME_MATRIX.id}
-                      onClick={() => handleChangeMode(handleChange)}
-                    >
-                      <DynamicTablerIcon name={mode == "view" ? "IconPencil" : "IconCancel"} size={16} />
-                    </ActionIcon>
-                    <ActionIcon
-                      variant="light"
-                      size="md"
-                      disabled={selectedMatrix === undefined || selectedMatrix.id === BASE_FRAME_MATRIX.id}
-                      onClick={handleDeleteTriad}
-                    >
-                      <DynamicTablerIcon name="IconTrash" size={16} />
-                    </ActionIcon>
-                  </Group>
-                </Group>
-                <Group gap="5px">
-                  <SegmentedControl
-                    size="xs"
-                    disabled={selectedMatrix === undefined}
-                    data={["euler", "matrix"]}
-                    onChange={(value) => {
-                      handleChange({ target: { name: "type", value } });
-                    }}
-                    value={values.type}
-                  />
-                  <Select
-                    disabled={selectedMatrix === undefined}
-                    size="xs"
-                    w="75px"
-                    data={["XYZ", "ZYZ"]}
-                    onChange={(value) => {
-                      handleChange({ target: { name: "angleOrder", value } });
-                    }}
-                    value={values.angleOrder}
-                  />
-                  <ActionIconGroup>
-                    <ActionIcon
-                      disabled={selectedMatrix === undefined || values?.pose === undefined}
-                      variant="default"
-                      size="md"
-                      onClick={async () => {
-                        await navigator.clipboard.writeText(
-                          `[${
-                            values.type == "euler"
-                              ? values.pose.toString()
-                              : convertEulerPoseToMatrix(values.pose, values.angleOrder).toString()
-                          }]`,
-                        );
-                      }}
-                    >
-                      <DynamicTablerIcon name="IconCopy" size={16} />
-                    </ActionIcon>
-                    <ActionIcon
-                      variant="default"
-                      size="md"
-                      disabled={mode === "view" || selectedMatrix === undefined}
-                      onClick={async () => {
-                        const poseStr = await navigator.clipboard.readText();
-                        let pose = poseStr
-                          .substring(1, poseStr.length - 1)
-                          .split(",")
-                          .filter((elem) => elem.trim() !== "")
-                          .map(Number);
-                        if (pose.length !== 6 && pose.length !== 16) return;
-                        if (pose.length === 16) {
-                          pose = convertMatrixToEulerPose(pose as Matrix4Tuple, values.angleOrder);
-                        }
-                        handleChange({ target: { name: "pose", value: pose } });
-                      }}
-                    >
-                      <DynamicTablerIcon name="IconClipboard" size={16} />
-                    </ActionIcon>
-                  </ActionIconGroup>
-                </Group>
-                {matrixNamesAndIds.length > 0 &&
-                  selectedMatrix !== undefined &&
-                  values?.pose !== undefined &&
-                  (mode == "view" ? (
-                    <Select
-                      label="Matrix with respect to"
-                      placeholder="None (base frame)"
-                      data={matrixNamesAndIds.map((matrix) => ({
-                        value: matrix.id.toString(),
-                        label: `${matrix.name} ${(values.parent === undefined ? matrix.id === 0 : matrix.id === values.parent) ? "(parent)" : ""}`,
-                      }))}
-                      defaultValue={values.parent === undefined ? "0" : values.parent.toString()}
-                      onChange={(value) => {
-                        if (value === null) {
-                          handleChange({ target: { name: "pose", value: selectedMatrix.pose } });
-                          return;
-                        }
-                        if ((values.parent === undefined && value === "0") || value === values.parent?.toString())
-                          return;
-                        handleChange({ target: { name: "pose", value: getTransformedTriadPose(value) } });
-                      }}
-                      size="xs"
-                      searchable
-                      clearable
-                    />
-                  ) : (
-                    <Group gap="5px" align="self-end">
-                      <Select
-                        label="Parent Matrix"
-                        placeholder="None (base frame)"
-                        data={matrixNamesAndIds.map((matrix) => ({
-                          value: matrix.id.toString(),
-                          label: `${matrix.name} ${(values.parent === undefined ? matrix.id === 0 : matrix.id === values.parent) ? "(current parent)" : ""}`,
-                        }))}
-                        defaultValue={values.parent === undefined ? "0" : values.parent.toString()}
-                        onChange={(parentId) => {
-                          handleChange({
-                            target: { name: "parent", value: parentId == null ? undefined : parseInt(parentId) },
-                          });
-                        }}
-                        size="xs"
-                        searchable
-                      />
-                      <ActionIcon
-                        variant="default"
-                        size="md"
-                        onClick={() => handleChange({ target: { name: "pose", value: selectedMatrix.pose } })}
-                      >
-                        <DynamicTablerIcon name="IconRestore" size={16} />
-                      </ActionIcon>
-                    </Group>
-                  ))}
-                <Stack gap={0}>
-                  <Text size="sm" fw={500}>
-                    {values.type === "euler" ? "Pose" : "Matrix"}
-                  </Text>
-                  {selectedMatrix !== undefined && (
-                    <Pose
-                      editable={mode === "edit" && values?.pose !== undefined && values?.colors !== undefined}
-                      setPose={(pose) => {
-                        handleChange({ target: { name: "pose", value: pose } });
-                      }}
-                      pose={values?.pose ?? [0, 0, 0, 0, 0, 0]}
-                      colors={values?.colors ?? { x: "#808080", y: "#808080", z: "#808080" }}
-                      displayType={values.type}
-                      angleOrder={values.angleOrder}
-                      disableSubmit={setDisableSubmit}
-                      setTriadColors={(colors) =>
-                        handleChange({ target: { name: "colors", value: { ...colors, sphere: values.colors.sphere } } })
-                      }
-                    />
-                  )}
-                </Stack>
-              </Stack>
-            </form>
-          );
-        }}
-      </Formik>
+      <form onSubmit={triadForm.handleSubmit}>
+        <Stack gap="xs">
+          <Group gap="xs" align="center" justify="space-between">
+            <Group gap="xs">
+              <ColorSelection
+                name="Sphere color"
+                canSelect={mode === "edit"}
+                color={triadForm.values?.colors?.sphere ?? "#808080"}
+                setColor={(color) => triadForm.setFieldValue("colors", { ...triadForm.values.colors, sphere: color })}
+              />
+              <Text fw={600}>{triadForm.values.name}</Text>
+            </Group>
+            <Group gap="3px">
+              {mode === "edit" && (
+                <ActionIcon
+                  variant="light"
+                  size="md"
+                  type="submit"
+                  disabled={selectedMatrix === undefined || selectedMatrix.id === BASE_FRAME_MATRIX.id || disableSubmit}
+                >
+                  <DynamicTablerIcon name="IconDeviceFloppy" size={16} />
+                </ActionIcon>
+              )}
+              <ActionIcon
+                variant="light"
+                size="md"
+                disabled={selectedMatrix === undefined || selectedMatrix.id === BASE_FRAME_MATRIX.id}
+                onClick={() => handleChangeMode(triadForm.handleChange)}
+              >
+                <DynamicTablerIcon name={mode == "view" ? "IconPencil" : "IconCancel"} size={16} />
+              </ActionIcon>
+              <ActionIcon
+                variant="light"
+                size="md"
+                disabled={selectedMatrix === undefined || selectedMatrix.id === BASE_FRAME_MATRIX.id}
+                onClick={handleDeleteTriad}
+              >
+                <DynamicTablerIcon name="IconTrash" size={16} />
+              </ActionIcon>
+            </Group>
+          </Group>
+          <Group gap="5px">
+            <SegmentedControl
+              size="xs"
+              disabled={selectedMatrix === undefined}
+              data={["euler", "matrix"]}
+              onChange={(value) => {
+                triadForm.setFieldValue("type", value);
+              }}
+              value={triadForm.values.type}
+            />
+            <Select
+              disabled={selectedMatrix === undefined}
+              size="xs"
+              w="75px"
+              data={["XYZ", "ZYZ"]}
+              onChange={(value) => {
+                triadForm.setFieldValue("angleOrder", value);
+              }}
+              value={triadForm.values.angleOrder}
+            />
+            <ActionIconGroup>
+              <ActionIcon
+                disabled={selectedMatrix === undefined || triadForm.values?.pose === undefined}
+                variant="default"
+                size="md"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(
+                    `[${
+                      triadForm.values.type == "euler"
+                        ? triadForm.values.pose.toString()
+                        : convertEulerPoseToMatrix(triadForm.values.pose, triadForm.values.angleOrder).toString()
+                    }]`,
+                  );
+                }}
+              >
+                <DynamicTablerIcon name="IconCopy" size={16} />
+              </ActionIcon>
+              <ActionIcon
+                variant="default"
+                size="md"
+                disabled={mode === "view" || selectedMatrix === undefined}
+                onClick={async () => {
+                  const poseStr = await navigator.clipboard.readText();
+                  let pose = poseStr
+                    .substring(1, poseStr.length - 1)
+                    .split(",")
+                    .filter((elem) => elem.trim() !== "")
+                    .map(Number);
+                  if (pose.length !== 6 && pose.length !== 16) return;
+                  if (pose.length === 16) {
+                    pose = convertMatrixToEulerPose(pose as Matrix4Tuple, triadForm.values.angleOrder);
+                  }
+                  triadForm.setFieldValue("pose", pose);
+                }}
+              >
+                <DynamicTablerIcon name="IconClipboard" size={16} />
+              </ActionIcon>
+            </ActionIconGroup>
+          </Group>
+          {matrixNamesAndIds.length > 0 &&
+            selectedMatrix !== undefined &&
+            triadForm.values?.pose !== undefined &&
+            (mode == "view" ? (
+              <Select
+                label="Matrix with respect to"
+                placeholder="None (base frame)"
+                data={matrixNamesAndIds.map((matrix) => ({
+                  value: matrix.id.toString(),
+                  label: `${matrix.name} ${(selectedMatrix.parent === undefined ? matrix.id === 0 : matrix.id === selectedMatrix.parent) ? "(parent)" : ""}`,
+                }))}
+                value={triadForm.values.parent?.toString() ?? "0"}
+                onChange={(value) => {
+                  if (
+                    (triadForm.values.parent === undefined && value === "0") ||
+                    value === triadForm.values.parent?.toString()
+                  )
+                    return;
+                  const poseToChange = (
+                    value === null ? [...selectedMatrix.pose] : getTransformedTriadPose(value)
+                  ) as TriadPose;
+                  triadForm.setFieldValue("pose", convertPoseToDegrees(poseToChange, angleSetting));
+                  triadForm.setFieldValue("parent", value ?? selectedMatrix.parent ?? "0");
+                }}
+                size="xs"
+                searchable
+                clearable
+              />
+            ) : (
+              <Group gap="5px" align="self-end">
+                <Select
+                  label="Parent Matrix"
+                  placeholder="None (base frame)"
+                  data={matrixNamesAndIds.map((matrix) => ({
+                    value: matrix.id.toString(),
+                    label: `${matrix.name} ${(triadForm.values.parent === undefined ? matrix.id === 0 : matrix.id === triadForm.values.parent) ? "(current parent)" : ""}`,
+                  }))}
+                  defaultValue={triadForm.values.parent === undefined ? "0" : triadForm.values.parent.toString()}
+                  onChange={(parentId) => {
+                    triadForm.setFieldValue("parent", parentId == null ? undefined : parseInt(parentId));
+                  }}
+                  size="xs"
+                  searchable
+                />
+                <ActionIcon
+                  variant="default"
+                  size="md"
+                  onClick={() => triadForm.setFieldValue("pose", selectedMatrix.pose)}
+                >
+                  <DynamicTablerIcon name="IconRestore" size={16} />
+                </ActionIcon>
+              </Group>
+            ))}
+          <Stack gap={0}>
+            <Text size="sm" fw={500}>
+              {triadForm.values.type === "euler" ? "Pose" : "Matrix"}
+            </Text>
+            {selectedMatrix !== undefined && (
+              <Pose
+                editable={
+                  mode === "edit" && triadForm.values?.pose !== undefined && triadForm.values?.colors !== undefined
+                }
+                setPose={(pose) => {
+                  triadForm.setFieldValue("pose", pose);
+                }}
+                pose={triadForm.values?.pose ?? [0, 0, 0, 0, 0, 0]}
+                colors={triadForm.values?.colors ?? { x: "#808080", y: "#808080", z: "#808080" }}
+                displayType={triadForm.values.type}
+                angleOrder={triadForm.values.angleOrder}
+                disableSubmit={setDisableSubmit}
+                setTriadColors={(colors) =>
+                  triadForm.setFieldValue("colors", { ...colors, sphere: triadForm.values.colors.sphere })
+                }
+              />
+            )}
+          </Stack>
+        </Stack>
+      </form>
     </Paper>
   );
 };

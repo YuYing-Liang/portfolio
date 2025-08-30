@@ -60,14 +60,12 @@ export const AddTriadPanel = () => {
           await addMatrix({
             name: values.name.trim(),
             colors: values.colors,
-            pose: values.pose.map(
-              // store pose in mm
-              (poseElement, poseIndex) =>
-                poseIndex <= 2
-                  ? poseElement / UNIT_RATIOS[unitSetting]
-                  : angleSetting === "deg"
-                    ? convertDegressToRadians(poseElement)
-                    : poseElement,
+            pose: values.pose.map((poseElement, poseIndex) =>
+              poseIndex <= 2
+                ? poseElement / UNIT_RATIOS[unitSetting]
+                : angleSetting === "deg"
+                  ? convertDegressToRadians(poseElement)
+                  : poseElement,
             ) as Matrix["pose"],
             parent: values.parent,
           });

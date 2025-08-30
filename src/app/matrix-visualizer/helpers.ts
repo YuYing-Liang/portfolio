@@ -98,3 +98,12 @@ export const convertDegressToRadians = (degrees: number) => {
 export const convertRadiansToDegrees = (radians: number) => {
   return radians * (180 / Math.PI);
 };
+
+export const convertPoseToDegrees = (pose: TriadPose | undefined, angleSetting: string) => {
+  return roundArray(
+    pose?.map((poseElement, poseIndex) =>
+      poseIndex >= 3 && angleSetting === "deg" ? convertRadiansToDegrees(poseElement) : poseElement,
+    ) ?? [],
+    2,
+  );
+};
