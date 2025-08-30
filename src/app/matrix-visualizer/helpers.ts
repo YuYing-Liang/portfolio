@@ -90,3 +90,11 @@ export const getTriadMeshes = (scene: Scene | null, triadId: number) => {
   const objects = scene?.getObjectByName(`triad-${triadId}`);
   return objects?.children.flatMap((object) => (object instanceof Mesh ? object : object.children));
 };
+
+export const convertDegressToRadians = (degrees: number) => {
+  return degrees * (Math.PI / 180);
+};
+
+export const convertRadiansToDegrees = (radians: number) => {
+  return radians * (180 / Math.PI);
+};

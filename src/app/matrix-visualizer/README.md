@@ -4,8 +4,6 @@ You can add, update and delete a coordinate frame as well as triad naming, copy,
 
 ### Future Features
 - bounding box to visualize groups (show how which triads have the parent triad)
-- degree and radians selection (settings toolbar)
-- unit selection (settings toolbar)
 - limit triad nesting to 5 levels
 - focus on triad on creation
 - add animation to camera movements

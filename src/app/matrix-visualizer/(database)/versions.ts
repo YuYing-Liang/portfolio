@@ -26,7 +26,7 @@ export const DEFAULT_SETTINGS: Record<number, Setting[]> = {
       name: "Unit",
       type: "options",
       value: "mm",
-      options: UNIT_OPTIONS,
+      options: Array.from(UNIT_OPTIONS),
     },
     {
       id: 4,

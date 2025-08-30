@@ -7,25 +7,22 @@ import {
   SegmentedControl,
   InputWrapper,
   TextInput,
-  ColorSwatch,
   ActionIcon,
-  ButtonGroup,
   ActionIconGroup,
 } from "@mantine/core";
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
-import { TriadPose, type TriadPoseDisplayParams } from "../../types";
-import { DEFAULT_AXIS_COLORS } from "../../constants";
+import { type TriadPoseDisplayParams } from "../../types";
+import { DEFAULT_AXIS_COLORS, UNIT_RATIOS, UnitOptions } from "../../constants";
 import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
-import { addMatrix, getAllMatrixNamesAndIds, getSetting } from "../../(database)/queries";
+import { addMatrix, getAllMatrixNamesAndIds, getAllSettings, getSetting } from "../../(database)/queries";
 import { useTriadInfoPanelState } from "../../states";
 import { useState } from "react";
-import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
+import { convertDegressToRadians, convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
 import { type Matrix4Tuple } from "three";
 import { ColorSelection } from "../(common)/color-selection";
-import { DEFAULT_SETTINGS, MOST_RECENT_VERSION } from "../../(database)/versions";
 
 const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
   name: "New Triad",
@@ -41,7 +38,9 @@ export const AddTriadPanel = () => {
   const matrixNamesAndIds = useLiveQuery(async () => await getAllMatrixNamesAndIds()) ?? [];
   const [poseDisableSubmit, setPoseDisableSubmit] = useState<boolean>(false);
 
-  const unitSetting = useLiveQuery(async () => await getSetting(DEFAULT_SETTINGS[MOST_RECENT_VERSION]![2]!.id));
+  const allSettings = useLiveQuery(async () => await getAllSettings());
+  const unitSetting = (allSettings?.find((setting) => setting.id === 3)?.value as UnitOptions) ?? "mm";
+  const angleSetting = allSettings?.find((setting) => setting.id === 1)?.value as string;
 
   return (
     <Paper className="absolute left-[25px] top-[25px]" shadow="xs" p="sm">
@@ -51,6 +50,8 @@ export const AddTriadPanel = () => {
           const errors: Partial<Record<keyof Matrix, string>> = {};
           if (values.name === undefined || values.name.trim() === "") {
             errors.name = "Matrix name required";
+          } else if (matrixNamesAndIds.find((matrix) => matrix.name === values.name) !== undefined) {
+            errors.name = "Name already exists";
           }
           return errors;
         }}
@@ -61,7 +62,12 @@ export const AddTriadPanel = () => {
             colors: values.colors,
             pose: values.pose.map(
               // store pose in mm
-              (poseElement) => poseElement / ((unitSetting?.value as number) ?? 1),
+              (poseElement, poseIndex) =>
+                poseIndex <= 2
+                  ? poseElement / UNIT_RATIOS[unitSetting]
+                  : angleSetting === "deg"
+                    ? convertDegressToRadians(poseElement)
+                    : poseElement,
             ) as Matrix["pose"],
             parent: values.parent,
           });
@@ -71,7 +77,7 @@ export const AddTriadPanel = () => {
           // camera.lookAt(triadPose);
         }}
       >
-        {({ values, errors, handleChange, handleSubmit }) => (
+        {({ values, errors, handleChange, handleSubmit, isValid }) => (
           <form onSubmit={handleSubmit}>
             <Group justify="space-between" gap="xs" mb="xs">
               <Text fw={600}>Add triad to scene</Text>
@@ -197,7 +203,7 @@ export const AddTriadPanel = () => {
               type="submit"
               variant="light"
               size="xs"
-              disabled={poseDisableSubmit}
+              disabled={poseDisableSubmit || !isValid}
               classNames={{ section: "m-[5px]" }}
               leftSection={<DynamicTablerIcon name="IconPlus" size={18} />}
             >

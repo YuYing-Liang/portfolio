@@ -1,4 +1,3 @@
-import { boolean } from "zod";
 import { type TriadColors, type TriadPose } from "../types";
 
 export interface Matrix {
