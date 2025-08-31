@@ -1,6 +1,17 @@
 import { type Size } from "@react-three/fiber";
 import { type TriadRotation, type EulerAngleOrders, type TriadPose, type TriadPosition } from "./types";
-import { Matrix4, Euler, type Matrix4Tuple, Quaternion, Vector3, type Object3D, type Scene, Mesh } from "three";
+import {
+  Matrix4,
+  Euler,
+  type Matrix4Tuple,
+  Quaternion,
+  Vector3,
+  type Object3D,
+  type Scene,
+  Mesh,
+  type Object3DEventMap,
+  type Camera,
+} from "three";
 import { BASE_FRAME_MATRIX } from "./constants";
 
 export const convertEulerPoseToMatrix = (pose: TriadPose, angleOrder: EulerAngleOrders): Matrix4Tuple => {
@@ -140,4 +151,15 @@ export const getTriadMatrixInAnotherFrame = (
   const transformedMatrix = selectedTriadWorldMatrix.multiply(otherTriadWorldMatrix.invert()).transpose().toArray();
 
   return roundArray(transformedMatrix, 4);
+};
+
+export const lookAtTriad = (triadObject: Object3D<Object3DEventMap>, camera: Camera) => {
+  const triadPositionInWorldSpace = new Vector3();
+  triadObject.getWorldPosition(triadPositionInWorldSpace);
+  camera.position.set(
+    triadPositionInWorldSpace.x + 1.5,
+    triadPositionInWorldSpace.y + 1.5,
+    triadPositionInWorldSpace.z + 3,
+  );
+  camera.lookAt(triadPositionInWorldSpace.x, triadPositionInWorldSpace.y, triadPositionInWorldSpace.z);
 };

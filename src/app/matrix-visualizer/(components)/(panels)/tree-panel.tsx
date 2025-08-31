@@ -1,35 +1,28 @@
 import { Group, Paper, Title, Tree, Text, ActionIcon } from "@mantine/core";
 import { useLiveQuery } from "dexie-react-hooks";
-import { deleteMatrix, getMatrixTreeStructure } from "../../(database)/queries";
+import { getMatrixTreeStructure } from "../../(database)/queries";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { useStates3d, useTriadInfoPanelState } from "../../states";
-import { Vector3 } from "three";
-import { convert3DpositionTo2D } from "../../helpers";
+import { DeleteButton } from "../(common)/delete-button";
+import { lookAtTriad } from "../../helpers";
 
 export const TreePanel = () => {
   const matrixTreeStructure = useLiveQuery(async () => await getMatrixTreeStructure()) ?? [];
   const { camera, scene, size } = useStates3d();
   const triadInfoPanelState = useTriadInfoPanelState();
 
-  const handleClick = (triadId: number) => {
+  const handleFocusTriad = (triadId: number) => {
     const triadObject = scene?.getObjectByName(`triad-${triadId}`);
     if (triadObject === undefined || camera === null || size === null) return;
-
-    const triadPositionInWorldSpace = new Vector3();
-    triadObject.getWorldPosition(triadPositionInWorldSpace);
-    camera.position.set(
-      triadPositionInWorldSpace.x + 1.5,
-      triadPositionInWorldSpace.y + 1.5,
-      triadPositionInWorldSpace.z + 3,
-    );
-    camera.lookAt(triadPositionInWorldSpace.x, triadPositionInWorldSpace.y, triadPositionInWorldSpace.z);
-
-    const triadPosition = triadObject.position.clone().project(camera);
-    triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size), triadId);
+    lookAtTriad(triadObject, camera);
+    triadInfoPanelState.showTriadPanel(triadId);
   };
 
-  const handleDeleteTriad = (id: number) => async () => {
-    await deleteMatrix(id);
+  const handleShowTriadChildren = (triadId: number) => {
+    const triadObject = scene?.getObjectByName(`triad-${triadId}`);
+    if (triadObject === undefined || camera === null || size === null) return;
+    lookAtTriad(triadObject, camera);
+    triadInfoPanelState.showTriadPanel(triadId, true);
   };
 
   return (
@@ -41,6 +34,9 @@ export const TreePanel = () => {
           levelOffset={23}
           renderNode={({ node, expanded, hasChildren, elementProps }) => {
             const triadId = parseInt(node.value);
+            const isTriadSelected = triadInfoPanelState.triadId === triadId;
+            const isFocusOnTriad = isTriadSelected && !triadInfoPanelState.showChildren;
+            const isShowingTriadChildren = isTriadSelected && triadInfoPanelState.showChildren;
             return (
               <Group
                 gap="lg"
@@ -66,21 +62,22 @@ export const TreePanel = () => {
                 <Group gap={0}>
                   <ActionIcon
                     size="sm"
-                    variant={triadInfoPanelState.triadId === triadId ? "light" : "transparent"}
-                    color={triadInfoPanelState.triadId === triadId ? "purple" : "black"}
-                    onClick={() => handleClick(triadId)}
+                    variant={isFocusOnTriad ? "light" : "transparent"}
+                    color={isFocusOnTriad ? "purple" : "black"}
+                    onClick={() => handleFocusTriad(triadId)}
                   >
                     <DynamicTablerIcon name="IconViewfinder" size={16} />
                   </ActionIcon>
                   <ActionIcon
                     size="sm"
-                    variant="transparent"
-                    color="black"
-                    disabled={hasChildren}
-                    onClick={handleDeleteTriad(triadId)}
+                    disabled={!hasChildren}
+                    variant={isShowingTriadChildren ? "light" : "transparent"}
+                    color={isShowingTriadChildren ? "purple" : "black"}
+                    onClick={() => handleShowTriadChildren(triadId)}
                   >
-                    <DynamicTablerIcon name="IconTrash" size={16} />
+                    <DynamicTablerIcon name="IconTournament" size={16} />
                   </ActionIcon>
+                  <DeleteButton hasChildren={hasChildren} triadId={triadId} />
                 </Group>
               </Group>
             );

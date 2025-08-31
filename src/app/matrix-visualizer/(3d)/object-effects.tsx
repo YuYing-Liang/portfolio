@@ -1,9 +1,9 @@
 import { EffectComposer, Outline } from "@react-three/postprocessing";
 import { useStates3d, useTriadInfoPanelState } from "../states";
 import { useEffect, useState } from "react";
-import { Mesh, type Object3D, type Object3DEventMap } from "three";
+import { type Object3D, type Object3DEventMap } from "three";
 import { useLiveQuery } from "dexie-react-hooks";
-import { getMatrix, getSetting } from "../(database)/queries";
+import { getMatricesByParentId, getMatrix, getSetting } from "../(database)/queries";
 import { DEFAULT_SETTINGS, MOST_RECENT_VERSION } from "../(database)/versions";
 import { DEFAULT_PARENT_TRIAD_HIGHLIGHT_COLOR, DEFAULT_TRIAD_FOCUS_COLOR } from "../constants";
 import { getTriadMeshes } from "../helpers";
@@ -19,17 +19,28 @@ export const ObjectEffectsProvider = () => {
     async () => await getSetting(DEFAULT_SETTINGS[MOST_RECENT_VERSION]![4]!.id),
   );
 
-  const selectedTriad = useLiveQuery(async () => await getMatrix(triadInfoPanelStates.triadId), [triadInfoPanelStates]);
-
-  useEffect(() => {
-    if (triadInfoPanelStates.visibility && selectedTriad !== undefined) {
-      setSelectedTriadObjects(getTriadMeshes(states3d.scene, selectedTriad.id) ?? []);
-      setSelectedParentTriadObjects(getTriadMeshes(states3d.scene, selectedTriad.parent ?? 0) ?? []);
-    } else {
-      setSelectedTriadObjects([]);
-      setSelectedParentTriadObjects([]);
-    }
-  }, [states3d.scene, triadInfoPanelStates.visibility, selectedTriad]);
+  useEffect(
+    function changeHighlightedTriads() {
+      async function getTriadObjectsToHighlight() {
+        const selectedTriad = await getMatrix(triadInfoPanelStates.triadId);
+        if (selectedTriad === undefined) {
+          setSelectedTriadObjects([]);
+          setSelectedParentTriadObjects([]);
+          return;
+        }
+        if (triadInfoPanelStates.showChildren) {
+          const childrenTriads = await getMatricesByParentId(selectedTriad.id);
+          setSelectedTriadObjects(childrenTriads.flatMap((triad) => getTriadMeshes(states3d.scene, triad.id) ?? []));
+          setSelectedParentTriadObjects(getTriadMeshes(states3d.scene, selectedTriad.id) ?? []);
+        } else {
+          setSelectedTriadObjects(getTriadMeshes(states3d.scene, selectedTriad.id) ?? []);
+          setSelectedParentTriadObjects(getTriadMeshes(states3d.scene, selectedTriad.parent ?? 0) ?? []);
+        }
+      }
+      void getTriadObjectsToHighlight();
+    },
+    [states3d.scene, triadInfoPanelStates],
+  );
 
   return (
     <EffectComposer multisampling={8} autoClear={false}>

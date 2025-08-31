@@ -4,7 +4,7 @@ import { DEFAULT_AXIS_COLORS } from "../constants";
 import { useCursor } from "@react-three/drei";
 import { useTriadInfoPanelState } from "../states";
 import { useThree } from "@react-three/fiber";
-import { convert3DpositionTo2D } from "../helpers";
+import { convert3DpositionTo2D, lookAtTriad } from "../helpers";
 import { type TriadColors } from "../types";
 
 interface TriadProps {
@@ -39,7 +39,7 @@ const DEFAULT_TRIAD_PROPS: TriadPropsRequired = {
 };
 
 export const Triad: FC<TriadProps> = (props) => {
-  const { camera, size } = useThree();
+  const { camera } = useThree();
   const triadInfoPanelState = useTriadInfoPanelState();
 
   const [hovered, setHovered] = useState(false);
@@ -58,17 +58,8 @@ export const Triad: FC<TriadProps> = (props) => {
 
   const handleClick = () => {
     if (triadGroupRef.current !== null) {
-      const triadPositionInWorldSpace = new Vector3();
-      triadGroupRef.current.getWorldPosition(triadPositionInWorldSpace);
-      camera.position.set(
-        triadPositionInWorldSpace.x + 1.5,
-        triadPositionInWorldSpace.y + 1.5,
-        triadPositionInWorldSpace.z + 3,
-      );
-      camera.lookAt(triadPositionInWorldSpace.x, triadPositionInWorldSpace.y, triadPositionInWorldSpace.z);
-
-      const triadPosition = triadGroupRef.current.position.clone().project(camera);
-      triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size), props.id);
+      lookAtTriad(triadGroupRef.current, camera);
+      triadInfoPanelState.showTriadPanel(props.id);
     }
   };
 
