@@ -17,6 +17,8 @@ interface CopyPasteButtonsProps {
   poseType: TriadPoseDisplayType;
   angleOrder: EulerAngleOrders;
   angleSetting: string;
+  disableCopy?: boolean;
+  disablePaste?: boolean;
   setPose: (pose: TriadPose) => void;
   setMatrix: (matrix: Matrix4Tuple) => void;
 }
@@ -25,6 +27,7 @@ export const CopyPasteButtons: FC<CopyPasteButtonsProps> = (props) => {
   return (
     <ActionIconGroup>
       <ActionIcon
+        disabled={props.disableCopy ?? false}
         variant="default"
         size="md"
         onClick={async () => {
@@ -38,6 +41,7 @@ export const CopyPasteButtons: FC<CopyPasteButtonsProps> = (props) => {
       <ActionIcon
         variant="default"
         size="md"
+        disabled={props.disablePaste ?? false}
         onClick={async () => {
           const poseStr = await navigator.clipboard.readText();
           const pose = poseStr

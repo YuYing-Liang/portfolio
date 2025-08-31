@@ -25,7 +25,7 @@ export default function MatrixVisualizer() {
       <AddTriadPanel />
       <SettingsToolbar />
       <Stack gap="sm" className="absolute right-[25px] top-[25px]">
-        {/* <TriadInfoPanel /> */}
+        <TriadInfoPanel />
         <TreePanel />
       </Stack>
     </div>

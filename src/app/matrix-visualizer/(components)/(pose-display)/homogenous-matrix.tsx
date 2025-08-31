@@ -40,7 +40,7 @@ export const MatrixDisplay: FC<MatrixDisplayProps> = (props) => {
               />
             ))
           : props.matrix.map((elem, i) => (
-              <Badge key={i} radius="sm" size="md" variant="default" w={65}>
+              <Badge key={i} radius="sm" size="md" variant="default" w={75}>
                 {elem}
               </Badge>
             ))}

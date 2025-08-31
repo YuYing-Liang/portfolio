@@ -1,4 +1,5 @@
-import { type EulerOrder } from "three";
+import { type Matrix4Tuple } from "three";
+import { type Matrix } from "./(database)/tables";
 
 export type TriadColors = {
   x: string;
@@ -42,3 +43,5 @@ export type TriadTreeElement = {
   label: string;
   children: TriadTreeElement[];
 };
+
+export type TriadForm = Matrix & TriadPoseDisplayParams & { matrix: Matrix4Tuple };

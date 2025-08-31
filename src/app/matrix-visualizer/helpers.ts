@@ -124,3 +124,20 @@ export const convertPoseToDegrees = (pose: TriadPose, angleSetting: string): Tri
     angleSetting === "deg" ? convertRadiansToDegrees(pose[5]) : pose[5],
   ];
 };
+
+export const getTriadMatrixInAnotherFrame = (
+  currentTriadId: number,
+  otherTriadId: number,
+  scene: Scene | null,
+): Matrix4Tuple | undefined => {
+  const selectedTriadObject = scene?.getObjectByName(`triad-${currentTriadId}`);
+  const otherTriadObject = scene?.getObjectByName(`triad-${otherTriadId}`);
+
+  if (selectedTriadObject === undefined || otherTriadObject === undefined) return;
+  const selectedTriadWorldMatrix = getWorldMatrix(selectedTriadObject);
+  const otherTriadWorldMatrix = getWorldMatrix(otherTriadObject);
+
+  const transformedMatrix = selectedTriadWorldMatrix.multiply(otherTriadWorldMatrix.invert()).transpose().toArray();
+
+  return roundArray(transformedMatrix, 4);
+};

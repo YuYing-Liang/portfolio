@@ -2,13 +2,12 @@ import { Button, Paper, Text, Select, Group } from "@mantine/core";
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
 import { DEFAULT_AXIS_COLORS, UNIT_RATIOS, type UnitOptions } from "../../constants";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
 import { addMatrix, getAllMatrixNamesAndIds, getAllSettings } from "../../(database)/queries";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
-  convertDegreesToRadians,
   convertEulerPoseToMatrix,
   convertMatrixToEulerPose,
   convertPoseToDegrees,
@@ -19,10 +18,10 @@ import { PoseTypeSelection } from "../(triad-form)/pose-type-selection";
 import { CopyPasteButtons } from "../(triad-form)/copy-paste-buttons";
 import { TriadNameAndSphereColorDisplay } from "../(triad-form)/name-and-sphere-color-display";
 import { ResetButton } from "../(triad-form)/reset-button";
-import { type TriadPoseDisplayType, type TriadPose, type TriadPoseDisplayParams } from "../../types";
-import { type Matrix4Tuple } from "three";
+import { type TriadPoseDisplayType, type TriadPose, TriadForm } from "../../types";
+import { onPoseTypeChange } from "./triad-form-helpers";
 
-const INITIAL_TRIAD_FORM_VALUES: Matrix & TriadPoseDisplayParams & { matrix: Matrix4Tuple } = {
+const INITIAL_TRIAD_FORM_VALUES: TriadForm = {
   name: "New Triad",
   parent: undefined,
   pose: [0, 0, 0, 0, 0, 0],
@@ -73,23 +72,15 @@ export const AddTriadPanel = () => {
     },
   });
 
-  const { angleOrder, colors, matrix, name, pose, type, parent } = addTriadForm.values;
-
-  const handleFieldChange = <T extends keyof typeof INITIAL_TRIAD_FORM_VALUES>(
-    name: T,
-    value: (typeof INITIAL_TRIAD_FORM_VALUES)[T],
-  ) => {
+  const handleFieldChange = <T extends keyof TriadForm>(name: T, value: TriadForm[T]) => {
     addTriadForm.handleChange({ target: { name, value } });
   };
 
   const handlePoseTypeChange = (newPoseType: TriadPoseDisplayType) => {
-    if (newPoseType === "matrix" && type === "euler") {
-      handleFieldChange("matrix", convertEulerPoseToMatrix(convertPoseToRadians(pose, angleSetting), angleOrder));
-    } else if (newPoseType === "euler" && type === "matrix") {
-      handleFieldChange("pose", roundArray(convertPoseToDegrees(convertMatrixToEulerPose(matrix, angleOrder), angleSetting), 2));
-    }
-    handleFieldChange("type", newPoseType);
+    onPoseTypeChange(newPoseType, addTriadForm.values, angleSetting, handleFieldChange);
   };
+
+  const { angleOrder, colors, matrix, name, pose, type, parent } = addTriadForm.values;
 
   return (
     <Paper className="absolute left-[25px] top-[25px]" shadow="xs" p="sm">
@@ -129,6 +120,7 @@ export const AddTriadPanel = () => {
         )}
         <Group mt="5px" gap="0.25rem">
           <TriadNameAndSphereColorDisplay
+            editable
             name={name}
             color={colors.sphere}
             nameError={addTriadForm.errors.name}
