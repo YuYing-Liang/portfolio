@@ -20,12 +20,10 @@ export const convertEulerPoseToMatrix = (pose: TriadPose, angleOrder: EulerAngle
 
 export const convertMatrixToEulerPose = (matrixTuple: Matrix4Tuple, angleOrder: EulerAngleOrders): TriadPose => {
   const matrix = new Matrix4();
-  const euler = new Euler();
-
   matrix.set(...matrixTuple);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44] = matrixTuple;
+  const [m11, m21, m31, m41, m12, m22, m32, m42, m13, m23, m33, m43, m14, m24, m34, m44] = matrixTuple;
   const position: TriadPosition = [m14, m24, m34];
 
   if (angleOrder === "ZYZ") {
@@ -38,6 +36,7 @@ export const convertMatrixToEulerPose = (matrixTuple: Matrix4Tuple, angleOrder: 
     return [...position, Math.atan2(m23, m13), Math.acos(m33), Math.atan2(m32, -m31)];
   }
 
+  const euler = new Euler();
   euler.setFromRotationMatrix(matrix, angleOrder);
   const eulerAngles = euler.toArray();
   return [...position, eulerAngles[0], eulerAngles[1], eulerAngles[2]];
@@ -91,7 +90,7 @@ export const getTriadMeshes = (scene: Scene | null, triadId: number) => {
   return objects?.children.flatMap((object) => (object instanceof Mesh ? object : object.children));
 };
 
-export const convertDegressToRadians = (degrees: number) => {
+export const convertDegreesToRadians = (degrees: number) => {
   return degrees * (Math.PI / 180);
 };
 
@@ -99,11 +98,24 @@ export const convertRadiansToDegrees = (radians: number) => {
   return radians * (180 / Math.PI);
 };
 
-export const convertPoseToDegrees = (pose: TriadPose | undefined, angleSetting: string) => {
-  return roundArray(
-    pose?.map((poseElement, poseIndex) =>
-      poseIndex >= 3 && angleSetting === "deg" ? convertRadiansToDegrees(poseElement) : poseElement,
-    ) ?? [],
-    2,
-  );
+export const convertPoseToRadians = (pose: TriadPose, angleSetting: string): TriadPose => {
+  return [
+    pose[0],
+    pose[1],
+    pose[2],
+    angleSetting === "deg" ? convertDegreesToRadians(pose[3]) : pose[3],
+    angleSetting === "deg" ? convertDegreesToRadians(pose[4]) : pose[4],
+    angleSetting === "deg" ? convertDegreesToRadians(pose[5]) : pose[5],
+  ];
+};
+
+export const convertPoseToDegrees = (pose: TriadPose, angleSetting: string): TriadPose => {
+  return [
+    pose[0],
+    pose[1],
+    pose[2],
+    angleSetting === "deg" ? convertRadiansToDegrees(pose[3]) : pose[3],
+    angleSetting === "deg" ? convertRadiansToDegrees(pose[4]) : pose[4],
+    angleSetting === "deg" ? convertRadiansToDegrees(pose[5]) : pose[5],
+  ];
 };

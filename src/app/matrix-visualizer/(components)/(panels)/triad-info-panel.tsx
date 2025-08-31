@@ -13,7 +13,7 @@ import {
 import { type Matrix } from "../../(database)/tables";
 import { BASE_FRAME_MATRIX, UNIT_RATIOS, type UnitOptions } from "../../constants";
 import {
-  convertDegressToRadians,
+  convertDegreesToRadians,
   convertEulerPoseToMatrix,
   convertMatrixToEulerPose,
   convertPoseToDegrees,
@@ -58,7 +58,7 @@ export const TriadInfoPanel = () => {
           poseIndex < 3
             ? poseElement / UNIT_RATIOS[unitSetting]
             : angleSetting === "deg"
-              ? convertDegressToRadians(poseElement)
+              ? convertDegreesToRadians(poseElement)
               : poseElement,
         ) as Matrix["pose"],
         parent: values.parent,

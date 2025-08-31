@@ -5,6 +5,7 @@ import { type FC } from "react";
 interface PoseTypeSelectionProps {
   poseType: TriadPoseDisplayType;
   angleOrder: EulerAngleOrders;
+  disablePoseTypeToggle: boolean;
   setPoseType: (newPoseType: TriadPoseDisplayType) => void;
   setAngleOrder: (newAngleOrder: EulerAngleOrders) => void;
 }
@@ -17,6 +18,7 @@ export const PoseTypeSelection: FC<PoseTypeSelectionProps> = (props) => {
         data={["euler", "matrix"]}
         onChange={(value) => (value === "euler" || value === "matrix" ? props.setPoseType(value) : {})}
         value={props.poseType}
+        disabled={props.disablePoseTypeToggle}
       />
       <Select
         size="xs"

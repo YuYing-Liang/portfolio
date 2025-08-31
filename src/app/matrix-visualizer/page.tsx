@@ -3,10 +3,9 @@ import { Canvas } from "@react-three/fiber";
 import { Scene } from "./(3d)/scene";
 import { AddTriadPanel } from "./(components)/(panels)/add-triad-panel";
 import { TriadInfoPanel } from "./(components)/(panels)/triad-info-panel";
-import { useRef } from "react";
 import { TreePanel } from "./(components)/(panels)/tree-panel";
 import { TriadGroup } from "./(3d)/triad-group";
-import { useStates3d, useTriadInfoPanelState } from "./states";
+import { useStates3d } from "./states";
 import { Provider3d } from "./(3d)/3d-provider";
 import { ObjectEffectsProvider } from "./(3d)/object-effects";
 import { SettingsToolbar } from "./(components)/(settings-toolbar)/settings-toolbar";
@@ -26,7 +25,7 @@ export default function MatrixVisualizer() {
       <AddTriadPanel />
       <SettingsToolbar />
       <Stack gap="sm" className="absolute right-[25px] top-[25px]">
-        <TriadInfoPanel />
+        {/* <TriadInfoPanel /> */}
         <TreePanel />
       </Stack>
     </div>

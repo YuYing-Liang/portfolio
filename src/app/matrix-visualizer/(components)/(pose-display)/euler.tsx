@@ -7,7 +7,6 @@ import { AxesColorSelection } from "../(common)/axes-color-selection";
 interface EulerPoseProps extends TriadPoseDisplayProps {
   pose: TriadPose;
   setPose: (pose: TriadPose) => void;
-  disableSubmit: (disable: boolean) => void;
 }
 
 export const EulerPose: FC<EulerPoseProps> = (props) => {
@@ -37,7 +36,6 @@ export const EulerPose: FC<EulerPoseProps> = (props) => {
                   currentErrors.map((error, errorIndex) => (errorIndex === i ? isNaN(poseElem) : error)),
                 );
                 props.setPose(newPose);
-                props.disableSubmit(newPose.some(isNaN));
               }}
             />
           ) : (
