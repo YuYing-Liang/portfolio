@@ -1,6 +1,6 @@
-import { Group, Paper, Title, Tree, Text, ActionIconGroup, ActionIcon } from "@mantine/core";
+import { Group, Paper, Title, Tree, Text, ActionIcon } from "@mantine/core";
 import { useLiveQuery } from "dexie-react-hooks";
-import { getMatrixTreeStructure } from "../../(database)/queries";
+import { deleteMatrix, getMatrixTreeStructure } from "../../(database)/queries";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { useStates3d, useTriadInfoPanelState } from "../../states";
 import { Vector3 } from "three";
@@ -28,58 +28,67 @@ export const TreePanel = () => {
     triadInfoPanelState.showTriadPanel(convert3DpositionTo2D(triadPosition, size), triadId);
   };
 
+  const handleDeleteTriad = (id: number) => async () => {
+    await deleteMatrix(id);
+  };
+
   return (
     <Paper className="min-w-[250px]" shadow="xs" p="sm">
       <Title order={5}>Triad Tree</Title>
-      <Tree
-        data={matrixTreeStructure}
-        levelOffset={23}
-        renderNode={({ node, expanded, hasChildren, elementProps }) => (
-          <Group
-            gap="lg"
-            justify="space-between"
-            className={elementProps.className}
-            style={elementProps.style}
-            data-selected={elementProps["data-selected"]}
-            data-hovered={elementProps["data-hovered"]}
-            data-value={elementProps["data-value"]}
-          >
-            <Group gap={2}>
-              <Text>{node.label}</Text>
-              {hasChildren && (
-                <ActionIcon size="sm" variant="transparent" onClick={elementProps.onClick}>
-                  <DynamicTablerIcon
-                    name={expanded ? "IconCaretUpFilled" : "IconCaretDownFilled"}
-                    size={18}
-                    color="black"
-                  />
-                </ActionIcon>
-              )}
-            </Group>
-            <Group gap={0}>
-              <ActionIcon
-                size="sm"
-                variant={
-                  triadInfoPanelState.visibility && triadInfoPanelState.triadId === parseInt(node.value)
-                    ? "light"
-                    : "transparent"
-                }
-                color={
-                  triadInfoPanelState.visibility && triadInfoPanelState.triadId === parseInt(node.value)
-                    ? "purple"
-                    : "black"
-                }
-                onClick={() => handleClick(parseInt(node.value))}
+      {matrixTreeStructure.length > 0 ? (
+        <Tree
+          data={matrixTreeStructure}
+          levelOffset={23}
+          renderNode={({ node, expanded, hasChildren, elementProps }) => {
+            const triadId = parseInt(node.value);
+            return (
+              <Group
+                gap="lg"
+                justify="space-between"
+                className={elementProps.className}
+                style={elementProps.style}
+                data-selected={elementProps["data-selected"]}
+                data-hovered={elementProps["data-hovered"]}
+                data-value={elementProps["data-value"]}
               >
-                <DynamicTablerIcon name="IconViewfinder" size={16} />
-              </ActionIcon>
-              <ActionIcon size="sm" variant="transparent">
-                <DynamicTablerIcon name="IconEye" size={16} color="black" />
-              </ActionIcon>
-            </Group>
-          </Group>
-        )}
-      />
+                <Group gap={2}>
+                  <Text>{node.label}</Text>
+                  {hasChildren && (
+                    <ActionIcon size="sm" variant="transparent" onClick={elementProps.onClick}>
+                      <DynamicTablerIcon
+                        name={expanded ? "IconCaretUpFilled" : "IconCaretDownFilled"}
+                        size={18}
+                        color="black"
+                      />
+                    </ActionIcon>
+                  )}
+                </Group>
+                <Group gap={0}>
+                  <ActionIcon
+                    size="sm"
+                    variant={triadInfoPanelState.triadId === triadId ? "light" : "transparent"}
+                    color={triadInfoPanelState.triadId === triadId ? "purple" : "black"}
+                    onClick={() => handleClick(triadId)}
+                  >
+                    <DynamicTablerIcon name="IconViewfinder" size={16} />
+                  </ActionIcon>
+                  <ActionIcon
+                    size="sm"
+                    variant="transparent"
+                    color="black"
+                    disabled={hasChildren}
+                    onClick={handleDeleteTriad(triadId)}
+                  >
+                    <DynamicTablerIcon name="IconTrash" size={16} />
+                  </ActionIcon>
+                </Group>
+              </Group>
+            );
+          }}
+        />
+      ) : (
+        <Text size="sm">{"You have no triad's created"}</Text>
+      )}
     </Paper>
   );
 };

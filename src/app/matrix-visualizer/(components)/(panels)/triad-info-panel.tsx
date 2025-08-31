@@ -1,4 +1,4 @@
-import { ActionIcon, ActionIconGroup, Group, Paper, SegmentedControl, Select, Stack, Text } from "@mantine/core";
+import { ActionIcon, Group, Paper, Select, Stack, Text } from "@mantine/core";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useFormik, type FormikHandlers } from "formik";
 import { useEffect, useState } from "react";
@@ -13,20 +13,16 @@ import {
 import { type Matrix } from "../../(database)/tables";
 import { BASE_FRAME_MATRIX, UNIT_RATIOS, type UnitOptions } from "../../constants";
 import {
-  convertDegreesToRadians,
   convertEulerPoseToMatrix,
   convertMatrixToEulerPose,
   convertPoseToDegrees,
   convertPoseToRadians,
   getTriadMatrixInAnotherFrame,
-  getWorldMatrix,
   roundArray,
 } from "../../helpers";
 import { useStates3d, useTriadInfoPanelState } from "../../states";
-import { TriadForm, TriadPoseDisplayType, type TriadPose, type TriadPoseDisplayParams } from "../../types";
+import { type TriadForm, type TriadPoseDisplayType, type TriadPose } from "../../types";
 import { Pose } from "../(pose-display)/pose";
-import { type Matrix4Tuple } from "three";
-import { ColorSelection } from "../(common)/color-selection";
 import { TriadNameAndSphereColorDisplay } from "../(triad-form)/name-and-sphere-color-display";
 import { PoseTypeSelection } from "../(triad-form)/pose-type-selection";
 import { onPoseTypeChange } from "./triad-form-helpers";
@@ -53,28 +49,42 @@ export const TriadInfoPanel = () => {
     colors: selectedTriad?.colors ?? { x: "#808080", y: "#808080", z: "#808080", sphere: "#808080" },
     type: "euler",
     angleOrder: "XYZ",
-    pose: selectedTriad !== undefined ? convertPoseToDegrees(selectedTriad.pose, angleSetting) : [0, 0, 0, 0, 0, 0],
-    matrix: convertEulerPoseToMatrix(
-      selectedTriad !== undefined ? convertPoseToRadians(selectedTriad.pose, angleSetting) : [0, 0, 0, 0, 0, 0],
-      "XYZ",
-    ),
+    pose:
+      selectedTriad !== undefined
+        ? roundArray(convertPoseToDegrees(selectedTriad.pose, angleSetting))
+        : [0, 0, 0, 0, 0, 0],
+    matrix: convertEulerPoseToMatrix(selectedTriad !== undefined ? selectedTriad.pose : [0, 0, 0, 0, 0, 0], "XYZ"),
   };
 
   const triadForm = useFormik({
     initialValues: initialValuesFromSelected,
+    validate: (values) => {
+      const errors: Partial<Record<keyof Matrix, string>> = {};
+      if (values.name === undefined || values.name.trim() === "") {
+        errors.name = "Matrix name required";
+      } else if (matrixNamesAndIds.find((matrix) => matrix.name === values.name) !== undefined) {
+        errors.name = "Name already exists";
+      }
+      return errors;
+    },
     validateOnChange: true,
     onSubmit: async (values) => {
-      if (noSelectedMatrix) return;
+      if (noSelectedTriad) return;
+      const pose: TriadPose =
+        values.type === "euler"
+          ? convertPoseToRadians(values.pose, angleSetting)
+          : convertMatrixToEulerPose(values.matrix, values.angleOrder);
       await updateMatrix(selectedTriad.id, {
         name: values.name.trim(),
         colors: values.colors,
-        pose: values.pose.map((poseElement, poseIndex) =>
-          poseIndex < 3
-            ? poseElement / UNIT_RATIOS[unitSetting]
-            : angleSetting === "deg"
-              ? convertDegreesToRadians(poseElement)
-              : poseElement,
-        ) as Matrix["pose"],
+        pose: [
+          pose[0] / UNIT_RATIOS[unitSetting],
+          pose[1] / UNIT_RATIOS[unitSetting],
+          pose[2] / UNIT_RATIOS[unitSetting],
+          pose[3],
+          pose[4],
+          pose[5],
+        ],
         parent: values.parent,
       });
       setMode("view");
@@ -82,13 +92,9 @@ export const TriadInfoPanel = () => {
   });
 
   useEffect(() => {
-    triadForm.setValues(initialValuesFromSelected);
+    triadForm.resetForm({ values: initialValuesFromSelected });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTriad, mode]);
-
-  const handleDeleteTriad = async () => {
-    await deleteMatrix(triadInfoPanelState.triadId);
-    triadInfoPanelState.hideTriadPanel();
-  };
 
   const handleChangeMode = (updateForm: FormikHandlers["handleChange"]) => {
     if (mode == "view") {
@@ -109,7 +115,7 @@ export const TriadInfoPanel = () => {
   };
 
   const { name, colors, angleOrder, matrix, pose, type, parent } = triadForm.values;
-  const noSelectedMatrix = selectedTriad === undefined;
+  const noSelectedTriad = selectedTriad === undefined;
   const isBaseFrame = selectedTriad?.id === BASE_FRAME_MATRIX.id;
 
   return (
@@ -133,7 +139,7 @@ export const TriadInfoPanel = () => {
                   variant="light"
                   size="md"
                   type="submit"
-                  disabled={noSelectedMatrix || isBaseFrame || isPoseError}
+                  disabled={noSelectedTriad || isBaseFrame || isPoseError}
                 >
                   <DynamicTablerIcon name="IconDeviceFloppy" size={16} />
                 </ActionIcon>
@@ -141,18 +147,10 @@ export const TriadInfoPanel = () => {
               <ActionIcon
                 variant="light"
                 size="md"
-                disabled={noSelectedMatrix || isBaseFrame}
+                disabled={noSelectedTriad || isBaseFrame}
                 onClick={() => handleChangeMode(triadForm.handleChange)}
               >
                 <DynamicTablerIcon name={mode == "view" ? "IconPencil" : "IconCancel"} size={16} />
-              </ActionIcon>
-              <ActionIcon
-                variant="light"
-                size="md"
-                disabled={noSelectedMatrix || isBaseFrame}
-                onClick={handleDeleteTriad}
-              >
-                <DynamicTablerIcon name="IconTrash" size={16} />
               </ActionIcon>
             </Group>
           </Group>
@@ -160,13 +158,13 @@ export const TriadInfoPanel = () => {
             <PoseTypeSelection
               angleOrder={angleOrder}
               poseType={type}
-              disablePoseTypeToggle={noSelectedMatrix || isPoseError}
+              disablePoseTypeToggle={noSelectedTriad || isPoseError}
               setAngleOrder={(value) => handleFieldChange("angleOrder", value)}
               setPoseType={handlePoseTypeChange}
             />
             <CopyPasteButtons
-              disableCopy={noSelectedMatrix}
-              disablePaste={noSelectedMatrix || mode === "edit"}
+              disableCopy={noSelectedTriad}
+              disablePaste={noSelectedTriad || mode === "edit"}
               matrix={matrix}
               pose={pose}
               poseType={type}
@@ -212,7 +210,9 @@ export const TriadInfoPanel = () => {
                   } else {
                     handleFieldChange(
                       "pose",
-                      convertPoseToDegrees(convertMatrixToEulerPose(transformedPose, angleOrder), angleSetting),
+                      roundArray(
+                        convertPoseToDegrees(convertMatrixToEulerPose(transformedPose, angleOrder), angleSetting),
+                      ),
                     );
                   }
                   handleFieldChange("parent", parseInt(value));

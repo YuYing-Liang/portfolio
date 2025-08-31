@@ -3,7 +3,7 @@ import { type FC } from "react";
 import { type Matrix4Tuple } from "three";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { type EulerAngleOrders, type TriadPose } from "../../types";
-import { convertEulerPoseToMatrix } from "../../helpers";
+import { convertEulerPoseToMatrix, roundArray } from "../../helpers";
 
 interface ResetButtonProps {
   angleOrder: EulerAngleOrders;
@@ -18,8 +18,8 @@ export const ResetButton: FC<ResetButtonProps> = (props) => {
       variant="default"
       size="md"
       onClick={() => {
-        props.setPose({ ...props.initialPose });
         props.setMatrix(convertEulerPoseToMatrix(props.initialPose, props.angleOrder));
+        props.setPose(roundArray(props.initialPose));
       }}
     >
       <DynamicTablerIcon name="IconRestore" size={16} />

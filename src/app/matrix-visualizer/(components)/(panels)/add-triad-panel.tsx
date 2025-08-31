@@ -7,18 +7,12 @@ import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
 import { addMatrix, getAllMatrixNamesAndIds, getAllSettings } from "../../(database)/queries";
 import { useState } from "react";
-import {
-  convertEulerPoseToMatrix,
-  convertMatrixToEulerPose,
-  convertPoseToDegrees,
-  convertPoseToRadians,
-  roundArray,
-} from "../../helpers";
+import { convertEulerPoseToMatrix, convertMatrixToEulerPose, convertPoseToRadians } from "../../helpers";
 import { PoseTypeSelection } from "../(triad-form)/pose-type-selection";
 import { CopyPasteButtons } from "../(triad-form)/copy-paste-buttons";
 import { TriadNameAndSphereColorDisplay } from "../(triad-form)/name-and-sphere-color-display";
 import { ResetButton } from "../(triad-form)/reset-button";
-import { type TriadPoseDisplayType, type TriadPose, TriadForm } from "../../types";
+import { type TriadPoseDisplayType, type TriadPose, type TriadForm } from "../../types";
 import { onPoseTypeChange } from "./triad-form-helpers";
 
 const INITIAL_TRIAD_FORM_VALUES: TriadForm = {

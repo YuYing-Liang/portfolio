@@ -1,7 +1,21 @@
+import { type Table } from "dexie";
 import { isParentBase } from "../helpers";
 import { type TriadTreeElement } from "../types";
 import { db } from "./db";
-import type { Matrix, Setting } from "./tables";
+import type { Matrix, MatrixWithId, Setting } from "./tables";
+
+export const ensureDefaultMatrix = async (
+  table: Table<MatrixWithId, number, MatrixWithId>,
+  matrixToAdd: MatrixWithId,
+) => {
+  const existing = await table.get(matrixToAdd.id);
+  if (!existing) {
+    await table.add(matrixToAdd);
+    console.log(`Created row with id=${matrixToAdd.id}`);
+  } else {
+    console.log(`Row with id=${matrixToAdd.id} already exists`);
+  }
+};
 
 export const addMatrix = async (matrix: Matrix) => {
   return await db.matrices.add(matrix);
