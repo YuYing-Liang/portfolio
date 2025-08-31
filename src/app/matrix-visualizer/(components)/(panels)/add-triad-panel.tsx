@@ -13,7 +13,7 @@ import {
 import { DynamicTablerIcon } from "../../../(components)/Icon";
 import { Pose } from "../(pose-display)/pose";
 import { type TriadPoseDisplayParams } from "../../types";
-import { DEFAULT_AXIS_COLORS, UNIT_RATIOS, UnitOptions } from "../../constants";
+import { DEFAULT_AXIS_COLORS, INITIAL_TRIAD_FORM_VALUES, UNIT_RATIOS, type UnitOptions } from "../../constants";
 import { Formik } from "formik";
 import { type Matrix } from "../../(database)/tables";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -23,18 +23,11 @@ import { useState } from "react";
 import { convertDegressToRadians, convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
 import { type Matrix4Tuple } from "three";
 import { ColorSelection } from "../(common)/color-selection";
-
-const INITIAL_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
-  name: "New Triad",
-  parent: undefined,
-  pose: [0, 0, 0, 0, 0, 0],
-  colors: DEFAULT_AXIS_COLORS,
-  type: "euler",
-  angleOrder: "XYZ",
-};
+import { PoseTypeSelection } from "../(triad-form)/pose-type-selection";
+import { CopyPasteButtons } from "../(triad-form)/copy-paste-buttons";
+import { TriadNameAndSphereColorDisplay } from "../(triad-form)/name-and-sphere-color-display";
 
 export const AddTriadPanel = () => {
-  const hideInfoPanel = useTriadInfoPanelState((state) => state.hideTriadPanel);
   const matrixNamesAndIds = useLiveQuery(async () => await getAllMatrixNamesAndIds()) ?? [];
   const [poseDisableSubmit, setPoseDisableSubmit] = useState<boolean>(false);
 
@@ -45,7 +38,10 @@ export const AddTriadPanel = () => {
   return (
     <Paper className="absolute left-[25px] top-[25px]" shadow="xs" p="sm">
       <Formik
-        initialValues={{ ...INITIAL_FORM_VALUES }}
+        initialValues={{
+          ...INITIAL_TRIAD_FORM_VALUES,
+          matrix: convertEulerPoseToMatrix(INITIAL_TRIAD_FORM_VALUES.pose, INITIAL_TRIAD_FORM_VALUES.angleOrder),
+        }}
         validate={(values) => {
           const errors: Partial<Record<keyof Matrix, string>> = {};
           if (values.name === undefined || values.name.trim() === "") {
@@ -69,73 +65,24 @@ export const AddTriadPanel = () => {
             ) as Matrix["pose"],
             parent: values.parent,
           });
-          hideInfoPanel();
-          // const triadPose = new Vector3(values.pose[0], values.pose[1], values.pose[2]);
-          // camera.position.set(triadPose.x, triadPose.y, triadPose.z + 5);
-          // camera.lookAt(triadPose);
         }}
       >
         {({ values, errors, handleChange, handleSubmit, isValid }) => (
           <form onSubmit={handleSubmit}>
+            <Text fw={600}>Add triad to scene</Text>
             <Group justify="space-between" gap="xs" mb="xs">
-              <Text fw={600}>Add triad to scene</Text>
-              <ActionIconGroup>
-                <ActionIcon
-                  variant="default"
-                  size="md"
-                  onClick={async () => {
-                    await navigator.clipboard.writeText(
-                      `[${
-                        values.type == "euler"
-                          ? values.pose.toString()
-                          : convertEulerPoseToMatrix(values.pose, values.angleOrder).toString()
-                      }]`,
-                    );
-                  }}
-                >
-                  <DynamicTablerIcon name="IconCopy" size={16} />
-                </ActionIcon>
-                <ActionIcon
-                  variant="default"
-                  size="md"
-                  onClick={async () => {
-                    const poseStr = await navigator.clipboard.readText();
-                    let pose = poseStr
-                      .substring(1, poseStr.length - 1)
-                      .split(",")
-                      .filter((elem) => elem.trim() !== "")
-                      .map(Number);
-                    if (pose.length !== 6 && pose.length !== 16) return;
-                    if (pose.length === 16) {
-                      pose = convertMatrixToEulerPose(pose as Matrix4Tuple, values.angleOrder);
-                    }
-                    handleChange({ target: { name: "pose", value: pose } });
-                  }}
-                >
-                  <DynamicTablerIcon name="IconClipboard" size={16} />
-                </ActionIcon>
-              </ActionIconGroup>
-            </Group>
-            <Group gap="5px">
-              <SegmentedControl
-                size="xs"
-                data={["euler", "matrix"]}
-                onChange={(value) => {
-                  handleChange({ target: { name: "type", value } });
-                  setPoseDisableSubmit(false);
-                }}
-                value={values.type}
+              <PoseTypeSelection
+                angleOrder={values.angleOrder}
+                poseType={values.type}
+                setAngleOrder={(value) => handleChange({ target: { name: "angleOrder", value } })}
+                setPoseType={(value) => handleChange({ target: { name: "type", value } })}
               />
-              <Select
-                size="xs"
-                w="75px"
-                data={["XYZ", "ZYZ"]}
-                onChange={(value) => {
-                  if (value == null) return;
-                  handleChange({ target: { name: "angleOrder", value } });
-                  setPoseDisableSubmit(false);
-                }}
-                value={values.angleOrder}
+              <CopyPasteButtons
+                matrix={values.matrix}
+                pose={values.pose}
+                poseType={values.type}
+                setMatrix={(value) => handleChange({ target: { name: "matrix", value } })}
+                setPose={(value) => handleChange({ target: { name: "pose", value } })}
               />
             </Group>
             {matrixNamesAndIds.length > 0 && (
@@ -157,37 +104,19 @@ export const AddTriadPanel = () => {
               />
             )}
             <Group mt="5px" gap="0.25rem">
-              <ColorSelection
-                canSelect
-                name="Sphere color"
+              <TriadNameAndSphereColorDisplay
+                name={values.name}
                 color={values.colors.sphere}
-                setColor={(color) =>
-                  handleChange({ target: { name: "colors", value: { ...values.colors, sphere: color } } })
-                }
+                nameError={errors.name}
+                setColor={(sphere) => handleChange({ target: { name: "color", value: { ...values.colors, sphere } } })}
+                setName={handleChange}
               />
-              <InputWrapper error={errors.name} w="fit-content">
-                <TextInput
-                  name="name"
-                  value={values.name}
-                  error={errors.name !== undefined}
-                  placeholder="Matrix name"
-                  size="xs"
-                  onChange={handleChange}
-                />
-              </InputWrapper>
-              <ActionIcon
-                variant="default"
-                size="md"
-                onClick={() => handleChange({ target: { name: "pose", value: INITIAL_FORM_VALUES.pose } })}
-              >
-                <DynamicTablerIcon name="IconRestore" size={16} />
-              </ActionIcon>
             </Group>
             <Pose
               editable
               pose={values.pose}
-              setPose={(pose) => {
-                handleChange({ target: { name: "pose", value: pose } });
+              setPose={(value) => {
+                handleChange({ target: { name: "pose", value } });
               }}
               colors={values.colors}
               angleOrder={values.angleOrder}

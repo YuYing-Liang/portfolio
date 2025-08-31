@@ -1,12 +1,17 @@
 import { type FC } from "react";
-import type { TriadPoseDisplayProps, TriadPoseDisplayType } from "../../types";
+import type { TriadPose, TriadPoseDisplayProps, TriadPoseDisplayType } from "../../types";
 import { EulerPose } from "./euler";
 import { MatrixDisplay } from "./homogenous-matrix";
 import { convertEulerPoseToMatrix, convertMatrixToEulerPose } from "../../helpers";
+import { type Matrix4Tuple } from "three";
 
 interface PoseProps extends TriadPoseDisplayProps {
   displayType: TriadPoseDisplayType;
+  pose: TriadPose;
+  matrix: Matrix4Tuple;
   disableSubmit: (disable: boolean) => void;
+  setPose: (pose: TriadPose) => void;
+  setMatrix: (matrix: Matrix4Tuple) => void;
 }
 
 export const Pose: FC<PoseProps> = (props) => {

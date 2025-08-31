@@ -11,7 +11,7 @@ import {
   updateMatrix,
 } from "../../(database)/queries";
 import { type Matrix } from "../../(database)/tables";
-import { BASE_FRAME_MATRIX, UNIT_RATIOS, UnitOptions } from "../../constants";
+import { BASE_FRAME_MATRIX, UNIT_RATIOS, type UnitOptions } from "../../constants";
 import {
   convertDegressToRadians,
   convertEulerPoseToMatrix,
@@ -20,7 +20,7 @@ import {
   getWorldMatrix,
 } from "../../helpers";
 import { useStates3d, useTriadInfoPanelState } from "../../states";
-import { TriadPose, type TriadPoseDisplayParams } from "../../types";
+import { type TriadPose, type TriadPoseDisplayParams } from "../../types";
 import { Pose } from "../(pose-display)/pose";
 import { type Matrix4Tuple } from "three";
 import { ColorSelection } from "../(common)/color-selection";
@@ -71,7 +71,7 @@ export const TriadInfoPanel = () => {
     triadForm.setValues(valuesFromMatrix);
   }, [selectedMatrix, mode]);
 
-  const getTransformedTriadPose = (parentTriadId: string) => {
+  const getTransformedTriadPose = (parentTriadId: string): TriadPose => {
     const selectedTriad = states3d.scene?.getObjectByName(`triad-${triadInfoPanelState.triadId}`);
     const selectedParentTriad = states3d.scene?.getObjectByName(`triad-${parentTriadId}`);
 
@@ -106,7 +106,9 @@ export const TriadInfoPanel = () => {
                 name="Sphere color"
                 canSelect={mode === "edit"}
                 color={triadForm.values?.colors?.sphere ?? "#808080"}
-                setColor={(color) => triadForm.setFieldValue("colors", { ...triadForm.values.colors, sphere: color })}
+                setColor={(color) =>
+                  triadForm.handleChange({ name: "colors", value: { ...triadForm.values.colors, sphere: color } })
+                }
               />
               <Text fw={600}>{triadForm.values.name}</Text>
             </Group>
@@ -145,7 +147,7 @@ export const TriadInfoPanel = () => {
               disabled={selectedMatrix === undefined}
               data={["euler", "matrix"]}
               onChange={(value) => {
-                triadForm.setFieldValue("type", value);
+                triadForm.handleChange({ name: "type", value });
               }}
               value={triadForm.values.type}
             />
@@ -155,7 +157,7 @@ export const TriadInfoPanel = () => {
               w="75px"
               data={["XYZ", "ZYZ"]}
               onChange={(value) => {
-                triadForm.setFieldValue("angleOrder", value);
+                triadForm.handleChange({ name: "angleOrder", value });
               }}
               value={triadForm.values.angleOrder}
             />
@@ -191,7 +193,7 @@ export const TriadInfoPanel = () => {
                   if (pose.length === 16) {
                     pose = convertMatrixToEulerPose(pose as Matrix4Tuple, triadForm.values.angleOrder);
                   }
-                  triadForm.setFieldValue("pose", pose);
+                  triadForm.handleChange({ name: "pose", value: pose });
                 }}
               >
                 <DynamicTablerIcon name="IconClipboard" size={16} />
@@ -216,10 +218,8 @@ export const TriadInfoPanel = () => {
                     value === triadForm.values.parent?.toString()
                   )
                     return;
-                  const poseToChange = (
-                    value === null ? [...selectedMatrix.pose] : getTransformedTriadPose(value)
-                  ) as TriadPose;
-                  triadForm.setFieldValue("pose", convertPoseToDegrees(poseToChange, angleSetting));
+                  const poseToChange = value === null ? [...selectedMatrix.pose] : getTransformedTriadPose(value);
+                  triadForm.handleChange({ name: "pose", value: convertPoseToDegrees(poseToChange, angleSetting) });
                   triadForm.setFieldValue("parent", value ?? selectedMatrix.parent ?? "0");
                 }}
                 size="xs"
@@ -237,7 +237,10 @@ export const TriadInfoPanel = () => {
                   }))}
                   defaultValue={triadForm.values.parent === undefined ? "0" : triadForm.values.parent.toString()}
                   onChange={(parentId) => {
-                    triadForm.setFieldValue("parent", parentId == null ? undefined : parseInt(parentId));
+                    triadForm.handleChange({
+                      name: "parent",
+                      value: parentId == null ? undefined : parseInt(parentId),
+                    });
                   }}
                   size="xs"
                   searchable
@@ -261,7 +264,7 @@ export const TriadInfoPanel = () => {
                   mode === "edit" && triadForm.values?.pose !== undefined && triadForm.values?.colors !== undefined
                 }
                 setPose={(pose) => {
-                  triadForm.setFieldValue("pose", pose);
+                  triadForm.handleChange({ name: "pose", value: pose });
                 }}
                 pose={triadForm.values?.pose ?? [0, 0, 0, 0, 0, 0]}
                 colors={triadForm.values?.colors ?? { x: "#808080", y: "#808080", z: "#808080" }}
@@ -269,7 +272,10 @@ export const TriadInfoPanel = () => {
                 angleOrder={triadForm.values.angleOrder}
                 disableSubmit={setDisableSubmit}
                 setTriadColors={(colors) =>
-                  triadForm.setFieldValue("colors", { ...colors, sphere: triadForm.values.colors.sphere })
+                  triadForm.handleChange({
+                    name: "colors",
+                    value: { ...colors, sphere: triadForm.values.colors.sphere },
+                  })
                 }
               />
             )}

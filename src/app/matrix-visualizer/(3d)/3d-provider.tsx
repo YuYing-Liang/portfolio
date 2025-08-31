@@ -37,7 +37,7 @@ export const Provider3d: FC<Provider3dProps> = (props) => {
     if (gridSetting === undefined) return;
     const userSettingScale = gridSetting.value as number;
     scene.scale.set(userSettingScale, userSettingScale, userSettingScale);
-  }, [gridSetting]);
+  }, [gridSetting, scene.scale]);
 
   return <></>;
 };

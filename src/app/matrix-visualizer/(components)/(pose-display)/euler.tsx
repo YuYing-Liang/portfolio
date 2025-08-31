@@ -1,10 +1,12 @@
 import { Text, NumberInput, Badge, Stack } from "@mantine/core";
 import { useState, type FC } from "react";
-import type { TriadPoseDisplayProps } from "../../types";
+import type { TriadPose, TriadPoseDisplayProps } from "../../types";
 import { EULER_POSE_LABELS } from "../../constants";
 import { AxesColorSelection } from "../(common)/axes-color-selection";
 
 interface EulerPoseProps extends TriadPoseDisplayProps {
+  pose: TriadPose;
+  setPose: (pose: TriadPose) => void;
   disableSubmit: (disable: boolean) => void;
 }
 

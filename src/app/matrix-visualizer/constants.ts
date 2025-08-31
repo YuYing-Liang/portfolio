@@ -1,5 +1,5 @@
-import { type MatrixWithId } from "./(database)/tables";
-import { type PoseLabels, type EulerAngleOrders } from "./types";
+import { type Matrix, type MatrixWithId } from "./(database)/tables";
+import { type PoseLabels, type EulerAngleOrders, type TriadPoseDisplayParams } from "./types";
 
 export const DEFAULT_AXIS_COLORS = {
   x: "#FF0000",
@@ -36,3 +36,12 @@ export const UNIT_RATIOS: Record<UnitOptions, number> = {
 
 export const DEFAULT_TRIAD_FOCUS_COLOR = "#00FFFF";
 export const DEFAULT_PARENT_TRIAD_HIGHLIGHT_COLOR = "#C8A2C8";
+
+export const INITIAL_TRIAD_FORM_VALUES: Matrix & TriadPoseDisplayParams = {
+  name: "New Triad",
+  parent: undefined,
+  pose: [0, 0, 0, 0, 0, 0],
+  colors: DEFAULT_AXIS_COLORS,
+  type: "euler",
+  angleOrder: "XYZ",
+};

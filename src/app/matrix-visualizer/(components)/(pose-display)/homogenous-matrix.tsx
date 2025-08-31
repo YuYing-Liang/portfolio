@@ -4,7 +4,7 @@ import { Badge, NumberInput, Space, Stack, Text } from "@mantine/core";
 import { type Matrix4Tuple } from "three";
 import { AxesColorSelection } from "../(common)/axes-color-selection";
 
-interface MatrixDisplayProps extends Pick<TriadPoseDisplayProps, "editable" | "colors" | "angleOrder"> {
+interface MatrixDisplayProps extends TriadPoseDisplayProps {
   matrixElements: Matrix4Tuple;
   setMatrixElements: (matrix: Matrix4Tuple) => void;
 }

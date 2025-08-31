@@ -14,10 +14,8 @@ type TriadAxesColors = Omit<TriadColors, "sphere">;
 export interface TriadPoseDisplayProps {
   colors: TriadAxesColors;
   editable: boolean;
-  pose: TriadPose;
   angleOrder: EulerAngleOrders;
-  setPose?: (pose: TriadPose) => void;
-  setTriadColors?: (colors: TriadAxesColors) => void;
+  setTriadColors: (colors: TriadAxesColors) => void;
 }
 
 export type TriadPoseDisplayType = "matrix" | "euler";

@@ -1,6 +1,6 @@
 import { type Size } from "@react-three/fiber";
 import { type TriadRotation, type EulerAngleOrders, type TriadPose, type TriadPosition } from "./types";
-import { Matrix4, Euler, type Matrix4Tuple, Quaternion, Vector3, type Object3D, Scene, Mesh } from "three";
+import { Matrix4, Euler, type Matrix4Tuple, Quaternion, Vector3, type Object3D, type Scene, Mesh } from "three";
 import { BASE_FRAME_MATRIX } from "./constants";
 
 export const convertEulerPoseToMatrix = (pose: TriadPose, angleOrder: EulerAngleOrders): Matrix4Tuple => {

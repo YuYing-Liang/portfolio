@@ -15,5 +15,3 @@ You can add, update and delete a coordinate frame as well as triad naming, copy,
 ### Known Bugs
 - entering an empty value on the pose input fields saves the pose and causes the matrix view to be corrupted
 - revert and paste pose is not updating in matrix view
-- clicking on a triad (info panel appears) then clicking on another triad causes the info panel to display incorrect information
-
