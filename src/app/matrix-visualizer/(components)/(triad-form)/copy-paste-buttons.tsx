@@ -1,13 +1,22 @@
 import { ActionIconGroup, ActionIcon } from "@mantine/core";
 import { type Matrix4Tuple } from "three";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
-import { type TriadPose, type TriadPoseDisplayType } from "../../types";
+import { EulerAngleOrders, type TriadPose, type TriadPoseDisplayType } from "../../types";
 import { type FC } from "react";
+import {
+  convertEulerPoseToMatrix,
+  convertMatrixToEulerPose,
+  convertPoseToDegrees,
+  convertPoseToRadians,
+  roundArray,
+} from "../../helpers";
 
 interface CopyPasteButtonsProps {
   pose: TriadPose;
   matrix: Matrix4Tuple;
   poseType: TriadPoseDisplayType;
+  angleOrder: EulerAngleOrders;
+  angleSetting: string;
   setPose: (pose: TriadPose) => void;
   setMatrix: (matrix: Matrix4Tuple) => void;
 }
@@ -38,9 +47,26 @@ export const CopyPasteButtons: FC<CopyPasteButtonsProps> = (props) => {
             .map(Number);
           if (pose.length !== 6 && pose.length !== 16) return;
           if (pose.length === 16) {
-            props.setMatrix(pose as Matrix4Tuple);
+            if (props.poseType === "matrix") {
+              props.setMatrix(pose as Matrix4Tuple);
+            } else {
+              props.setPose(
+                roundArray(
+                  convertPoseToDegrees(
+                    convertMatrixToEulerPose(pose as Matrix4Tuple, props.angleOrder),
+                    props.angleSetting,
+                  ),
+                ),
+              );
+            }
           } else {
-            props.setPose(pose as TriadPose);
+            if (props.poseType === "matrix") {
+              props.setMatrix(
+                convertEulerPoseToMatrix(convertPoseToRadians(pose as TriadPose, props.angleSetting), props.angleOrder),
+              );
+            } else {
+              props.setPose(pose as TriadPose);
+            }
           }
         }}
       >

@@ -34,6 +34,11 @@ export const convertMatrixToEulerPose = (matrixTuple: Matrix4Tuple, angleOrder: 
       return [...position, 0, Math.PI, Math.atan2(-m12, -m11)];
     }
     return [...position, Math.atan2(m23, m13), Math.acos(m33), Math.atan2(m32, -m31)];
+  } else if (angleOrder === "XYZ") {
+    if (Math.abs(m23) < 0.99999) {
+      return [...position, Math.atan2(-m23, m33), Math.asin(m13), Math.atan2(-m12, m11)];
+    }
+    return [...position, 0, m23 > 0 ? Math.PI / 2 : -Math.PI / 2, Math.atan2(m21, m22)];
   }
 
   const euler = new Euler();

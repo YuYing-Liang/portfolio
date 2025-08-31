@@ -12,6 +12,3 @@ You can add, update and delete a coordinate frame as well as triad naming, copy,
 - proper selection management (click triad -> click out deselects, double click etc.)
 - duplicate triad
 
-### Known Bugs
-- entering an empty value on the pose input fields saves the pose and causes the matrix view to be corrupted
-- revert and paste pose is not updating in matrix view

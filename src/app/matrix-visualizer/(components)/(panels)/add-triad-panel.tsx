@@ -13,6 +13,7 @@ import {
   convertMatrixToEulerPose,
   convertPoseToDegrees,
   convertPoseToRadians,
+  roundArray,
 } from "../../helpers";
 import { PoseTypeSelection } from "../(triad-form)/pose-type-selection";
 import { CopyPasteButtons } from "../(triad-form)/copy-paste-buttons";
@@ -85,8 +86,7 @@ export const AddTriadPanel = () => {
     if (newPoseType === "matrix" && type === "euler") {
       handleFieldChange("matrix", convertEulerPoseToMatrix(convertPoseToRadians(pose, angleSetting), angleOrder));
     } else if (newPoseType === "euler" && type === "matrix") {
-      console.log("matrix in pose", convertMatrixToEulerPose(matrix, angleOrder));
-      handleFieldChange("pose", convertPoseToDegrees(convertMatrixToEulerPose(matrix, angleOrder), angleSetting));
+      handleFieldChange("pose", roundArray(convertPoseToDegrees(convertMatrixToEulerPose(matrix, angleOrder), angleSetting), 2));
     }
     handleFieldChange("type", newPoseType);
   };
@@ -107,6 +107,8 @@ export const AddTriadPanel = () => {
             matrix={matrix}
             pose={pose}
             poseType={type}
+            angleOrder={angleOrder}
+            angleSetting={angleSetting}
             setMatrix={(value) => handleFieldChange("matrix", value)}
             setPose={(value) => handleFieldChange("pose", value)}
           />
