@@ -10,3 +10,8 @@ You can add, update and delete a coordinate frame as well as triad naming, copy,
 - proper selection management (click triad -> click out deselects, double click etc.)
 - duplicate triad
 
+
+### Known bugs
+- ZYZ transformations not fully complete
+- axis color for y and z axis swapped
+
