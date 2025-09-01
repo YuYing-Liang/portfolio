@@ -1,7 +1,7 @@
 import { DEFAULT_PARENT_TRIAD_HIGHLIGHT_COLOR, DEFAULT_TRIAD_FOCUS_COLOR, UNIT_OPTIONS } from "../constants";
 import { type Setting } from "./tables";
 
-export const MOST_RECENT_VERSION = 3;
+export const MOST_RECENT_SETTINGS_VERSION = 3;
 export const DEFAULT_SETTINGS: Record<number, Setting[]> = {
   3: [
     {

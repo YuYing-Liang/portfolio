@@ -1,5 +1,5 @@
-import { type Matrix, type MatrixWithId } from "./(database)/tables";
-import { type PoseLabels, type EulerAngleOrders, type TriadPoseDisplayParams } from "./types";
+import { type MatrixWithId } from "./(database)/tables";
+import { type PoseLabels, type EulerAngleOrders } from "./types";
 
 export const DEFAULT_AXIS_COLORS = {
   x: "#FF0000",

@@ -11,15 +11,20 @@ import { ObjectEffectsProvider } from "./(3d)/object-effects";
 import { SettingsToolbar } from "./(components)/(settings-toolbar)/settings-toolbar";
 import { Stack } from "@mantine/core";
 import { useEffect } from "react";
-import { ensureDefaultMatrix } from "./(database)/queries";
+import { ensureDefaultMatrix, ensureDefaultSettings } from "./(database)/queries";
 import { db } from "./(database)/db";
 import { BASE_FRAME_MATRIX } from "./constants";
+import { MOST_RECENT_SETTINGS_VERSION } from "./(database)/versions";
 
 export default function MatrixVisualizer() {
   const states3d = useStates3d();
 
-  useEffect(function addBaseTriadOnLoad() {
-    void ensureDefaultMatrix(db.table("matrices"), BASE_FRAME_MATRIX);
+  useEffect(function loadDefaultDbData() {
+    async function loadDefaultMatrixAndSettings() {
+      await ensureDefaultMatrix(db.table("matrices"), BASE_FRAME_MATRIX);
+      await ensureDefaultSettings(db.table("settings"), MOST_RECENT_SETTINGS_VERSION);
+    }
+    void loadDefaultMatrixAndSettings();
   }, []);
 
   return (

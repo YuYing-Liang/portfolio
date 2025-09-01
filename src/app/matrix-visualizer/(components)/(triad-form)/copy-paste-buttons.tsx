@@ -1,7 +1,7 @@
 import { ActionIconGroup, ActionIcon } from "@mantine/core";
 import { type Matrix4Tuple } from "three";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
-import { EulerAngleOrders, type TriadPose, type TriadPoseDisplayType } from "../../types";
+import { type EulerAngleOrders, type TriadPose, type TriadPoseDisplayType } from "../../types";
 import { type FC } from "react";
 import {
   convertEulerPoseToMatrix,

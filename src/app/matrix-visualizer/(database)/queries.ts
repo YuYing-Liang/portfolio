@@ -3,6 +3,7 @@ import { isParentBase } from "../helpers";
 import { type TriadTreeElement } from "../types";
 import { db } from "./db";
 import type { Matrix, MatrixWithId, Setting } from "./tables";
+import { DEFAULT_SETTINGS } from "./versions";
 
 export const ensureDefaultMatrix = async (
   table: Table<MatrixWithId, number, MatrixWithId>,
@@ -15,6 +16,16 @@ export const ensureDefaultMatrix = async (
   } else {
     console.log(`Row with id=${matrixToAdd.id} already exists`);
   }
+};
+
+export const ensureDefaultSettings = async (table: Table<Setting, number, Setting>, version: number) => {
+  await table.clear();
+  if (DEFAULT_SETTINGS[version] === undefined) {
+    console.log("No default settings found.");
+    return;
+  }
+  const response = await table.bulkPut(DEFAULT_SETTINGS[version]);
+  console.log(`Finished initializing settings database: ${response}`);
 };
 
 export const addMatrix = async (matrix: Matrix) => {

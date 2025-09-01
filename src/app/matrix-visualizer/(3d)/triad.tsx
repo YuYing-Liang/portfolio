@@ -1,10 +1,10 @@
 import { useRef, useState, type FC } from "react";
-import { DoubleSide, type Group, Vector3 } from "three";
+import { DoubleSide, type Group } from "three";
 import { BASE_FRAME_MATRIX, DEFAULT_AXIS_COLORS } from "../constants";
 import { useCursor } from "@react-three/drei";
 import { useTriadInfoPanelState } from "../states";
 import { useThree } from "@react-three/fiber";
-import { convert3DpositionTo2D, lookAtTriad } from "../helpers";
+import { lookAtTriad } from "../helpers";
 import { type TriadColors } from "../types";
 import { updateMatrix } from "../(database)/queries";
 

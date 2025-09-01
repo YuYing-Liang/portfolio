@@ -3,13 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useFormik, type FormikHandlers } from "formik";
 import { useEffect, useState } from "react";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
-import {
-  deleteMatrix,
-  getAllMatrixNamesAndIds,
-  getAllSettings,
-  getMatrix,
-  updateMatrix,
-} from "../../(database)/queries";
+import { getAllMatrixNamesAndIds, getAllSettings, getMatrix, updateMatrix } from "../../(database)/queries";
 import { type Matrix } from "../../(database)/tables";
 import { BASE_FRAME_MATRIX, UNIT_RATIOS, type UnitOptions } from "../../constants";
 import {

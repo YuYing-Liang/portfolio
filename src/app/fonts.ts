@@ -1,4 +1,4 @@
-import { Be_Vietnam_Pro, Libre_Baskerville, Space_Mono, Work_Sans } from "next/font/google";
+import { Be_Vietnam_Pro, Libre_Baskerville, Space_Mono } from "next/font/google";
 
 export const sans = Be_Vietnam_Pro({
   subsets: ["latin"],

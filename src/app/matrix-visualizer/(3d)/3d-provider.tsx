@@ -4,7 +4,7 @@ import { type Scene, type Camera } from "three";
 import { useStates3d } from "../states";
 import { useLiveQuery } from "dexie-react-hooks";
 import { getSetting } from "../(database)/queries";
-import { DEFAULT_SETTINGS, MOST_RECENT_VERSION } from "../(database)/versions";
+import { DEFAULT_SETTINGS, MOST_RECENT_SETTINGS_VERSION } from "../(database)/versions";
 
 interface Provider3dProps {
   initializeCamera: (camera: Camera) => void;
@@ -14,7 +14,9 @@ interface Provider3dProps {
 export const Provider3d: FC<Provider3dProps> = (props) => {
   const { camera, scene, size } = useThree();
   const { size: storedSize, setSize } = useStates3d();
-  const gridSetting = useLiveQuery(async () => await getSetting(DEFAULT_SETTINGS[MOST_RECENT_VERSION]![1]!.id));
+  const gridSetting = useLiveQuery(
+    async () => await getSetting(DEFAULT_SETTINGS[MOST_RECENT_SETTINGS_VERSION]![1]!.id),
+  );
 
   useEffect(() => {
     props.initializeCamera(camera);

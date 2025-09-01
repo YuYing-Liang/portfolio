@@ -1,8 +1,8 @@
-import Dexie, { type Table, type EntityTable } from "dexie";
+import Dexie, { type EntityTable } from "dexie";
 import type { MatrixWithId, Setting } from "./tables";
 import { BASE_FRAME_MATRIX } from "../constants";
-import { DEFAULT_SETTINGS, MOST_RECENT_VERSION } from "./versions";
-import { ensureDefaultMatrix } from "./queries";
+import { MOST_RECENT_SETTINGS_VERSION } from "./versions";
+import { ensureDefaultMatrix, ensureDefaultSettings } from "./queries";
 
 export const db = new Dexie("Database") as Dexie & {
   matrices: EntityTable<MatrixWithId, "id">;
@@ -16,9 +16,11 @@ db.version(1).stores({
 db.version(2)
   .stores({
     matrices: "++id, name, parent, pose, colors",
+    settings: "++id, name, type, value, options, min, max, step, markers",
   })
   .upgrade(async (tx) => {
-    await ensureDefaultMatrix(tx.table<MatrixWithId, integer, MatrixWithId>("matrices"), BASE_FRAME_MATRIX);
+    console.log("Updating to v2");
+    await ensureDefaultMatrix(tx.table<MatrixWithId, number, MatrixWithId>("matrices"), BASE_FRAME_MATRIX);
   });
 
 db.version(3)
@@ -27,10 +29,8 @@ db.version(3)
     settings: "++id, name, type, value, options, min, max, step, markers",
   })
   .upgrade(async (tx) => {
-    const settings = tx.table<Setting>("settings");
-    await settings.clear();
-    if (DEFAULT_SETTINGS[MOST_RECENT_VERSION] === undefined) return;
-    await settings.bulkPut(DEFAULT_SETTINGS[MOST_RECENT_VERSION]);
+    console.log("Updating to v3");
+    await ensureDefaultSettings(tx.table<Setting, number, Setting>("settings"), MOST_RECENT_SETTINGS_VERSION);
   });
 
 db.matrices.hook("deleting", async (id) => {
