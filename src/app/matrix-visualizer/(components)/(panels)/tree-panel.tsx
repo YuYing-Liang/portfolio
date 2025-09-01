@@ -8,19 +8,19 @@ import { lookAtTriad } from "../../helpers";
 
 export const TreePanel = () => {
   const matrixTreeStructure = useLiveQuery(async () => await getMatrixTreeStructure()) ?? [];
-  const { camera, scene, size } = useStates3d();
+  const { camera, scene } = useStates3d();
   const triadInfoPanelState = useTriadInfoPanelState();
 
   const handleFocusTriad = (triadId: number) => {
     const triadObject = scene?.getObjectByName(`triad-${triadId}`);
-    if (triadObject === undefined || camera === null || size === null) return;
+    if (triadObject === undefined || camera === null) return;
     lookAtTriad(triadObject, camera);
     triadInfoPanelState.showTriadPanel(triadId);
   };
 
   const handleShowTriadChildren = (triadId: number) => {
     const triadObject = scene?.getObjectByName(`triad-${triadId}`);
-    if (triadObject === undefined || camera === null || size === null) return;
+    if (triadObject === undefined || camera === null) return;
     lookAtTriad(triadObject, camera);
     triadInfoPanelState.showTriadPanel(triadId, true);
   };
