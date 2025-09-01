@@ -24,10 +24,11 @@ db.version(2)
 db.version(3)
   .stores({
     matrices: "++id, name, parent, pose, colors",
-    settings: "++id, name, type, value, min, max",
+    settings: "++id, name, type, value, options, min, max, step, markers",
   })
   .upgrade(async (tx) => {
     const settings = tx.table<Setting>("settings");
+    await settings.clear();
     if (DEFAULT_SETTINGS[MOST_RECENT_VERSION] === undefined) return;
     await settings.bulkPut(DEFAULT_SETTINGS[MOST_RECENT_VERSION]);
   });
