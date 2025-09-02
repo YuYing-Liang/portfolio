@@ -1,13 +1,13 @@
 import * as TablerIcons from "@tabler/icons-react";
 
-export type IconProps = {
+export type DynamicIconProps = {
   name: keyof typeof TablerIcons;
   size?: number;
   color?: string;
   className?: string;
 };
 
-export const DynamicTablerIcon = ({ name, color, className, size = 24 }: IconProps) => {
+export const DynamicTablerIcon = ({ name, color, className, size = 24 }: DynamicIconProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const IconComponent = (TablerIcons as unknown as Record<string, React.FC<any>>)[name];
 

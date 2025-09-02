@@ -1,10 +1,10 @@
 "use client";
 import { ActionIcon, Center, Container, Flex, Group, Image, Paper, Stack, Text, Title } from "@mantine/core";
 import React, { type FC, type MouseEventHandler, useState } from "react";
-import { DynamicTablerIcon, type IconProps } from "./(components)/Icon";
+import { DynamicTablerIcon, type DynamicIconProps } from "./(components)/Icon";
 import { useViewportSize } from "@mantine/hooks";
 
-const SkillDescriptions: Record<string, { description: string; icon: IconProps["name"] }> = {
+const SkillDescriptions: Record<string, { description: string; icon: DynamicIconProps["name"] }> = {
   react: {
     icon: "IconBrandReact",
     description: `
@@ -160,7 +160,7 @@ export default function SplashPage() {
 }
 
 const IconButton: FC<{
-  icon: IconProps["name"];
+  icon: DynamicIconProps["name"];
   isActive: boolean;
   size: number;
   onClick: MouseEventHandler<HTMLButtonElement>;
@@ -181,7 +181,7 @@ const IconButton: FC<{
   </ActionIcon>
 );
 
-const IconLink: FC<{ link: string; icon: IconProps["name"] }> = ({ link, icon }) => (
+const IconLink: FC<{ link: string; icon: DynamicIconProps["name"] }> = ({ link, icon }) => (
   <ActionIcon
     component="a"
     href={link}
