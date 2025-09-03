@@ -1,8 +1,10 @@
 "use client";
 import { Stack } from "@mantine/core";
-import { ChassisSelectorPanel } from "./(panels)/chassis-selector-panel";
-import { ChassisListPanel } from "./(panels)/chassis-list-panel";
-import { TopBar } from "./top-bar";
+import { TopBar } from "./(components)/top-bar";
+import { ChassisListPanel } from "./(components)/(panels)/chassis-list-panel";
+import { ChassisSelectorPanel } from "./(components)/(panels)/chassis-selector-panel";
+import { MotorSpeedPanel } from "./(components)/(panels)/motor-speed-panel";
+import { TrajectoryPanel } from "./(components)/(panels)/trajectory-panel";
 
 export default function KinematicModelGenerator() {
   return (
@@ -10,8 +12,12 @@ export default function KinematicModelGenerator() {
       <Stack className="absolute left-[25px] top-[25px]">
         <ChassisSelectorPanel />
         <ChassisListPanel />
+        <MotorSpeedPanel />
       </Stack>
       <TopBar />
+      <Stack className="absolute right-[25px] top-[25px]">
+        <TrajectoryPanel />
+      </Stack>
     </div>
   );
 }

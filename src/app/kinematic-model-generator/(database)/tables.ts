@@ -34,6 +34,7 @@ export type Chassis = {
 
 export interface Wheel {
   id: number;
+  name: string;
   frame: Matrix;
   chassis: number;
   width: number;
@@ -47,13 +48,9 @@ export interface Roller {
   frame: MatrixOrientation;
 }
 
+type Pose = [x: number, y: number, rz: number];
 export interface Trajectory {
   id: number;
   name: string;
-  poses: number[]; // order of poses, ids in this list
-}
-
-export interface TrajectoryPose {
-  id: number;
-  pose: [x: number, y: number, rz: number];
+  poses: Pose[];
 }

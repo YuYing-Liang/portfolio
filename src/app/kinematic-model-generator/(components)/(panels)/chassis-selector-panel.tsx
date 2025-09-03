@@ -1,7 +1,7 @@
-import { ActionIcon, ActionIconGroup, Button, Group, Paper, Stack, Text, Tooltip } from "@mantine/core";
-import { FC } from "react";
-import { DynamicIconProps, DynamicTablerIcon } from "~/app/(components)/Icon";
-import { CHASSIS_TYPE_TO_ICON_MAP } from "../constants";
+import { ActionIcon, ActionIconGroup, Group, Paper, Text, Tooltip } from "@mantine/core";
+import { type FC } from "react";
+import { type DynamicIconProps, DynamicTablerIcon } from "~/app/(components)/Icon";
+import { CHASSIS_TYPE_TO_ICON_MAP } from "../../constants";
 
 export const ChassisSelectorPanel = () => {
   return (

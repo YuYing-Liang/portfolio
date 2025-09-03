@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Pages } from "./constants";
+import { type Pages } from "./constants";
 
 interface PageState {
   page: Pages;
@@ -7,6 +7,6 @@ interface PageState {
 }
 
 export const usePageState = create<PageState>((set) => ({
-  page: "Configure",
+  page: "configure",
   setPage: (page) => set({ page }),
 }));
