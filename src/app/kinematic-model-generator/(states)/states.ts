@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { type Pages } from "./constants";
+import { type Pages } from "../constants";
 
 interface PageState {
   page: Pages;

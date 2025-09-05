@@ -2,12 +2,13 @@
 import { Stack } from "@mantine/core";
 import { TopBar } from "./(components)/top-bar";
 import { ChassisListPanel } from "./(components)/(panels)/chassis-list-panel";
-import { NewChassisFormPanel } from "./(components)/(panels)/new-chassis-panel";
+import { ChassisFormPanel } from "./(components)/(panels)/chassis-panel-form";
 import { MotorSpeedPanel } from "./(components)/(panels)/motor-speed-panel";
 import { TrajectoryPanel } from "./(components)/(panels)/trajectory-panel";
-import { usePageState } from "./states";
+import { usePageState } from "./(states)/states";
 import { ConfigurePage } from "./(pages)/configure-page";
 import { SimulatePage } from "./(pages)/simulate-page";
+import { ChassisForm } from "./(states)/chassis-form";
 
 export default function KinematicModelGenerator() {
   const pageState = usePageState();
@@ -16,17 +17,28 @@ export default function KinematicModelGenerator() {
 
   return (
     <div className="fixed left-0 top-0 h-screen w-screen">
-      {isConfigurePage && <ConfigurePage />}
-      {isSimulatePage && <SimulatePage />}
-      <Stack className="absolute left-[25px] top-[25px]">
-        {isConfigurePage && <NewChassisFormPanel />}
-        {isSimulatePage && <ChassisListPanel />}
-        {isSimulatePage && <MotorSpeedPanel />}
-      </Stack>
+      {isConfigurePage && (
+        <ChassisForm>
+          <ConfigurePage />
+          <Stack className="absolute left-[25px] top-[25px]">
+            <ChassisFormPanel />
+            <ChassisListPanel />
+          </Stack>
+        </ChassisForm>
+      )}
+      {isSimulatePage && (
+        <>
+          <SimulatePage />
+          <Stack className="absolute left-[25px] top-[25px]">
+            <ChassisListPanel />
+            <MotorSpeedPanel />
+          </Stack>
+          <Stack className="absolute right-[25px] top-[25px]">
+            <TrajectoryPanel />
+          </Stack>
+        </>
+      )}
       <TopBar />
-      <Stack className="absolute right-[25px] top-[25px]">
-        {isSimulatePage && <TrajectoryPanel />}
-      </Stack>
     </div>
   );
 }

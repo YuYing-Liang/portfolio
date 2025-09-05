@@ -1,6 +1,6 @@
 import { SegmentedControl, Center } from "@mantine/core";
 import { IconAdjustmentsAlt, IconArrowLoopRight } from "@tabler/icons-react";
-import { usePageState } from "../states";
+import { usePageState } from "../(states)/states";
 import { type Pages } from "../constants";
 
 export const TopBar = () => {

@@ -1,15 +1,4 @@
-// prettier-ignore
-type MatrixOrientation = [
-  r11: number, r12: number,
-  r21: number, r22: number
-];
-
-// prettier-ignore
-type Matrix = [
-  r11: number, r12: number, r13: number,
-  r21: number, r22: number, r23: number,
-  r31: 0, r32: 0, r33: 1
-];
+import { type MatrixOrientation, type Matrix } from "../types";
 
 export type Chassis = {
   id: number;

@@ -1,15 +1,66 @@
-import { Stage, Layer, Circle } from "react-konva";
+import { Stage, Layer, Circle, Rect, Line } from "react-konva";
 import { Grid } from "../(components)/(canvas)/grid";
 import { useViewportSize } from "@mantine/hooks";
+import { useFormikContext } from "formik";
+import { type ChassisFormValues } from "../(states)/chassis-form";
 
 export const ConfigurePage = () => {
   const { height, width } = useViewportSize();
-  
+  const chassisForm = useFormikContext<ChassisFormValues>();
+
+  const x = width / 2;
+  const y = height / 2;
+
   return (
     <Stage width={width} height={height}>
       <Layer listening={false}>
         <Grid width={width} height={height} size={25} />
-        <Circle x={width/ 2} y={height / 2} radius={50} fill="green" />
+        {chassisForm.values.type === "circular" && (
+          <Circle
+            x={x}
+            y={y}
+            radius={chassisForm.values.radius}
+            rotation={chassisForm.values.rotation}
+            fill="skyblue"
+            stroke="black"
+            strokeWidth={2}
+          />
+        )}
+        {chassisForm.values.type === "rectangular" && (
+          <Rect
+            offsetX={chassisForm.values.width / 2}
+            offsetY={chassisForm.values.length / 2}
+            x={x}
+            y={y}
+            rotation={chassisForm.values.rotation}
+            width={chassisForm.values.width}
+            height={chassisForm.values.length}
+            fill="skyblue"
+            stroke="black"
+            strokeWidth={2}
+          />
+        )}
+        {chassisForm.values.type === "triangular" && (
+          <Line
+            points={[
+              0,
+              chassisForm.values.height,
+              chassisForm.values.base,
+              chassisForm.values.height,
+              chassisForm.values.base / 2,
+              0,
+            ]}
+            x={x}
+            y={y}
+            offsetX={chassisForm.values.base / 2}
+            offsetY={chassisForm.values.height / 2}
+            rotation={chassisForm.values.rotation}
+            closed
+            fill="skyblue"
+            stroke="black"
+            strokeWidth={2}
+          />
+        )}
       </Layer>
     </Stage>
   );
