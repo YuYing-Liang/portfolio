@@ -1,6 +1,6 @@
 "use client";
 import { Stack } from "@mantine/core";
-import { TopBar } from "./(components)/top-bar";
+import { TopBar } from "./(components)/(settings)/top-bar";
 import { ChassisListPanel } from "./(components)/(panels)/chassis-list-panel";
 import { ChassisFormPanel } from "./(components)/(panels)/chassis-panel-form";
 import { MotorSpeedPanel } from "./(components)/(panels)/motor-speed-panel";

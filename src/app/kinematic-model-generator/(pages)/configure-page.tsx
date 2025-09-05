@@ -3,6 +3,7 @@ import { Grid } from "../(components)/(canvas)/grid";
 import { useViewportSize } from "@mantine/hooks";
 import { useFormikContext } from "formik";
 import { type ChassisFormValues } from "../(states)/chassis-form";
+import { CircleChassis } from "../(components)/(canvas)/circle";
 
 export const ConfigurePage = () => {
   const { height, width } = useViewportSize();
@@ -15,15 +16,15 @@ export const ConfigurePage = () => {
     <Stage width={width} height={height}>
       <Layer listening={false}>
         <Grid width={width} height={height} size={25} />
+      </Layer>
+      <Layer>
         {chassisForm.values.type === "circular" && (
-          <Circle
+          <CircleChassis
             x={x}
             y={y}
             radius={chassisForm.values.radius}
             rotation={chassisForm.values.rotation}
-            fill="skyblue"
-            stroke="black"
-            strokeWidth={2}
+            markerSize={5}
           />
         )}
         {chassisForm.values.type === "rectangular" && (
