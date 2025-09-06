@@ -66,12 +66,18 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
         props.dimension,
       );
       const constrainedPosition = setPosition(markerPosition, position, props.direction);
-      e.target.setPosition(constrainedPosition);
-
       const markerCoefficient = marker === "marker1" ? -1 : 1;
       const dragDelta = (position[props.direction] - markerPosition[props.direction]) * markerCoefficient;
+      const newDimension = props.dimension + dragDelta;
 
-      await props.updateDimension(props.dimension + dragDelta);
+      if (newDimension < 1) {
+        e.target.setPosition(markerPosition);
+        return;
+      }
+
+      setIsDragging(true);
+      e.target.setPosition(constrainedPosition);
+      await props.updateDimension(newDimension);
     },
     [props.x, props.y, props.dimension, props.direction, props.markerOffset],
   );
