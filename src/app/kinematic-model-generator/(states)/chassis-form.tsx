@@ -38,6 +38,7 @@ export const ChassisForm: FC<PropsWithChildren<ChassisFormProps>> = (props) => {
       initialValues={{
         name: props.initialValues?.name ?? DEFAULT_CHASSIS_FORM_VALUES.name,
         type: props.initialValues?.type ?? DEFAULT_CHASSIS_FORM_VALUES.type,
+        submitType: DEFAULT_CHASSIS_FORM_VALUES.submitType,
         rotation: props.initialValues?.frame
           ? getRotationFromMatrix(props.initialValues.frame)
           : DEFAULT_CHASSIS_FORM_VALUES.rotation,

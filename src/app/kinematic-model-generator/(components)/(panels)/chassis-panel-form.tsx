@@ -115,6 +115,7 @@ export const ChassisFormPanel = () => {
               label="Rotation"
               placeholder="Enter rotation"
               type="number"
+              disabled={chassisForm.values.type === "circular"}
               value={chassisForm.values.rotation}
               onChange={chassisForm.handleChange}
               onBlur={chassisForm.handleBlur}
