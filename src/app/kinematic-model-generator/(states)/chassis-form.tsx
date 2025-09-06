@@ -20,11 +20,11 @@ const DEFAULT_CHASSIS_FORM_VALUES: ChassisFormValues = {
   type: "",
   submitType: "new",
   rotation: 0,
-  radius: 10,
-  length: 10,
-  width: 10,
-  base: 10,
-  height: 10,
+  radius: 25,
+  length: 25,
+  width: 25,
+  base: 25,
+  height: 25,
 };
 
 export interface ChassisFormProps {
