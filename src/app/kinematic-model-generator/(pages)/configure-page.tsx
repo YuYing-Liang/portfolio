@@ -25,6 +25,9 @@ export const ConfigurePage = () => {
             radius={chassisForm.values.radius}
             rotation={chassisForm.values.rotation}
             markerSize={5}
+            updateRadius={async (newRadius) => {
+              await chassisForm.setFieldValue("radius", newRadius);
+            }}
           />
         )}
         {chassisForm.values.type === "rectangular" && (
