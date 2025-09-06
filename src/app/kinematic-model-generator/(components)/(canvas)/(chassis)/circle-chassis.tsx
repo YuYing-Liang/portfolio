@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { Circle } from "react-konva";
-import { DimensionResizer } from "./dimension-resizer";
+import { DimensionResizer } from "../dimension-resizer";
 
 interface CircleChassisProps {
   x: number;

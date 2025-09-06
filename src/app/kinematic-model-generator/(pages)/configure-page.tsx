@@ -3,8 +3,9 @@ import { Grid } from "../(components)/(canvas)/grid";
 import { useViewportSize } from "@mantine/hooks";
 import { useFormikContext } from "formik";
 import { type ChassisFormValues } from "../(states)/chassis-form";
-import { CircleChassis } from "../(components)/(canvas)/circle-chassis";
-import { RectangleChassis } from "../(components)/(canvas)/rectangle-chassis";
+import { CircleChassis } from "../(components)/(canvas)/(chassis)/circle-chassis";
+import { RectangleChassis } from "../(components)/(canvas)/(chassis)/rectangle-chassis";
+import { TriangleChassis } from "../(components)/(canvas)/(chassis)/triangle-chassis";
 
 export const ConfigurePage = () => {
   const { height, width } = useViewportSize();
@@ -46,24 +47,18 @@ export const ConfigurePage = () => {
           />
         )}
         {chassisForm.values.type === "triangular" && (
-          <Line
-            points={[
-              0,
-              chassisForm.values.height,
-              chassisForm.values.base,
-              chassisForm.values.height,
-              chassisForm.values.base / 2,
-              0,
-            ]}
+          <TriangleChassis
             x={x}
             y={y}
-            offsetX={chassisForm.values.base / 2}
-            offsetY={chassisForm.values.height / 2}
+            base={chassisForm.values.base}
+            height={chassisForm.values.height}
             rotation={chassisForm.values.rotation}
-            closed
-            fill="skyblue"
-            stroke="black"
-            strokeWidth={2}
+            updateBase={async (newBase) => {
+              await chassisForm.setFieldValue("base", newBase);
+            }}
+            updateHeight={async (newHeight) => {
+              await chassisForm.setFieldValue("height", newHeight);
+            }}
           />
         )}
       </Layer>
