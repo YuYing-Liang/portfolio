@@ -83,16 +83,14 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
   return (
     <>
       <CanvasLabel
-        x={props.x}
-        y={props.y + props.markerOffset + props.labelOffset}
+        {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset + props.labelOffset)}
         width={70}
         height={20}
-        text={props.dimension.toFixed(2)}
+        text={isNaN(props.dimension) ? "N/A" : (props.dimension * 2).toFixed(2)}
       />
       <Line
-        points={[-props.dimension, 0, props.dimension, 0]}
-        x={props.x}
-        y={props.y + props.markerOffset}
+        {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset)}
+        points={getResizerLinePoints(props.direction, props.dimension)}
         stroke={isHoverOrDragging ? "black" : "gray"}
         strokeWidth={2}
       />
@@ -146,3 +144,12 @@ const getMarkerPosition = (
     y: y + (direction === "y" ? dimension * markerOffsetCoefficient : offset),
   };
 };
+
+const getResizerLinePoints = (direction: "x" | "y", dimension: number) => {
+  return direction === "x" ? [-dimension, 0, dimension, 0] : [0, -dimension, 0, dimension];
+};
+
+const getResizerLinePosition = (direction: "x" | "y", x: number, y: number, offset: number) => ({
+  x: direction === "x" ? x : x + offset,
+  y: direction === "x" ? y + offset : y,
+});

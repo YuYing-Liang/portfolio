@@ -7,7 +7,6 @@ interface CircleChassisProps {
   y: number;
   radius: number;
   rotation: number; // in degrees
-  markerSize: number;
   updateRadius: (newRadius: number) => Promise<void>;
 }
 
