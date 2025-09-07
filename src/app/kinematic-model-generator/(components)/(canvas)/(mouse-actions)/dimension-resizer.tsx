@@ -14,6 +14,7 @@ type ShapeConfig = {
   direction: "x" | "y";
   markerOffset: number;
   labelOffset: number;
+  rotation: number;
   updateDimension: (newDimension: number) => Promise<void>;
 };
 
@@ -113,6 +114,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
         {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset + props.labelOffset)}
         width={70}
         height={20}
+        rotation={props.rotation}
         text={isNaN(props.dimension) ? "N/A" : `${getSizeBasedOnGridUnits(props.dimension * 2, gridSizeDouble)}`}
       />
       <Line

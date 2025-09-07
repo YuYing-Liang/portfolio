@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Circle, Rect } from "react-konva";
+import { Group, Rect } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
 
@@ -15,13 +15,10 @@ interface RectangleChassisProps {
 
 export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
   return (
-    <>
+    <Group x={props.x} y={props.y} rotation={props.rotation}>
       <Rect
         offsetX={props.width / 2}
         offsetY={props.length / 2}
-        x={props.x}
-        y={props.y}
-        rotation={props.rotation}
         width={props.width}
         height={props.length}
         fill="skyblue"
@@ -29,26 +26,28 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         strokeWidth={2}
       />
       <DimensionResizer
-        x={props.x}
-        y={props.y}
+        x={0}
+        y={0}
         dimension={props.width / 2}
         direction="x"
         markerOffset={props.length / 2 + 20}
         labelOffset={20}
+        rotation={-props.rotation}
         updateDimension={async (newWidth) => await props.updateWidth(Number((newWidth * 2).toFixed(2)))}
       />
       <DimensionResizer
-        x={props.x}
-        y={props.y}
+        x={0}
+        y={0}
         dimension={props.length / 2}
         direction="y"
         markerOffset={props.width / 2 + 20}
         labelOffset={45}
+        rotation={-props.rotation}
         updateDimension={async (newLength) => await props.updateLength(Number((newLength * 2).toFixed(2)))}
       />
       <DiagonalResizer
-        x={props.x}
-        y={props.y}
+        x={0}
+        y={0}
         dimensionX={props.width}
         dimensionY={props.length}
         offset={20}
@@ -57,6 +56,6 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
           await props.updateLength(Number((newLength).toFixed(2)));
         }}
       />
-    </>
+    </Group>
   );
 };

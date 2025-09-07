@@ -3,7 +3,6 @@ This is a web app that generates kinematic models given a certain chassis config
 
 ### Features (todo)
 - rotate chassis
-- use groups for shapes (make resizer relative positioned)
 - CRUD for chassis
 - wheel panel form
 - resize wheels
@@ -19,4 +18,5 @@ This is a web app that generates kinematic models given a certain chassis config
 - not saving sizes in grid units
 - grid snapping causes resizer markers to be in wrong locations
 - grid rendering on shape size change (shouldn't happen)
-   - honestly maybe we make the chassis only editable via canvas and not the form 
+  - honestly maybe we make the chassis only editable via canvas and not the form
+- labels collide with markers when shape is rotated 

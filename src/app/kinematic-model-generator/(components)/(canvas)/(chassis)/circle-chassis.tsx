@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Circle } from "react-konva";
+import { Circle, Group } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 
 interface CircleChassisProps {
@@ -12,25 +12,22 @@ interface CircleChassisProps {
 
 export const CircleChassis: FC<CircleChassisProps> = (props) => {
   return (
-    <>
+    <Group x={props.x} y={props.y} rotation={props.rotation}>
       <Circle
-        x={props.x}
-        y={props.y}
         radius={props.radius}
-        rotation={props.rotation}
         fill="skyblue"
         stroke="black"
         strokeWidth={2}
       />
       <DimensionResizer
-        x={props.x}
-        y={props.y}
+        x={0}
+        y={0}
         dimension={props.radius}
         direction="x"
         markerOffset={-props.radius - 20}
         labelOffset={-20}
         updateDimension={props.updateRadius}
       />
-    </>
+    </Group>
   );
 };

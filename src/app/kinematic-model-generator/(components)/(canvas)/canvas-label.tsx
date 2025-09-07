@@ -7,6 +7,7 @@ interface CanvasLabelProps {
   width: number;
   height: number;
   text: string;
+  rotation?: number;
 }
 
 export const CanvasLabel: FC<CanvasLabelProps> = (props) => {
@@ -14,7 +15,7 @@ export const CanvasLabel: FC<CanvasLabelProps> = (props) => {
   const offsetY = props.height / 2;
 
   return (
-    <Group x={props.x} y={props.y}>
+    <Group x={props.x} y={props.y} rotation={props.rotation}>
       <Rect
         width={props.width}
         height={props.height}
