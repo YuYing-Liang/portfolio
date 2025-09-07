@@ -6,16 +6,25 @@ interface GridProps {
   height: number;
   size: number;
   color?: string;
+  secondaryColor?: string;
   strokeWidth?: number;
 }
 
-export const Grid: FC<GridProps> = ({ width, height, size, color = "#ddd", strokeWidth = 1 }) => {
+export const Grid: FC<GridProps> = ({
+  width,
+  height,
+  size,
+  color = "#D7DBDD",
+  secondaryColor = "#F2F3F4",
+  strokeWidth = 1,
+}) => {
   const { verticals, horizontals } = useMemo(() => {
-    const maxX = Math.floor(width / 2 / size);
-    const maxY = Math.floor(height / 2 / size);
+    const subGridSize = size / 2;
+    const maxX = Math.floor(width / 2 / subGridSize);
+    const maxY = Math.floor(height / 2 / subGridSize);
 
-    const verticals = Array.from({ length: maxX * 2 + 1 }, (_, i) => (i - maxX) * size);
-    const horizontals = Array.from({ length: maxY * 2 + 1 }, (_, i) => (i - maxY) * size);
+    const verticals = Array.from({ length: maxX * 2 + 1 }, (_, i) => (i - maxX) * subGridSize);
+    const horizontals = Array.from({ length: maxY * 2 + 1 }, (_, i) => (i - maxY) * subGridSize);
 
     return { verticals, horizontals };
   }, [width, height, size]);
@@ -31,7 +40,7 @@ export const Grid: FC<GridProps> = ({ width, height, size, color = "#ddd", strok
           points={[x, -height / 2, x, height / 2]}
           x={centerX}
           y={centerY}
-          stroke={color}
+          stroke={x % size !== 0 ? secondaryColor : color}
           strokeWidth={strokeWidth}
         />
       ))}
@@ -42,7 +51,7 @@ export const Grid: FC<GridProps> = ({ width, height, size, color = "#ddd", strok
           points={[-width / 2, y, width / 2, y]}
           x={centerX}
           y={centerY}
-          stroke={color}
+          stroke={y % size !== 0 ? secondaryColor : color}
           strokeWidth={strokeWidth}
         />
       ))}
