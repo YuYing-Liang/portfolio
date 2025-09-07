@@ -18,4 +18,5 @@ This is a web app that generates kinematic models given a certain chassis config
 ### Bugs
 - not saving sizes in grid units
 - grid snapping causes resizer markers to be in wrong locations
-- grid not centered
+- grid rendering on shape size change (shouldn't happen)
+   - honestly maybe we make the chassis only editable via canvas and not the form 
