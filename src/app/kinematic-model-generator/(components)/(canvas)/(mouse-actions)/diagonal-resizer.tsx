@@ -3,7 +3,7 @@ import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
 import { Circle } from "react-konva";
 import { useHover, useLocalStorage } from "@mantine/hooks";
-import { getSizeBasedOnGridUnits } from "~/app/kinematic-model-generator/helpers";
+import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-generator/helpers";
 import { SettingData, DEFAULT_SETTINGS } from "../../(settings)/settings";
 
 type ShapeConfig = {
@@ -18,9 +18,13 @@ type ShapeConfig = {
 export const DiagonalResizer: FC<ShapeConfig> = (props) => {
   const { hovered, ref } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [gridSize, _] = useLocalStorage<SettingData["gridSize"]>({
+  const [gridSize, _setGridSize] = useLocalStorage<SettingData["gridSize"]>({
     key: "gridSize",
     defaultValue: DEFAULT_SETTINGS.gridSize,
+  });
+  const [gridSnapping, _setGridSnapping] = useLocalStorage<SettingData["gridSnapping"]>({
+    key: "gridSnapping",
+    defaultValue: DEFAULT_SETTINGS.gridSnapping,
   });
 
   const markerPosition: Vector2d = getMarkerPosition(
@@ -30,7 +34,6 @@ export const DiagonalResizer: FC<ShapeConfig> = (props) => {
     props.dimensionY,
     props.offset,
   );
-
   const isHoverOrDragging = hovered || isDragging;
 
   useEffect(
@@ -50,9 +53,23 @@ export const DiagonalResizer: FC<ShapeConfig> = (props) => {
 
   const handleDragMove = useCallback(
     async (e: KonvaEventObject<DragEvent>) => {
-      const position = e.target.position();
-      const newDimensionX = props.dimensionX + (position.x - markerPosition.x);
-      const newDimensionY = props.dimensionY + (position.y - markerPosition.y);
+      let position = e.target.position();
+
+      if (gridSnapping) {
+        position = {
+          x: roundToNearestGridUnit(position.x, gridSize),
+          y: roundToNearestGridUnit(position.y, gridSize),
+        };
+        e.target.setPosition(position);
+      }
+
+      let newDimensionX = props.dimensionX + (position.x - markerPosition.x);
+      let newDimensionY = props.dimensionY + (position.y - markerPosition.y);
+
+      if (gridSnapping) {
+        newDimensionX = roundToNearestGridUnit(newDimensionX, gridSize);
+        newDimensionY = roundToNearestGridUnit(newDimensionY, gridSize);
+      }
 
       if (
         getSizeBasedOnGridUnits(newDimensionX, gridSize) < 1 ||

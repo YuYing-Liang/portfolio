@@ -4,7 +4,6 @@ This is a web app that generates kinematic models given a certain chassis config
 ### Features (todo)
 - rotate chassis
 - use groups for shapes (make resizer relative positioned)
-- grid snapping (settings toolbar)
 - CRUD for chassis
 - wheel panel form
 - resize wheels
@@ -18,3 +17,5 @@ This is a web app that generates kinematic models given a certain chassis config
 
 ### Bugs
 - not saving sizes in grid units
+- grid snapping causes resizer markers to be in wrong locations
+- grid not centered

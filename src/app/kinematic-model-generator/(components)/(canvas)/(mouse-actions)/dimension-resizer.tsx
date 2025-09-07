@@ -4,7 +4,7 @@ import { type Vector2d } from "konva/lib/types";
 import { Circle, Line } from "react-konva";
 import { useHover, useLocalStorage } from "@mantine/hooks";
 import { CanvasLabel } from "../canvas-label";
-import { getSizeBasedOnGridUnits } from "~/app/kinematic-model-generator/helpers";
+import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-generator/helpers";
 import { DEFAULT_SETTINGS, SettingData } from "../../(settings)/settings";
 
 type ShapeConfig = {
@@ -21,10 +21,16 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
   const { hovered: isRightTabHovered, ref: rightTab } = useHover();
   const { hovered: isLeftTabHovered, ref: leftTab } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [gridSize, _] = useLocalStorage<SettingData["gridSize"]>({
+  const [gridSizeDouble, _setGridSize] = useLocalStorage<SettingData["gridSize"]>({
     key: "gridSize",
     defaultValue: DEFAULT_SETTINGS.gridSize,
   });
+  const [gridSnapping, _setGridSnapping] = useLocalStorage<SettingData["gridSnapping"]>({
+    key: "gridSnapping",
+    defaultValue: DEFAULT_SETTINGS.gridSnapping,
+  });
+
+  const gridSize = gridSizeDouble / 2;
 
   const marker1Position: Vector2d = getMarkerPosition(
     "marker1",
@@ -63,7 +69,8 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
   const handleDragMove = useCallback(
     async (marker: "marker1" | "marker2", e: KonvaEventObject<DragEvent>) => {
       const position = e.target.position();
-      const markerPosition = getMarkerPosition(
+      const markerCoefficient: number = marker === "marker1" ? -1 : 1;
+      let markerPosition: Vector2d = getMarkerPosition(
         marker,
         props.direction,
         props.x,
@@ -71,10 +78,18 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
         props.markerOffset,
         props.dimension,
       );
-      const constrainedPosition = setPosition(markerPosition, position, props.direction);
-      const markerCoefficient = marker === "marker1" ? -1 : 1;
-      const dragDelta = (position[props.direction] - markerPosition[props.direction]) * markerCoefficient;
-      const newDimension = props.dimension + dragDelta;
+      let constrainedPosition: Vector2d = setPosition(markerPosition, position, props.direction);
+      let currentDimension = props.dimension;
+
+      if (gridSnapping) {
+        constrainedPosition[props.direction] = roundToNearestGridUnit(constrainedPosition[props.direction], gridSize);
+        markerPosition[props.direction] = roundToNearestGridUnit(markerPosition[props.direction], gridSize);
+        currentDimension = roundToNearestGridUnit(currentDimension, gridSize);
+      }
+
+      const dragDelta: number =
+        (constrainedPosition[props.direction] - markerPosition[props.direction]) * markerCoefficient;
+      const newDimension: number = currentDimension + dragDelta;
 
       if (getSizeBasedOnGridUnits(newDimension, gridSize) < 1) {
         e.target.setPosition(markerPosition);
@@ -98,7 +113,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
         {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset + props.labelOffset)}
         width={70}
         height={20}
-        text={isNaN(props.dimension) ? "N/A" : `${getSizeBasedOnGridUnits(props.dimension * 2, gridSize)}`}
+        text={isNaN(props.dimension) ? "N/A" : `${getSizeBasedOnGridUnits(props.dimension * 2, gridSizeDouble)}`}
       />
       <Line
         {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset)}

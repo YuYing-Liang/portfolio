@@ -39,3 +39,7 @@ export const getMatrixFromRotation = (rotation: number): MatrixOrientation => {
 export const getSizeBasedOnGridUnits = (pixelSize: number, gridUnitSize: number): number => {
   return Number((pixelSize / gridUnitSize).toFixed(2));
 };
+
+export const roundToNearestGridUnit = (pixelValue: number, gridUnitSize: number): number => {
+  return Math.round(pixelValue / gridUnitSize) * gridUnitSize;
+};
