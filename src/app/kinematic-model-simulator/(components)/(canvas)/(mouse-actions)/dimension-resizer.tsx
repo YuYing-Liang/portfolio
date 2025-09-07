@@ -4,7 +4,7 @@ import { type Vector2d } from "konva/lib/types";
 import { Circle, Line } from "react-konva";
 import { useHover, useLocalStorage } from "@mantine/hooks";
 import { CanvasLabel } from "../canvas-label";
-import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-generator/helpers";
+import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-simulator/helpers";
 import { DEFAULT_SETTINGS, SettingData } from "../../(settings)/settings";
 
 type ShapeConfig = {

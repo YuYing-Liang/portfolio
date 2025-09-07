@@ -3,7 +3,7 @@ import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
 import { Circle } from "react-konva";
 import { useHover, useLocalStorage } from "@mantine/hooks";
-import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-generator/helpers";
+import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-simulator/helpers";
 import { SettingData, DEFAULT_SETTINGS } from "../../(settings)/settings";
 
 type ShapeConfig = {
