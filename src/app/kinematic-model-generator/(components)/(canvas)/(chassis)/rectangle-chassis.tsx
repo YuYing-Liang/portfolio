@@ -1,6 +1,7 @@
 import { type FC } from "react";
 import { Circle, Rect } from "react-konva";
-import { DimensionResizer } from "../dimension-resizer";
+import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
+import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
 
 interface RectangleChassisProps {
   x: number;
@@ -44,6 +45,17 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         markerOffset={props.width / 2 + 20}
         labelOffset={45}
         updateDimension={async (newLength) => await props.updateLength(Number((newLength * 2).toFixed(2)))}
+      />
+      <DiagonalResizer
+        x={props.x}
+        y={props.y}
+        dimensionX={props.width}
+        dimensionY={props.length}
+        offset={20}
+        updateDimensions={async (newWidth, newLength) => {
+          await props.updateWidth(Number((newWidth).toFixed(2)));
+          await props.updateLength(Number((newLength).toFixed(2)));
+        }}
       />
     </>
   );

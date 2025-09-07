@@ -1,7 +1,9 @@
 import { Formik } from "formik";
 import { type Chassis } from "../(database)/tables";
-import { getRotationFromMatrix } from "../helpers";
+import { getRotationFromMatrix, getSizeBasedOnGridUnits } from "../helpers";
 import React, { type FC, type PropsWithChildren } from "react";
+import { useLocalStorage } from "@mantine/hooks";
+import { SettingData, DEFAULT_SETTINGS } from "../(components)/(settings)/settings";
 
 export type ChassisFormValues = {
   name: Chassis["name"];

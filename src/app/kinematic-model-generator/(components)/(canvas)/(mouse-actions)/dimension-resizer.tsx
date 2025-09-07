@@ -2,8 +2,10 @@ import { useState, useCallback, FC, useEffect } from "react";
 import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
 import { Circle, Line } from "react-konva";
-import { useHover } from "@mantine/hooks";
-import { CanvasLabel } from "./canvas-label";
+import { useHover, useLocalStorage } from "@mantine/hooks";
+import { CanvasLabel } from "../canvas-label";
+import { getSizeBasedOnGridUnits } from "~/app/kinematic-model-generator/helpers";
+import { DEFAULT_SETTINGS, SettingData } from "../../(settings)/settings";
 
 type ShapeConfig = {
   dimension: number;
@@ -19,6 +21,10 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
   const { hovered: isRightTabHovered, ref: rightTab } = useHover();
   const { hovered: isLeftTabHovered, ref: leftTab } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [gridSize, _] = useLocalStorage<SettingData["gridSize"]>({
+    key: "gridSize",
+    defaultValue: DEFAULT_SETTINGS.gridSize,
+  });
 
   const marker1Position: Vector2d = getMarkerPosition(
     "marker1",
@@ -70,7 +76,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
       const dragDelta = (position[props.direction] - markerPosition[props.direction]) * markerCoefficient;
       const newDimension = props.dimension + dragDelta;
 
-      if (newDimension < 1) {
+      if (getSizeBasedOnGridUnits(newDimension, gridSize) < 1) {
         e.target.setPosition(markerPosition);
         return;
       }
@@ -79,7 +85,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
       e.target.setPosition(constrainedPosition);
       await props.updateDimension(newDimension);
     },
-    [props.x, props.y, props.dimension, props.direction, props.markerOffset],
+    [props.x, props.y, props.dimension, props.direction, props.markerOffset, gridSize],
   );
 
   const handleDragEnd = async () => {
@@ -92,7 +98,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
         {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset + props.labelOffset)}
         width={70}
         height={20}
-        text={isNaN(props.dimension) ? "N/A" : (props.dimension * 2).toFixed(2)}
+        text={isNaN(props.dimension) ? "N/A" : `${getSizeBasedOnGridUnits(props.dimension * 2, gridSize)}`}
       />
       <Line
         {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset)}

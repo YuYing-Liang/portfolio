@@ -1,0 +1,90 @@
+import { useState, useCallback, FC, useEffect } from "react";
+import { type KonvaEventObject } from "konva/lib/Node";
+import { type Vector2d } from "konva/lib/types";
+import { Circle } from "react-konva";
+import { useHover, useLocalStorage } from "@mantine/hooks";
+import { getSizeBasedOnGridUnits } from "~/app/kinematic-model-generator/helpers";
+import { SettingData, DEFAULT_SETTINGS } from "../../(settings)/settings";
+
+type ShapeConfig = {
+  dimensionX: number;
+  dimensionY: number;
+  x: number;
+  y: number;
+  offset: number;
+  updateDimensions: (xDimension: number, yDimension: number) => Promise<void>;
+};
+
+export const DiagonalResizer: FC<ShapeConfig> = (props) => {
+  const { hovered, ref } = useHover();
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [gridSize, _] = useLocalStorage<SettingData["gridSize"]>({
+    key: "gridSize",
+    defaultValue: DEFAULT_SETTINGS.gridSize,
+  });
+
+  const markerPosition: Vector2d = getMarkerPosition(
+    props.x,
+    props.y,
+    props.dimensionX,
+    props.dimensionY,
+    props.offset,
+  );
+
+  const isHoverOrDragging = hovered || isDragging;
+
+  useEffect(
+    function updateCursorOnHoverOrDrag() {
+      if (isHoverOrDragging) {
+        document.body.style.cursor = "nwse-resize";
+      } else {
+        document.body.style.cursor = "default";
+      }
+
+      return () => {
+        document.body.style.cursor = "default";
+      };
+    },
+    [isHoverOrDragging],
+  );
+
+  const handleDragMove = useCallback(
+    async (e: KonvaEventObject<DragEvent>) => {
+      const position = e.target.position();
+      const newDimensionX = props.dimensionX + (position.x - markerPosition.x);
+      const newDimensionY = props.dimensionY + (position.y - markerPosition.y);
+
+      if (
+        getSizeBasedOnGridUnits(newDimensionX, gridSize) < 1 ||
+        getSizeBasedOnGridUnits(newDimensionY, gridSize) < 1
+      ) {
+        e.target.setPosition(markerPosition);
+        return;
+      }
+
+      await props.updateDimensions(newDimensionX, newDimensionY);
+    },
+    [markerPosition, gridSize],
+  );
+
+  return (
+    <Circle
+      x={markerPosition.x}
+      y={markerPosition.y}
+      fill={isHoverOrDragging ? "black" : "gray"}
+      radius={5}
+      ref={ref}
+      draggable
+      onDragMove={handleDragMove}
+      onDragStart={() => setIsDragging(true)}
+      onDragEnd={() => setIsDragging(false)}
+    />
+  );
+};
+
+const getMarkerPosition = (x: number, y: number, dimensionX: number, dimensionY: number, offset: number): Vector2d => {
+  return {
+    x: x + dimensionX / 2 + offset,
+    y: y + dimensionY / 2 + offset,
+  };
+};

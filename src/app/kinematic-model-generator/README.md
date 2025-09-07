@@ -5,7 +5,6 @@ This is a web app that generates kinematic models given a certain chassis config
 - rotate chassis
 - use groups for shapes (make resizer relative positioned)
 - grid snapping (settings toolbar)
-- grid sizing (settings toolbar)
 - CRUD for chassis
 - wheel panel form
 - resize wheels
@@ -16,3 +15,6 @@ This is a web app that generates kinematic models given a certain chassis config
 - rearrange layout: chassis + wheel configuration on the left and the chassis list on the right
 - Initial state: create new chassis button --> pop out the form
 - lock ratio (for resizing triangular + rectangular chassis)
+
+### Bugs
+- not saving sizes in grid units

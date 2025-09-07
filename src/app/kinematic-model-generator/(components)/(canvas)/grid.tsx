@@ -4,12 +4,12 @@ import { Line } from "react-konva";
 interface GridProps {
   width: number;
   height: number;
-  size?: number;
+  size: number;
   color?: string;
   strokeWidth?: number;
 }
 
-export const Grid: FC<GridProps> = ({ width, height, size = 40, color = "#ddd", strokeWidth = 1 }) => {
+export const Grid: FC<GridProps> = ({ width, height, size, color = "#ddd", strokeWidth = 1 }) => {
   const verticals = useMemo(
     () => Array.from({ length: Math.floor(width / size) + 1 }, (_, i) => i * size),
     [width, size],

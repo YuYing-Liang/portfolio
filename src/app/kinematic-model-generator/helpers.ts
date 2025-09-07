@@ -35,3 +35,7 @@ export const getMatrixFromRotation = (rotation: number): MatrixOrientation => {
     Math.sin(rotation), Math.cos(rotation),
   ]
 };
+
+export const getSizeBasedOnGridUnits = (pixelSize: number, gridUnitSize: number): number => {
+  return Number((pixelSize / gridUnitSize).toFixed(2));
+};

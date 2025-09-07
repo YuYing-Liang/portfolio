@@ -59,6 +59,12 @@ export const ChassisFormPanel = () => {
               onChange={chassisForm.handleChange}
               onBlur={chassisForm.handleBlur}
               error={chassisForm.touched.radius && chassisForm.errors.radius}
+              rightSection={
+                <Text size="sm" c="dimmed">
+                  px
+                </Text>
+              }
+              rightSectionWidth={30}
             />
           )}
           {chassisForm.values.type === "rectangular" && (
@@ -72,6 +78,12 @@ export const ChassisFormPanel = () => {
                 onChange={chassisForm.handleChange}
                 onBlur={chassisForm.handleBlur}
                 error={chassisForm.touched.length && chassisForm.errors.length}
+                rightSection={
+                  <Text size="sm" c="dimmed">
+                    px
+                  </Text>
+                }
+                rightSectionWidth={30}
               />
               <TextInput
                 name="width"
@@ -82,6 +94,12 @@ export const ChassisFormPanel = () => {
                 onChange={chassisForm.handleChange}
                 onBlur={chassisForm.handleBlur}
                 error={chassisForm.touched.width && chassisForm.errors.width}
+                rightSection={
+                  <Text size="sm" c="dimmed">
+                    px
+                  </Text>
+                }
+                rightSectionWidth={30}
               />
             </SimpleGrid>
           )}
@@ -96,6 +114,12 @@ export const ChassisFormPanel = () => {
                 onChange={chassisForm.handleChange}
                 onBlur={chassisForm.handleBlur}
                 error={chassisForm.touched.base && chassisForm.errors.base}
+                rightSection={
+                  <Text size="sm" c="dimmed">
+                    px
+                  </Text>
+                }
+                rightSectionWidth={30}
               />
               <TextInput
                 name="height"
@@ -106,6 +130,12 @@ export const ChassisFormPanel = () => {
                 onChange={chassisForm.handleChange}
                 onBlur={chassisForm.handleBlur}
                 error={chassisForm.touched.height && chassisForm.errors.height}
+                rightSection={
+                  <Text size="sm" c="dimmed">
+                    px
+                  </Text>
+                }
+                rightSectionWidth={30}
               />
             </SimpleGrid>
           )}

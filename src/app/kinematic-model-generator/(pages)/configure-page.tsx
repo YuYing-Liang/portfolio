@@ -1,15 +1,20 @@
 import { Stage, Layer, Circle, Rect, Line } from "react-konva";
 import { Grid } from "../(components)/(canvas)/grid";
-import { useViewportSize } from "@mantine/hooks";
+import { useLocalStorage, useViewportSize } from "@mantine/hooks";
 import { useFormikContext } from "formik";
 import { type ChassisFormValues } from "../(states)/chassis-form";
 import { CircleChassis } from "../(components)/(canvas)/(chassis)/circle-chassis";
 import { RectangleChassis } from "../(components)/(canvas)/(chassis)/rectangle-chassis";
 import { TriangleChassis } from "../(components)/(canvas)/(chassis)/triangle-chassis";
+import { DEFAULT_SETTINGS, SettingData } from "../(components)/(settings)/settings";
 
 export const ConfigurePage = () => {
   const { height, width } = useViewportSize();
   const chassisForm = useFormikContext<ChassisFormValues>();
+  const [gridSize, _] = useLocalStorage<SettingData["gridSize"]>({
+    key: "gridSize",
+    defaultValue: DEFAULT_SETTINGS.gridSize,
+  });
 
   const x = width / 2;
   const y = height / 2;
@@ -17,7 +22,7 @@ export const ConfigurePage = () => {
   return (
     <Stage width={width} height={height}>
       <Layer listening={false}>
-        <Grid width={width} height={height} size={25} />
+        <Grid width={width} height={height} size={gridSize} />
       </Layer>
       <Layer>
         {chassisForm.values.type === "circular" && (
