@@ -25,7 +25,7 @@ export const ChassisFormPanel = () => {
         <Stack gap="xs">
           <Group gap="xs" justify="space-between">
             <Text size="md" fw={700}>
-              {`${chassisForm.values.submitType === "new" ? "New" : "Edit"} Chassis`}
+              {`Edit Chassis`}
             </Text>
             <ActionIconGroup>
               {Object.entries(CHASSIS_TYPE_TO_ICON_MAP).map(([type, icon], i) => (
@@ -164,9 +164,9 @@ export const ChassisFormPanel = () => {
               }}
               variant="light"
               type="submit"
-              rightSection={<DynamicTablerIcon name="IconBoxModel" size={16} />}
+              rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
             >
-              Create
+              Save
             </Button>
           </SimpleGrid>
         </Stack>

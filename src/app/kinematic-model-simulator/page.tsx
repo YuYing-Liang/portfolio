@@ -24,8 +24,8 @@ export default function KinematicModelGenerator() {
           <ChassisForm>
             <ConfigurePage />
             <Stack className="absolute left-[25px] top-[25px]">
-              <ChassisFormPanel />
               <ChassisListPanel />
+              <ChassisFormPanel />
             </Stack>
           </ChassisForm>
           <Stack className="absolute right-[25px] top-[25px]">

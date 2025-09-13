@@ -1,4 +1,4 @@
-import { Button, Paper, Popover, PopoverDropdown, PopoverTarget, Stack, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Paper, Popover, PopoverDropdown, PopoverTarget, Stack, Text } from "@mantine/core";
 import { type FC } from "react";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { useDisclosure } from "@mantine/hooks";
@@ -48,8 +48,19 @@ export const ChassisListPanel = () => {
       <Stack gap="xs" mt="sm">
         {chassisList.map((chassis) => (
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          <ChassisListButton key={chassis.id} {...chassis} handleClick={() => {}} />
+          <ChassisListElement key={chassis.id} {...chassis} handleClick={() => {}} />
         ))}
+        <Button
+          classNames={{
+            root: "self-end",
+            section: "m-[5px]",
+          }}
+          variant="light"
+          type="submit"
+          leftSection={<DynamicTablerIcon name="IconBoxModel" size={16} />}
+        >
+          Add Chassis
+        </Button>
       </Stack>
     </Paper>
   );
@@ -59,7 +70,7 @@ type ChassisButtonProps = {
   handleClick: (chassisId: number) => void;
 } & Chassis;
 
-const ChassisListButton: FC<ChassisButtonProps> = (props) => {
+const ChassisListElement: FC<ChassisButtonProps> = (props) => {
   const [isSummaryOpen, { close: onCloseSummary, open: onOpenSummary }] = useDisclosure(false);
 
   const getSizeDisplay = (): string => {
@@ -77,17 +88,25 @@ const ChassisListButton: FC<ChassisButtonProps> = (props) => {
   return (
     <Popover position="right" withArrow opened={isSummaryOpen} offset={5}>
       <PopoverTarget>
-        <Button
-          variant="default"
-          justify="space-between"
-          size="sm"
-          leftSection={<DynamicTablerIcon name={CHASSIS_TYPE_TO_ICON_MAP[props.type]} size={20} />}
-          rightSection={`(${getSizeDisplay()})`}
-          onMouseEnter={onOpenSummary}
-          onMouseLeave={onCloseSummary}
-        >
-          {`${props.name}`}
-        </Button>
+        <Group justify="space-between" onMouseEnter={onOpenSummary} onMouseLeave={onCloseSummary}>
+          <Group>
+            <DynamicTablerIcon name={CHASSIS_TYPE_TO_ICON_MAP[props.type]} size={18} />
+            <Text size="sm" fw={700}>
+              {props.name}
+            </Text>
+            <Text size="sm" fw={700}>
+              ({getSizeDisplay()})
+            </Text>
+          </Group>
+          <Group gap="5px">
+            <ActionIcon size="md" variant="default" color="black">
+              <DynamicTablerIcon name="IconPencil" size={16} />
+            </ActionIcon>
+            <ActionIcon size="md" variant="default" color="black">
+              <DynamicTablerIcon name="IconTrash" size={16} />
+            </ActionIcon>
+          </Group>
+        </Group>
       </PopoverTarget>
       <PopoverDropdown>
         <Text> Summary </Text>

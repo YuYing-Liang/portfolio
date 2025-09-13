@@ -26,10 +26,10 @@ export const WheelListPanel = () => {
               {chassis.name}
             </Text>
             <Group gap="5px">
-              <ActionIcon size="md" variant="transparent" color="black">
+              <ActionIcon size="md" variant="default" color="black">
                 <DynamicTablerIcon name="IconPencil" size={16} />
               </ActionIcon>
-              <ActionIcon size="md" variant="transparent" color="black">
+              <ActionIcon size="md" variant="default" color="black">
                 <DynamicTablerIcon name="IconTrash" size={16} />
               </ActionIcon>
             </Group>
