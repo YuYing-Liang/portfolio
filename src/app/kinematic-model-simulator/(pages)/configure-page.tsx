@@ -6,7 +6,7 @@ import { type ChassisFormValues } from "../(states)/chassis-form";
 import { CircleChassis } from "../(components)/(canvas)/(chassis)/circle-chassis";
 import { RectangleChassis } from "../(components)/(canvas)/(chassis)/rectangle-chassis";
 import { TriangleChassis } from "../(components)/(canvas)/(chassis)/triangle-chassis";
-import { DEFAULT_SETTINGS, SettingData } from "../(components)/(settings)/settings";
+import { DEFAULT_SETTINGS, type SettingData } from "../(components)/(settings)/settings";
 
 export const ConfigurePage = () => {
   const { height, width } = useViewportSize();
@@ -49,6 +49,9 @@ export const ConfigurePage = () => {
             updateLength={async (newLength) => {
               await chassisForm.setFieldValue("length", newLength);
             }}
+            updateRotation={async (newRotation) => {
+              await chassisForm.setFieldValue("rotation", newRotation);
+            }}
           />
         )}
         {chassisForm.values.type === "triangular" && (
@@ -63,6 +66,9 @@ export const ConfigurePage = () => {
             }}
             updateHeight={async (newHeight) => {
               await chassisForm.setFieldValue("height", newHeight);
+            }}
+            updateRotation={async (newRotation) => {
+              await chassisForm.setFieldValue("rotation", newRotation);
             }}
           />
         )}

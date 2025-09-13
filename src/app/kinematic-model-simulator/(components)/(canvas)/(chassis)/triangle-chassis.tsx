@@ -2,6 +2,7 @@ import { type FC } from "react";
 import { Circle, Group, Line, Rect } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
+import { Rotator } from "../(mouse-actions)/rotator";
 
 interface RectangleChassisProps {
   x: number;
@@ -11,6 +12,7 @@ interface RectangleChassisProps {
   rotation: number; // in degrees
   updateBase: (newBase: number) => Promise<void>;
   updateHeight: (newHeight: number) => Promise<void>;
+  updateRotation: (newRotation: number) => Promise<void>;
 }
 
 export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
@@ -55,6 +57,15 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
           await props.updateBase(Number(newBase.toFixed(2)));
           await props.updateHeight(Number(newHeight.toFixed(2)));
         }}
+      />
+      <Rotator
+        x={props.x}
+        y={props.y}
+        dimensionX={props.base}
+        dimensionY={props.height}
+        offset={-25}
+        rotation={props.rotation}
+        updateRotation={props.updateRotation}
       />
     </Group>
   );

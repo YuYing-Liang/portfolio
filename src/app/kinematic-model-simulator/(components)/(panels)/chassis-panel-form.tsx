@@ -150,6 +150,12 @@ export const ChassisFormPanel = () => {
               onChange={chassisForm.handleChange}
               onBlur={chassisForm.handleBlur}
               error={chassisForm.touched.rotation && chassisForm.errors.rotation}
+              rightSection={
+                <Text size="sm" c="dimmed">
+                  deg
+                </Text>
+              }
+              rightSectionWidth={30}
             />
             <Button
               classNames={{

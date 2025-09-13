@@ -12,6 +12,7 @@ interface RectangleChassisProps {
   rotation: number; // in degrees
   updateWidth: (newWidth: number) => Promise<void>;
   updateLength: (newLength: number) => Promise<void>;
+  updateRotation: (newRotation: number) => Promise<void>;
 }
 
 export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
@@ -53,21 +54,18 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         dimensionY={props.length}
         offset={20}
         updateDimensions={async (newWidth, newLength) => {
-          await props.updateWidth(Number((newWidth).toFixed(2)));
-          await props.updateLength(Number((newLength).toFixed(2)));
+          await props.updateWidth(Number(newWidth.toFixed(2)));
+          await props.updateLength(Number(newLength.toFixed(2)));
         }}
       />
       <Rotator
-        x={0}
-        y={0}
+        x={props.x}
+        y={props.y}
         dimensionX={props.width}
         dimensionY={props.length}
-        offset={20}
+        offset={5}
         rotation={props.rotation}
-        updateDimensions={async (newWidth, newLength) => {
-          await props.updateWidth(Number((newWidth).toFixed(2)));
-          await props.updateLength(Number((newLength).toFixed(2)));
-        }}
+        updateRotation={props.updateRotation}
       />
     </Group>
   );

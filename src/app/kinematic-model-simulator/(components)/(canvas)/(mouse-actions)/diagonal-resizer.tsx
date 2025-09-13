@@ -1,10 +1,10 @@
-import { useState, useCallback, FC, useEffect } from "react";
+import { useState, useCallback, type FC, useEffect } from "react";
 import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
 import { Circle } from "react-konva";
 import { useHover, useLocalStorage } from "@mantine/hooks";
 import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-simulator/helpers";
-import { SettingData, DEFAULT_SETTINGS } from "../../(settings)/settings";
+import { type SettingData, DEFAULT_SETTINGS } from "../../(settings)/settings";
 
 type ShapeConfig = {
   dimensionX: number;
@@ -18,10 +18,12 @@ type ShapeConfig = {
 export const DiagonalResizer: FC<ShapeConfig> = (props) => {
   const { hovered, ref } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [gridSize, _setGridSize] = useLocalStorage<SettingData["gridSize"]>({
     key: "gridSize",
     defaultValue: DEFAULT_SETTINGS.gridSize,
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [gridSnapping, _setGridSnapping] = useLocalStorage<SettingData["gridSnapping"]>({
     key: "gridSnapping",
     defaultValue: DEFAULT_SETTINGS.gridSnapping,
@@ -80,8 +82,12 @@ export const DiagonalResizer: FC<ShapeConfig> = (props) => {
       }
 
       await props.updateDimensions(newDimensionX, newDimensionY);
+      e.target.setPosition({
+        x: props.x + newDimensionX / 2 + props.offset,
+        y: props.y + newDimensionY / 2 + props.offset,
+      });
     },
-    [markerPosition, gridSize],
+    [gridSnapping, props, markerPosition, gridSize],
   );
 
   return (

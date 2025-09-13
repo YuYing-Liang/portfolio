@@ -13,15 +13,11 @@ interface CircleChassisProps {
 export const CircleChassis: FC<CircleChassisProps> = (props) => {
   return (
     <Group x={props.x} y={props.y} rotation={props.rotation}>
-      <Circle
-        radius={props.radius}
-        fill="skyblue"
-        stroke="black"
-        strokeWidth={2}
-      />
+      <Circle radius={props.radius} fill="skyblue" stroke="black" strokeWidth={2} />
       <DimensionResizer
         x={0}
         y={0}
+        rotation={props.rotation}
         dimension={props.radius}
         direction="x"
         markerOffset={-props.radius - 20}

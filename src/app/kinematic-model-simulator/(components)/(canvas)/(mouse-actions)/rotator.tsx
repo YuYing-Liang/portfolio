@@ -1,11 +1,11 @@
-import { useState, useCallback, FC, useEffect } from "react";
+import { useState, useCallback, type FC, useEffect, useMemo } from "react";
 import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
-import { Arc, Circle, Group } from "react-konva";
-import { useHover, useLocalStorage } from "@mantine/hooks";
-import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-simulator/helpers";
-import { SettingData, DEFAULT_SETTINGS } from "../../(settings)/settings";
+import { Arc, Group } from "react-konva";
+import { useHover } from "@mantine/hooks";
 import { CanvasLabel } from "../canvas-label";
+
+const ROTATOR_RADIUS = 18;
 
 type ShapeConfig = {
   dimensionX: number;
@@ -14,28 +14,14 @@ type ShapeConfig = {
   y: number;
   offset: number;
   rotation: number;
-  updateDimensions: (xDimension: number, yDimension: number) => Promise<void>;
+  updateRotation: (rotation: number) => Promise<void>;
 };
 
 export const Rotator: FC<ShapeConfig> = (props) => {
   const { hovered, ref } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [gridSize, _setGridSize] = useLocalStorage<SettingData["gridSize"]>({
-    key: "gridSize",
-    defaultValue: DEFAULT_SETTINGS.gridSize,
-  });
-  const [gridSnapping, _setGridSnapping] = useLocalStorage<SettingData["gridSnapping"]>({
-    key: "gridSnapping",
-    defaultValue: DEFAULT_SETTINGS.gridSnapping,
-  });
 
-  const markerPosition: Vector2d = getMarkerPosition(
-    props.x,
-    props.y,
-    props.dimensionX,
-    props.dimensionY,
-    props.offset,
-  );
+  const markerPosition: Vector2d = getMarkerPosition(0, 0, props.dimensionX, props.dimensionY, props.offset);
   const isHoverOrDragging = hovered || isDragging;
 
   useEffect(
@@ -55,41 +41,48 @@ export const Rotator: FC<ShapeConfig> = (props) => {
 
   const handleDragMove = useCallback(
     async (e: KonvaEventObject<DragEvent>) => {
-      let position = e.target.position();
+      const position = e.target.absolutePosition();
+      const positionRelativeToCenter = getMarkerPosition(
+        position.x,
+        position.y,
+        props.dimensionX,
+        props.dimensionY,
+        props.offset,
+      );
+      const startingAngle = Math.atan2(markerPosition.y, markerPosition.x);
+      const theta = Math.atan2(positionRelativeToCenter.y - props.y, positionRelativeToCenter.x - props.x);
+      const thetaDeg = Math.round(((theta - startingAngle) * 180) / Math.PI / 5) * 5;
 
-      if (gridSnapping) {
-        position = {
-          x: roundToNearestGridUnit(position.x, gridSize),
-          y: roundToNearestGridUnit(position.y, gridSize),
-        };
-        e.target.setPosition(position);
-      }
+      const markerPositionRotated = {
+        x: (Math.abs(markerPosition.x) + ROTATOR_RADIUS * 2) * Math.cos(theta) + props.x,
+        y: (Math.abs(markerPosition.y) + ROTATOR_RADIUS * 2) * Math.sin(theta) + props.y,
+      };
 
-      let newDimensionX = props.dimensionX + (position.x - markerPosition.x);
-      let newDimensionY = props.dimensionY + (position.y - markerPosition.y);
-
-      if (gridSnapping) {
-        newDimensionX = roundToNearestGridUnit(newDimensionX, gridSize);
-        newDimensionY = roundToNearestGridUnit(newDimensionY, gridSize);
-      }
-
-      if (
-        getSizeBasedOnGridUnits(newDimensionX, gridSize) < 1 ||
-        getSizeBasedOnGridUnits(newDimensionY, gridSize) < 1
-      ) {
-        e.target.setPosition(markerPosition);
-        return;
-      }
-
-      await props.updateDimensions(newDimensionX, newDimensionY);
+      e.target.setAbsolutePosition(markerPositionRotated);
+      setIsDragging(true);
+      await props.updateRotation(thetaDeg);
     },
-    [markerPosition, gridSize],
+    [markerPosition, props],
   );
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
 
   return (
     <Group x={markerPosition.x} y={markerPosition.y}>
-      <Arc innerRadius={10} outerRadius={15} angle={135} rotation={160} fill="gray" />
-      <CanvasLabel x={-50} y={-10} text={`${props.rotation}deg`} width={50} height={24} />
+      <Arc
+        ref={ref}
+        innerRadius={ROTATOR_RADIUS - 5}
+        outerRadius={ROTATOR_RADIUS}
+        angle={110}
+        rotation={170}
+        fill={isHoverOrDragging ? "black" : "gray"}
+        onDragMove={handleDragMove}
+        onDragEnd={handleDragEnd}
+        draggable
+      />
+      <CanvasLabel x={-70} y={-10} text={`${props.rotation}deg`} width={75} height={24} rotation={-props.rotation} />
     </Group>
   );
 };
