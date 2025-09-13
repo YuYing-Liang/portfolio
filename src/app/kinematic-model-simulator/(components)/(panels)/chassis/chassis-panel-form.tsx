@@ -12,9 +12,9 @@ import {
 } from "@mantine/core";
 import { type FC } from "react";
 import { type DynamicIconProps, DynamicTablerIcon } from "~/app/(components)/Icon";
-import { CHASSIS_TYPE_TO_ICON_MAP } from "../../constants";
+import { CHASSIS_TYPE_TO_ICON_MAP } from "../../../constants";
 import { useFormikContext } from "formik";
-import { type ChassisFormValues } from "../../(states)/chassis-form";
+import { type ChassisFormValues } from "../../../(states)/chassis-form";
 
 export const ChassisFormPanel = () => {
   const chassisForm = useFormikContext<ChassisFormValues>();

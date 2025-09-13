@@ -10,8 +10,8 @@ const ROTATOR_RADIUS = 18;
 type ShapeConfig = {
   dimensionX: number;
   dimensionY: number;
-  x: number;
-  y: number;
+  absoluteX: number;
+  absoluteY: number;
   offset: number;
   rotation: number;
   updateRotation: (rotation: number) => Promise<void>;
@@ -50,12 +50,15 @@ export const Rotator: FC<ShapeConfig> = (props) => {
         props.offset,
       );
       const startingAngle = Math.atan2(markerPosition.y, markerPosition.x);
-      const theta = Math.atan2(positionRelativeToCenter.y - props.y, positionRelativeToCenter.x - props.x);
+      const theta = Math.atan2(
+        positionRelativeToCenter.y - props.absoluteY,
+        positionRelativeToCenter.x - props.absoluteX,
+      );
       const thetaDeg = Math.round(((theta - startingAngle) * 180) / Math.PI / 5) * 5;
 
       const markerPositionRotated = {
-        x: (Math.abs(markerPosition.x) + ROTATOR_RADIUS * 2) * Math.cos(theta) + props.x,
-        y: (Math.abs(markerPosition.y) + ROTATOR_RADIUS * 2) * Math.sin(theta) + props.y,
+        x: (Math.abs(markerPosition.x) + ROTATOR_RADIUS * 2) * Math.cos(theta) + props.absoluteX,
+        y: (Math.abs(markerPosition.y) + ROTATOR_RADIUS * 2) * Math.sin(theta) + props.absoluteY,
       };
 
       e.target.setAbsolutePosition(markerPositionRotated);

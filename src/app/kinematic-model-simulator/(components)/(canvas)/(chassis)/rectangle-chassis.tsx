@@ -59,8 +59,8 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         }}
       />
       <Rotator
-        x={props.x}
-        y={props.y}
+        absoluteX={props.x}
+        absoluteY={props.y}
         dimensionX={props.width}
         dimensionY={props.length}
         offset={5}

@@ -2,8 +2,8 @@ import { Button, Paper, Popover, PopoverDropdown, PopoverTarget, Stack, Text } f
 import { type FC } from "react";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { useDisclosure } from "@mantine/hooks";
-import { type Chassis } from "../../(database)/tables";
-import { CHASSIS_TYPE_TO_ICON_MAP } from "../../constants";
+import { type Chassis } from "../../../(database)/tables";
+import { CHASSIS_TYPE_TO_ICON_MAP } from "../../../constants";
 
 export const ChassisListPanel = () => {
   const chassisList: Chassis[] = [
