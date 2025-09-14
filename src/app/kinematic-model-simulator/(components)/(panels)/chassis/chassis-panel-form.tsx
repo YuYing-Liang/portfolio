@@ -13,11 +13,11 @@ import {
 import { type FC } from "react";
 import { type DynamicIconProps, DynamicTablerIcon } from "~/app/(components)/Icon";
 import { CHASSIS_TYPE_TO_ICON_MAP } from "../../../constants";
-import { useFormikContext } from "formik";
-import { type ChassisFormValues } from "../../../(states)/chassis-form";
+import { useChassisForm } from "../../../(states)/chassis-form";
+import { type Chassis } from "~/app/kinematic-model-simulator/(database)/tables";
 
 export const ChassisFormPanel = () => {
-  const chassisForm = useFormikContext<ChassisFormValues>();
+  const chassisForm = useChassisForm();
 
   return (
     <Paper shadow="xs" p="xs" w={300}>
@@ -34,7 +34,12 @@ export const ChassisFormPanel = () => {
                   icon={icon}
                   text={type}
                   isSelected={chassisForm.values.type === type}
-                  onClick={async () => await chassisForm.setFieldValue("type", type)}
+                  onClick={() => {
+                    chassisForm.setFieldValue("type", type as Chassis["type"])
+                    if (type === "circular") {
+                      chassisForm.setFieldValue("rotation", 0);
+                    }
+                  }}
                 />
               ))}
             </ActionIconGroup>
@@ -46,8 +51,7 @@ export const ChassisFormPanel = () => {
             required
             value={chassisForm.values.name}
             onChange={chassisForm.handleChange}
-            onBlur={chassisForm.handleBlur}
-            error={chassisForm.touched.name && chassisForm.errors.name}
+            error={chassisForm.errors.name}
           />
           {chassisForm.values.type === "circular" && (
             <TextInput
@@ -57,8 +61,7 @@ export const ChassisFormPanel = () => {
               type="number"
               value={chassisForm.values.radius}
               onChange={chassisForm.handleChange}
-              onBlur={chassisForm.handleBlur}
-              error={chassisForm.touched.radius && chassisForm.errors.radius}
+              error={chassisForm.errors.radius}
               rightSection={
                 <Text size="sm" c="dimmed">
                   px
@@ -76,8 +79,7 @@ export const ChassisFormPanel = () => {
                 type="number"
                 value={chassisForm.values.length}
                 onChange={chassisForm.handleChange}
-                onBlur={chassisForm.handleBlur}
-                error={chassisForm.touched.length && chassisForm.errors.length}
+                error={chassisForm.errors.length}
                 rightSection={
                   <Text size="sm" c="dimmed">
                     px
@@ -92,8 +94,7 @@ export const ChassisFormPanel = () => {
                 type="number"
                 value={chassisForm.values.width}
                 onChange={chassisForm.handleChange}
-                onBlur={chassisForm.handleBlur}
-                error={chassisForm.touched.width && chassisForm.errors.width}
+                error={chassisForm.errors.width}
                 rightSection={
                   <Text size="sm" c="dimmed">
                     px
@@ -112,8 +113,7 @@ export const ChassisFormPanel = () => {
                 type="number"
                 value={chassisForm.values.base}
                 onChange={chassisForm.handleChange}
-                onBlur={chassisForm.handleBlur}
-                error={chassisForm.touched.base && chassisForm.errors.base}
+                error={chassisForm.errors.base}
                 rightSection={
                   <Text size="sm" c="dimmed">
                     px
@@ -128,8 +128,7 @@ export const ChassisFormPanel = () => {
                 type="number"
                 value={chassisForm.values.height}
                 onChange={chassisForm.handleChange}
-                onBlur={chassisForm.handleBlur}
-                error={chassisForm.touched.height && chassisForm.errors.height}
+                error={chassisForm.errors.height}
                 rightSection={
                   <Text size="sm" c="dimmed">
                     px
@@ -148,14 +147,13 @@ export const ChassisFormPanel = () => {
               disabled={chassisForm.values.type === "circular"}
               value={chassisForm.values.rotation}
               onChange={chassisForm.handleChange}
-              onBlur={chassisForm.handleBlur}
-              error={chassisForm.touched.rotation && chassisForm.errors.rotation}
+              error={chassisForm.errors.rotation}
               rightSection={
                 <Text size="sm" c="dimmed">
                   deg
                 </Text>
               }
-              rightSectionWidth={30}
+              rightSectionWidth={50}
             />
             <Button
               classNames={{

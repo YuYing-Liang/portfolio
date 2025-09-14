@@ -7,7 +7,7 @@ interface CircleChassisProps {
   y: number;
   radius: number;
   rotation: number; // in degrees
-  updateRadius: (newRadius: number) => Promise<void>;
+  updateRadius: (newRadius: number) => void;
 }
 
 export const CircleChassis: FC<CircleChassisProps> = (props) => {

@@ -10,9 +10,9 @@ interface RectangleChassisProps {
   width: number;
   length: number;
   rotation: number; // in degrees
-  updateWidth: (newWidth: number) => Promise<void>;
-  updateLength: (newLength: number) => Promise<void>;
-  updateRotation: (newRotation: number) => Promise<void>;
+  updateWidth: (newWidth: number) => void;
+  updateLength: (newLength: number) => void;
+  updateRotation: (newRotation: number) => void;
 }
 
 export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
@@ -35,7 +35,7 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         markerOffset={props.length / 2 + 20}
         labelOffset={20}
         rotation={-props.rotation}
-        updateDimension={async (newWidth) => await props.updateWidth(Number((newWidth * 2).toFixed(2)))}
+        updateDimension={(newWidth) => props.updateWidth(Number((newWidth * 2).toFixed(2)))}
       />
       <DimensionResizer
         x={0}
@@ -45,7 +45,7 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         markerOffset={props.width / 2 + 20}
         labelOffset={45}
         rotation={-props.rotation}
-        updateDimension={async (newLength) => await props.updateLength(Number((newLength * 2).toFixed(2)))}
+        updateDimension={(newLength) => props.updateLength(Number((newLength * 2).toFixed(2)))}
       />
       <DiagonalResizer
         x={0}
@@ -53,9 +53,9 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         dimensionX={props.width}
         dimensionY={props.length}
         offset={20}
-        updateDimensions={async (newWidth, newLength) => {
-          await props.updateWidth(Number(newWidth.toFixed(2)));
-          await props.updateLength(Number(newLength.toFixed(2)));
+        updateDimensions={(newWidth, newLength) => {
+          props.updateWidth(Number(newWidth.toFixed(2)));
+          props.updateLength(Number(newLength.toFixed(2)));
         }}
       />
       <Rotator
@@ -63,7 +63,7 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
         absoluteY={props.y}
         dimensionX={props.width}
         dimensionY={props.length}
-        offset={5}
+        offset={15}
         rotation={props.rotation}
         updateRotation={props.updateRotation}
       />

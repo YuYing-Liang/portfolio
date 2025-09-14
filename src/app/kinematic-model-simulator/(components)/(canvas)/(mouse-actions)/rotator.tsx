@@ -14,7 +14,7 @@ type ShapeConfig = {
   absoluteY: number;
   offset: number;
   rotation: number;
-  updateRotation: (rotation: number) => Promise<void>;
+  updateRotation: (rotation: number) => void;
 };
 
 export const Rotator: FC<ShapeConfig> = (props) => {
@@ -50,20 +50,19 @@ export const Rotator: FC<ShapeConfig> = (props) => {
         props.offset,
       );
       const startingAngle = Math.atan2(markerPosition.y, markerPosition.x);
-      const theta = Math.atan2(
-        positionRelativeToCenter.y - props.absoluteY,
-        positionRelativeToCenter.x - props.absoluteX,
-      );
-      const thetaDeg = Math.round(((theta - startingAngle) * 180) / Math.PI / 5) * 5;
+      const theta =
+        Math.atan2(positionRelativeToCenter.y - props.absoluteY, positionRelativeToCenter.x - props.absoluteX) -
+        startingAngle;
+      const thetaDeg = Math.round((theta * 180) / Math.PI / 5) * 5;
 
       const markerPositionRotated = {
-        x: (Math.abs(markerPosition.x) + ROTATOR_RADIUS * 2) * Math.cos(theta) + props.absoluteX,
-        y: (Math.abs(markerPosition.y) + ROTATOR_RADIUS * 2) * Math.sin(theta) + props.absoluteY,
+        x: props.absoluteX + (Math.abs(markerPosition.x) + props.dimensionX / 2 + props.offset / 2) * Math.sin(theta),
+        y: props.absoluteY - Math.abs(markerPosition.y) * Math.cos(theta),
       };
 
       e.target.setAbsolutePosition(markerPositionRotated);
       setIsDragging(true);
-      await props.updateRotation(thetaDeg);
+      props.updateRotation(thetaDeg);
     },
     [markerPosition, props],
   );
@@ -79,20 +78,20 @@ export const Rotator: FC<ShapeConfig> = (props) => {
         innerRadius={ROTATOR_RADIUS - 5}
         outerRadius={ROTATOR_RADIUS}
         angle={110}
-        rotation={170}
+        rotation={-145}
         fill={isHoverOrDragging ? "black" : "gray"}
         onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
         draggable
       />
-      <CanvasLabel x={-70} y={-10} text={`${props.rotation}deg`} width={75} height={24} rotation={-props.rotation} />
+      <CanvasLabel x={0} y={-50} text={`${props.rotation}deg`} width={75} height={24} rotation={-props.rotation} />
     </Group>
   );
 };
 
 const getMarkerPosition = (x: number, y: number, dimensionX: number, dimensionY: number, offset: number): Vector2d => {
   return {
-    x: x - dimensionX / 2 - offset / 2,
+    x,
     y: y - dimensionY / 2 - offset / 2,
   };
 };

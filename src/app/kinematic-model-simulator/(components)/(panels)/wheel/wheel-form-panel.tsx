@@ -77,7 +77,7 @@ export const WheelFormPanel = () => {
               required
               value={wheelForm.x}
               onChange={wheelForm.handleChange}
-              error={!wheelForm.x ? "x is required" : isNaN(wheelForm.x) ? "x must be a number" : undefined}
+              error={isNaN(wheelForm.x) ? "x must be a number" : undefined}
               rightSection={
                 <Text size="sm" c="dimmed">
                   units
@@ -93,7 +93,7 @@ export const WheelFormPanel = () => {
               required
               value={wheelForm.y}
               onChange={wheelForm.handleChange}
-              error={!wheelForm.y ? "y is required" : isNaN(wheelForm.y) ? "y must be a number" : undefined}
+              error={isNaN(wheelForm.y) ? "y must be a number" : undefined}
               rightSection={
                 <Text size="sm" c="dimmed">
                   units

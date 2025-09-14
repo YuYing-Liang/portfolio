@@ -12,7 +12,7 @@ type ShapeConfig = {
   x: number;
   y: number;
   offset: number;
-  updateDimensions: (xDimension: number, yDimension: number) => Promise<void>;
+  updateDimensions: (xDimension: number, yDimension: number) => void;
 };
 
 export const DiagonalResizer: FC<ShapeConfig> = (props) => {
@@ -81,7 +81,7 @@ export const DiagonalResizer: FC<ShapeConfig> = (props) => {
         return;
       }
 
-      await props.updateDimensions(newDimensionX, newDimensionY);
+      props.updateDimensions(newDimensionX, newDimensionY);
       e.target.setPosition({
         x: props.x + newDimensionX / 2 + props.offset,
         y: props.y + newDimensionY / 2 + props.offset,

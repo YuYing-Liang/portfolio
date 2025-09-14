@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Circle, Group, Line, Rect } from "react-konva";
+import { Group, Line } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
 import { Rotator } from "../(mouse-actions)/rotator";
@@ -10,9 +10,9 @@ interface RectangleChassisProps {
   base: number;
   height: number;
   rotation: number; // in degrees
-  updateBase: (newBase: number) => Promise<void>;
-  updateHeight: (newHeight: number) => Promise<void>;
-  updateRotation: (newRotation: number) => Promise<void>;
+  updateBase: (newBase: number) => void;
+  updateHeight: (newHeight: number) => void;
+  updateRotation: (newRotation: number) => void;
 }
 
 export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
@@ -35,7 +35,7 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
         markerOffset={props.height / 2 + 20}
         labelOffset={20}
         rotation={-props.rotation}
-        updateDimension={async (newBase) => await props.updateBase(Number((newBase * 2).toFixed(2)))}
+        updateDimension={(newBase) => props.updateBase(Number((newBase * 2).toFixed(2)))}
       />
       <DimensionResizer
         x={0}
@@ -45,7 +45,7 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
         markerOffset={props.base / 2 + 20}
         labelOffset={45}
         rotation={-props.rotation}
-        updateDimension={async (newHeight) => await props.updateHeight(Number((newHeight * 2).toFixed(2)))}
+        updateDimension={(newHeight) => props.updateHeight(Number((newHeight * 2).toFixed(2)))}
       />
       <DiagonalResizer
         x={0}
@@ -53,9 +53,9 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
         dimensionX={props.base}
         dimensionY={props.height}
         offset={20}
-        updateDimensions={async (newBase, newHeight) => {
-          await props.updateBase(Number(newBase.toFixed(2)));
-          await props.updateHeight(Number(newHeight.toFixed(2)));
+        updateDimensions={(newBase, newHeight) => {
+          props.updateBase(Number(newBase.toFixed(2)));
+          props.updateHeight(Number(newHeight.toFixed(2)));
         }}
       />
       <Rotator
@@ -63,7 +63,7 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
         absoluteY={props.y}
         dimensionX={props.base}
         dimensionY={props.height}
-        offset={-25}
+        offset={15}
         rotation={props.rotation}
         updateRotation={props.updateRotation}
       />

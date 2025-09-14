@@ -15,7 +15,7 @@ type ShapeConfig = {
   markerOffset: number;
   labelOffset: number;
   rotation: number;
-  updateDimension: (newDimension: number) => Promise<void>;
+  updateDimension: (newDimension: number) => void;
 };
 
 export const DimensionResizer: FC<ShapeConfig> = (props) => {
@@ -101,7 +101,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
 
       setIsDragging(true);
       e.target.setPosition(constrainedPosition);
-      await props.updateDimension(newDimension);
+      props.updateDimension(newDimension);
     },
     [props, gridSnapping, gridSize],
   );

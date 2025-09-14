@@ -1,7 +1,6 @@
-import { Formik } from "formik";
-import { type Chassis } from "../(database)/tables";
+import { create } from "zustand";
 import { getRotationFromMatrix } from "../helpers";
-import React, { type FC, type PropsWithChildren } from "react";
+import { type Chassis } from "../(database)/tables";
 
 export type ChassisFormValues = {
   name: Chassis["name"];
@@ -27,60 +26,70 @@ const DEFAULT_CHASSIS_FORM_VALUES: ChassisFormValues = {
   height: 25,
 };
 
-export interface ChassisFormProps {
-  initialValues?: Chassis;
-}
-
-export const ChassisForm: FC<PropsWithChildren<ChassisFormProps>> = (props) => {
-  return (
-    <Formik
-      enableReinitialize={true}
-      initialValues={{
-        name: props.initialValues?.name ?? DEFAULT_CHASSIS_FORM_VALUES.name,
-        type: props.initialValues?.type ?? DEFAULT_CHASSIS_FORM_VALUES.type,
-        submitType: DEFAULT_CHASSIS_FORM_VALUES.submitType,
-        rotation: props.initialValues?.frame
-          ? getRotationFromMatrix(props.initialValues.frame)
-          : DEFAULT_CHASSIS_FORM_VALUES.rotation,
-        radius:
-          props.initialValues?.type === "circular" ? props.initialValues.radius : DEFAULT_CHASSIS_FORM_VALUES.radius,
-        length:
-          props.initialValues?.type === "rectangular" ? props.initialValues.length : DEFAULT_CHASSIS_FORM_VALUES.length,
-        width:
-          props.initialValues?.type === "rectangular" ? props.initialValues.width : DEFAULT_CHASSIS_FORM_VALUES.width,
-        base: props.initialValues?.type === "triangular" ? props.initialValues.base : DEFAULT_CHASSIS_FORM_VALUES.base,
-        height:
-          props.initialValues?.type === "triangular" ? props.initialValues.height : DEFAULT_CHASSIS_FORM_VALUES.height,
-      }}
-      validate={(values) => {
-        const errors: Partial<Record<keyof ChassisFormValues, string>> = {};
-
-        if (!values.name.trim()) {
-          errors.name = "Chassis name is required";
-        }
-
-        if (!values.type.trim()) {
-          errors.type = "Chassis type is required";
-        }
-
-        if (values.type === "circular") {
-          if (values.radius <= 0) errors.radius = "Radius must be greater than 0";
-        } else if (values.type === "rectangular") {
-          if (values.length <= 0) errors.length = "Length must be greater than 0";
-          if (values.width <= 0) errors.width = "Width must be greater than 0";
-        } else if (values.type === "triangular") {
-          if (values.base <= 0) errors.base = "Base must be greater than 0";
-          if (values.height <= 0) errors.height = "Height must be greater than 0";
-        }
-
-        return errors;
-      }}
-      onSubmit={async (values, actions) => {
-        console.log("New Chassis Created:", values);
-        actions.resetForm();
-      }}
-    >
-      <>{props.children}</>
-    </Formik>
-  );
+type ChassisFormStore = {
+  values: ChassisFormValues;
+  errors: Partial<Record<keyof ChassisFormValues, string>>;
+  setFieldValue: <K extends keyof ChassisFormValues>(field: K, value: ChassisFormValues[K]) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  validate: () => void;
+  handleSubmit: () => void;
+  resetForm: () => void;
+  setInitialValues: (initial?: Chassis) => void;
 };
+
+export const useChassisForm = create<ChassisFormStore>((set, get) => ({
+  values: { ...DEFAULT_CHASSIS_FORM_VALUES },
+  errors: {},
+  setFieldValue: (field, value) => {
+    set((state) => ({
+      values: { ...state.values, [field]: value },
+    }));
+    get().validate();
+  },
+  handleChange: (e) => {
+    const { name, value } = e.target;
+    get().setFieldValue(name as keyof ChassisFormValues, value);
+  },
+  validate: () => {
+    const values = get().values;
+    const errors: Partial<Record<keyof ChassisFormValues, string>> = {};
+
+    if (!values.name.trim()) errors.name = "Chassis name is required";
+    if (!values.type.trim()) errors.type = "Chassis type is required";
+    if (values.type === "circular") {
+      if (values.radius <= 0) errors.radius = "Radius must be greater than 0";
+    } else if (values.type === "rectangular") {
+      if (values.length <= 0) errors.length = "Length must be greater than 0";
+      if (values.width <= 0) errors.width = "Width must be greater than 0";
+    } else if (values.type === "triangular") {
+      if (values.base <= 0) errors.base = "Base must be greater than 0";
+      if (values.height <= 0) errors.height = "Height must be greater than 0";
+    }
+
+    set({ errors });
+  },
+  handleSubmit: () => {
+    get().validate();
+    if (Object.keys(get().errors).length === 0) {
+      console.log("New Chassis Created:", get().values);
+      get().resetForm();
+    }
+  },
+  resetForm: () => set({ values: { ...DEFAULT_CHASSIS_FORM_VALUES }, errors: {} }),
+  setInitialValues: (initial) => {
+    set({
+      values: {
+        name: initial?.name ?? DEFAULT_CHASSIS_FORM_VALUES.name,
+        type: initial?.type ?? DEFAULT_CHASSIS_FORM_VALUES.type,
+        submitType: DEFAULT_CHASSIS_FORM_VALUES.submitType,
+        rotation: initial?.frame ? getRotationFromMatrix(initial.frame) : DEFAULT_CHASSIS_FORM_VALUES.rotation,
+        radius: initial?.type === "circular" ? initial.radius : DEFAULT_CHASSIS_FORM_VALUES.radius,
+        length: initial?.type === "rectangular" ? initial.length : DEFAULT_CHASSIS_FORM_VALUES.length,
+        width: initial?.type === "rectangular" ? initial.width : DEFAULT_CHASSIS_FORM_VALUES.width,
+        base: initial?.type === "triangular" ? initial.base : DEFAULT_CHASSIS_FORM_VALUES.base,
+        height: initial?.type === "triangular" ? initial.height : DEFAULT_CHASSIS_FORM_VALUES.height,
+      },
+    });
+    get().validate();
+  },
+}));
