@@ -3,8 +3,10 @@ import { Group, Rect } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
 import { Rotator } from "../(mouse-actions)/rotator";
+import { useLocalStorage } from "@mantine/hooks";
+import { DEFAULT_SETTINGS, type SettingData } from "../../(settings)/settings";
 
-interface RectangleChassisProps {
+interface RectangleShapeProps {
   x: number;
   y: number;
   width: number;
@@ -13,16 +15,48 @@ interface RectangleChassisProps {
   maxWidth: number;
   maxLength: number;
   editable?: boolean;
+  dragBounds?: { left: number; right: number; top: number; bottom: number };
+  updatePosition?: (newX: number, newY: number) => void;
   updateWidth: (newWidth: number) => void;
   updateLength: (newLength: number) => void;
   updateRotation: (newRotation: number) => void;
 }
 
-export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
+export const RectangleShape: FC<RectangleShapeProps> = (props) => {
   const isEditable = props.editable ?? true;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [gridSizeDouble, _setGridSize] = useLocalStorage<SettingData["gridSize"]>({
+    key: "gridSize",
+    defaultValue: DEFAULT_SETTINGS.gridSize,
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [gridSnapping, _setGridSnapping] = useLocalStorage<SettingData["gridSnapping"]>({
+    key: "gridSnapping",
+    defaultValue: DEFAULT_SETTINGS.gridSnapping,
+  });
 
   return (
-    <Group x={props.x} y={props.y} rotation={props.rotation}>
+    <Group
+      x={props.x}
+      y={props.y}
+      rotation={props.rotation}
+      draggable={props.dragBounds !== undefined}
+      dragBoundFunc={(pos) => {
+        if (!props.dragBounds) return pos;
+
+        if (gridSnapping) {
+          const gridSize = gridSizeDouble / 2;
+          pos.x = Math.round((pos.x - props.x) / gridSize) * gridSize + props.x;
+          pos.y = Math.round((pos.y - props.y) / gridSize) * gridSize + props.y;
+        }
+
+        const newX = Math.min(Math.max(pos.x, props.dragBounds.left), props.dragBounds.right);
+        const newY = Math.min(Math.max(pos.y, props.dragBounds.top), props.dragBounds.bottom);
+
+        if (props.updatePosition) props.updatePosition(newX, newY);
+        return { x: newX, y: newY };
+      }}
+    >
       <Rect
         offsetX={props.width / 2}
         offsetY={props.length / 2}

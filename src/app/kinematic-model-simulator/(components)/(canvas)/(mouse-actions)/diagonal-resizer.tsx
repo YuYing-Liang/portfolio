@@ -64,7 +64,6 @@ export const DiagonalResizer: FC<ShapeConfig> = (props) => {
           x: roundToNearestGridUnit(position.x, gridSize),
           y: roundToNearestGridUnit(position.y, gridSize),
         };
-        e.target.setPosition(position);
       }
 
       let newDimensionX = props.dimensionX + (position.x - markerPosition.x);

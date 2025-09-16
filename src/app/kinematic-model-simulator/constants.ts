@@ -11,3 +11,4 @@ export const PAGES = ["configure", "simulate"] as const;
 export type Pages = (typeof PAGES)[number];
 
 export const MAX_CHASSIS_SIZE_BUFFER = 100;
+export const MAX_WHEEL_SIZE_BUFFER = 20;

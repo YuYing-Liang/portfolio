@@ -3,9 +3,6 @@ This is a web app that generates kinematic models given a certain chassis config
 
 ### Features (todo)
 - CRUD for chassis
-- wheel panel form
-- resize wheels
-- rotate wheels
 - CRUD for wheels
 - add rollers (in wheel form)
 - rotate rollers (in form, too crowded on canvas)
@@ -17,3 +14,4 @@ This is a web app that generates kinematic models given a certain chassis config
 - not saving sizes in grid units
 - labels collide with markers when shape is rotated
 - rotator is glitchy
+- rotator is in absolute units - issues with wheel editing

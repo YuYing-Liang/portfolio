@@ -13,8 +13,8 @@ export type WheelFormValues = {
 
 const DEFAULT_WHEEL_FORM_VALUES: WheelFormValues = {
   name: "New Wheel",
-  length: 2,
-  width: 1,
+  length: 40,
+  width: 20,
   x: 0,
   y: 0,
   rotation: 0,
