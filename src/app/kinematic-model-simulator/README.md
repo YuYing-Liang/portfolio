@@ -9,6 +9,8 @@ This is a web app that generates kinematic models given a certain chassis config
 - rearrange layout: chassis + wheel configuration on the left and the chassis list on the right
 - Initial state: create new chassis button --> pop out the form
 - lock ratio (for resizing triangular + rectangular chassis)
+- create custom hook for localstorage items
+- alignment helpers for wheels
 
 ### Bugs
 - not saving sizes in grid units
