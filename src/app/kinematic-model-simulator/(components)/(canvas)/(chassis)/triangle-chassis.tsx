@@ -10,6 +10,8 @@ interface RectangleChassisProps {
   base: number;
   height: number;
   rotation: number; // in degrees
+  maxBase: number;
+  maxHeight: number;
   editable?: boolean;
   updateBase: (newBase: number) => void;
   updateHeight: (newHeight: number) => void;
@@ -40,6 +42,7 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
             markerOffset={props.height / 2 + 20}
             labelOffset={20}
             rotation={-props.rotation}
+            maxDimension={props.maxBase}
             updateDimension={(newBase) => props.updateBase(Number((newBase * 2).toFixed(2)))}
           />
           <DimensionResizer
@@ -50,6 +53,7 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
             markerOffset={props.base / 2 + 20}
             labelOffset={45}
             rotation={-props.rotation}
+            maxDimension={props.maxHeight}
             updateDimension={(newHeight) => props.updateHeight(Number((newHeight * 2).toFixed(2)))}
           />
           <DiagonalResizer
@@ -58,6 +62,8 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
             dimensionX={props.base}
             dimensionY={props.height}
             offset={20}
+            maxDimensionX={props.maxBase}
+            maxDimensionY={props.maxHeight}
             updateDimensions={(newBase, newHeight) => {
               props.updateBase(Number(newBase.toFixed(2)));
               props.updateHeight(Number(newHeight.toFixed(2)));

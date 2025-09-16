@@ -1,31 +1,17 @@
 import { Button, Group, Paper, SimpleGrid, Stack, Text, TextInput } from "@mantine/core";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
-import { useCanvasState } from "~/app/kinematic-model-simulator/(states)/states";
+import { useChassisForm } from "~/app/kinematic-model-simulator/(states)/chassis-form";
 import { useWheelForm } from "~/app/kinematic-model-simulator/(states)/wheel-form";
 
 export const WheelFormPanel = () => {
   const wheelForm = useWheelForm();
-  const { setOverlayGrid } = useCanvasState();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setOverlayGrid(false);
-    console.log("Wheel Form Values:", {
-      name: wheelForm.name,
-      length: wheelForm.length,
-      width: wheelForm.width,
-      position: { x: wheelForm.x, y: wheelForm.y },
-      rotation: wheelForm.rotation,
-    });
-  };
-
-  const handleCancel = () => {
-    setOverlayGrid(false);
-  };
+  const {
+    values: { id: selectedChassisId },
+  } = useChassisForm();
 
   return (
     <Paper shadow="xs" p="xs" w={300}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={wheelForm.handleSubmit}>
         <Stack gap="xs">
           <Group gap="xs" justify="space-between">
             <Text size="md" fw={700}>
@@ -38,7 +24,7 @@ export const WheelFormPanel = () => {
               variant="default"
               size="xs"
               leftSection={<DynamicTablerIcon name="IconCancel" size={14} />}
-              onClick={handleCancel}
+              onClick={wheelForm.resetForm}
             >
               Cancel
             </Button>
@@ -48,9 +34,9 @@ export const WheelFormPanel = () => {
             label="Wheel Name"
             placeholder="Enter wheel name"
             required
-            value={wheelForm.name}
+            value={wheelForm.values.name}
             onChange={wheelForm.handleChange}
-            error={!wheelForm.name.trim() ? "Name is required" : undefined}
+            error={!wheelForm.values.name.trim() ? "Name is required" : undefined}
           />
           <SimpleGrid cols={2} spacing={"xs"}>
             <TextInput
@@ -59,9 +45,9 @@ export const WheelFormPanel = () => {
               placeholder="Enter length"
               type="number"
               required
-              value={wheelForm.length}
+              value={wheelForm.values.length}
               onChange={wheelForm.handleChange}
-              error={!wheelForm.length || wheelForm.length <= 0 ? "Length must be positive" : undefined}
+              error={!wheelForm.values.length || wheelForm.values.length <= 0 ? "Length must be positive" : undefined}
               rightSection={
                 <Text size="sm" c="dimmed">
                   units
@@ -75,9 +61,9 @@ export const WheelFormPanel = () => {
               placeholder="Enter width"
               type="number"
               required
-              value={wheelForm.width}
+              value={wheelForm.values.width}
               onChange={wheelForm.handleChange}
-              error={!wheelForm.width || wheelForm.width <= 0 ? "Width must be positive" : undefined}
+              error={!wheelForm.values.width || wheelForm.values.width <= 0 ? "Width must be positive" : undefined}
               rightSection={
                 <Text size="sm" c="dimmed">
                   units
@@ -93,9 +79,9 @@ export const WheelFormPanel = () => {
               placeholder="Enter x"
               type="number"
               required
-              value={wheelForm.x}
+              value={wheelForm.values.x}
               onChange={wheelForm.handleChange}
-              error={isNaN(wheelForm.x) ? "x must be a number" : undefined}
+              error={isNaN(wheelForm.values.x) ? "x must be a number" : undefined}
               rightSection={
                 <Text size="sm" c="dimmed">
                   units
@@ -109,9 +95,9 @@ export const WheelFormPanel = () => {
               placeholder="Enter y"
               type="number"
               required
-              value={wheelForm.y}
+              value={wheelForm.values.y}
               onChange={wheelForm.handleChange}
-              error={isNaN(wheelForm.y) ? "y must be a number" : undefined}
+              error={isNaN(wheelForm.values.y) ? "y must be a number" : undefined}
               rightSection={
                 <Text size="sm" c="dimmed">
                   units
@@ -126,7 +112,7 @@ export const WheelFormPanel = () => {
               label="Rotation"
               placeholder="Enter rotation"
               type="number"
-              value={wheelForm.rotation}
+              value={wheelForm.values.rotation}
               onChange={wheelForm.handleChange}
               rightSection={
                 <Text size="sm" c="dimmed">
@@ -142,6 +128,7 @@ export const WheelFormPanel = () => {
               }}
               variant="light"
               type="submit"
+              disabled={selectedChassisId === undefined}
               rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
             >
               Save

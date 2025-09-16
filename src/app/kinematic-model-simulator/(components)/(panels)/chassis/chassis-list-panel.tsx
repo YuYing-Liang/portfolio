@@ -4,8 +4,10 @@ import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { useDisclosure } from "@mantine/hooks";
 import { type Chassis } from "../../../(database)/tables";
 import { CHASSIS_TYPE_TO_ICON_MAP } from "../../../constants";
+import { useChassisForm } from "~/app/kinematic-model-simulator/(states)/chassis-form";
 
 export const ChassisListPanel = () => {
+  const { setFieldValue } = useChassisForm();
   const chassisList: Chassis[] = [
     {
       id: 0,
@@ -40,6 +42,14 @@ export const ChassisListPanel = () => {
     },
   ];
 
+  const handleEdit = (id: number) => {
+    setFieldValue("id", id);
+  };
+
+  const handleAddChassis = () => {
+    setFieldValue("id", 0);
+  };
+
   return (
     <Paper shadow="xs" p="xs">
       <Text size="md" fw={700}>
@@ -47,8 +57,13 @@ export const ChassisListPanel = () => {
       </Text>
       <Stack gap="xs" mt="sm">
         {chassisList.map((chassis) => (
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          <ChassisListElement key={chassis.id} {...chassis} handleClick={() => {}} />
+          <ChassisListElement
+            key={chassis.id}
+            {...chassis}
+            handleEdit={handleEdit}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            handleDelete={() => {}}
+          />
         ))}
         <Button
           classNames={{
@@ -57,6 +72,7 @@ export const ChassisListPanel = () => {
           }}
           variant="light"
           type="submit"
+          onClick={handleAddChassis}
           leftSection={<DynamicTablerIcon name="IconBoxModel" size={16} />}
         >
           Add Chassis
@@ -67,7 +83,8 @@ export const ChassisListPanel = () => {
 };
 
 type ChassisButtonProps = {
-  handleClick: (chassisId: number) => void;
+  handleEdit: (chassisId: number) => void;
+  handleDelete: (chassisId: number) => void;
 } & Chassis;
 
 const ChassisListElement: FC<ChassisButtonProps> = (props) => {
@@ -99,10 +116,10 @@ const ChassisListElement: FC<ChassisButtonProps> = (props) => {
             </Text>
           </Group>
           <Group gap="5px">
-            <ActionIcon size="md" variant="default" color="black">
+            <ActionIcon size="md" variant="default" color="black" onClick={() => props.handleEdit(props.id)}>
               <DynamicTablerIcon name="IconPencil" size={16} />
             </ActionIcon>
-            <ActionIcon size="md" variant="default" color="black">
+            <ActionIcon size="md" variant="default" color="black" onClick={() => props.handleDelete(props.id)}>
               <DynamicTablerIcon name="IconTrash" size={16} />
             </ActionIcon>
           </Group>

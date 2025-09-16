@@ -8,6 +8,7 @@ interface CircleChassisProps {
   radius: number;
   rotation: number; // in degrees
   editable: boolean;
+  maxRadius: number;
   updateRadius: (newRadius: number) => void;
 }
 
@@ -26,6 +27,7 @@ export const CircleChassis: FC<CircleChassisProps> = (props) => {
           direction="x"
           markerOffset={-props.radius - 20}
           labelOffset={-20}
+          maxDimension={props.maxRadius}
           updateDimension={props.updateRadius}
         />
       )}

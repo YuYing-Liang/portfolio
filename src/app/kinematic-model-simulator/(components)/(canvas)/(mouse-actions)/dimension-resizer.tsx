@@ -2,7 +2,7 @@ import { useState, useCallback, type FC, useEffect } from "react";
 import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
 import { Circle, Line } from "react-konva";
-import { useHover, useLocalStorage } from "@mantine/hooks";
+import { useHover, useLocalStorage, useViewportSize } from "@mantine/hooks";
 import { CanvasLabel } from "../canvas-label";
 import { getSizeBasedOnGridUnits, roundToNearestGridUnit } from "~/app/kinematic-model-simulator/helpers";
 import { DEFAULT_SETTINGS, type SettingData } from "../../(settings)/settings";
@@ -15,6 +15,7 @@ type ShapeConfig = {
   markerOffset: number;
   labelOffset: number;
   rotation: number;
+  maxDimension: number;
   updateDimension: (newDimension: number) => void;
 };
 
@@ -94,7 +95,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
         (constrainedPosition[props.direction] - markerPosition[props.direction]) * markerCoefficient;
       const newDimension: number = currentDimension + dragDelta;
 
-      if (getSizeBasedOnGridUnits(newDimension, gridSize) < 1) {
+      if (getSizeBasedOnGridUnits(newDimension, gridSize) < 1 || newDimension > props.maxDimension / 2) {
         e.target.setPosition(markerPosition);
         return;
       }

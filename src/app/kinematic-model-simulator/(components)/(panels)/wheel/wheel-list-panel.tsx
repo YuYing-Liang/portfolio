@@ -1,11 +1,15 @@
 import { ActionIcon, Button, Group, Paper, Stack, Text } from "@mantine/core";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { type Wheel } from "../../../(database)/tables";
-import { useCanvasState } from "~/app/kinematic-model-simulator/(states)/states";
+import { useWheelForm } from "~/app/kinematic-model-simulator/(states)/wheel-form";
+import { useChassisForm } from "~/app/kinematic-model-simulator/(states)/chassis-form";
 
 export const WheelListPanel = () => {
-  const { setOverlayGrid } = useCanvasState();
-  const chassisList: Pick<Wheel, "id" | "name">[] = [
+  const {
+    values: { id: selectedChassisId },
+  } = useChassisForm();
+  const { setFieldValue } = useWheelForm();
+  const wheelList: Pick<Wheel, "id" | "name">[] = [
     {
       id: 0,
       name: "Wheel 1",
@@ -13,15 +17,15 @@ export const WheelListPanel = () => {
   ];
 
   const handleAddWheel = () => {
-    setOverlayGrid(true);
+    setFieldValue("id", 0);
   };
 
   const handleEditWheel = (id: number) => () => {
-    setOverlayGrid(true);
+    setFieldValue("id", id);
   };
 
   const handleDeleteWheel = (id: number) => () => {
-    setOverlayGrid(false);
+    setFieldValue("id", undefined);
   };
 
   return (
@@ -30,7 +34,7 @@ export const WheelListPanel = () => {
         {"Wheel List"}
       </Text>
       <Stack gap="xs" mt="sm">
-        {chassisList.map((chassis) => (
+        {wheelList.map((chassis) => (
           <Group key={chassis.id} justify="space-between" align="center">
             <Text
               size="md"
@@ -40,7 +44,13 @@ export const WheelListPanel = () => {
               {chassis.name}
             </Text>
             <Group gap="5px">
-              <ActionIcon size="md" variant="default" color="black" onClick={handleEditWheel(chassis.id)}>
+              <ActionIcon
+                size="md"
+                variant="default"
+                color="black"
+                disabled={selectedChassisId === undefined}
+                onClick={handleEditWheel(chassis.id)}
+              >
                 <DynamicTablerIcon name="IconPencil" size={16} />
               </ActionIcon>
               <ActionIcon size="md" variant="default" color="black" onClick={handleDeleteWheel(chassis.id)}>
@@ -55,6 +65,7 @@ export const WheelListPanel = () => {
             section: "m-[5px]",
           }}
           variant="light"
+          disabled={selectedChassisId === undefined}
           onClick={handleAddWheel}
           leftSection={<DynamicTablerIcon name="IconWheel" size={16} />}
         >

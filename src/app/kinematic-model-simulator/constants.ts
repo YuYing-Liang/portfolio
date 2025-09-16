@@ -9,3 +9,5 @@ export const CHASSIS_TYPE_TO_ICON_MAP: Record<Chassis["type"], DynamicIconProps[
 
 export const PAGES = ["configure", "simulate"] as const;
 export type Pages = (typeof PAGES)[number];
+
+export const MAX_CHASSIS_SIZE_BUFFER = 100;

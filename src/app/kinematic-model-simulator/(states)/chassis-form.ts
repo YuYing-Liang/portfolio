@@ -3,9 +3,9 @@ import { getRotationFromMatrix } from "../helpers";
 import { type Chassis } from "../(database)/tables";
 
 export type ChassisFormValues = {
+  id?: Chassis["id"];
   name: Chassis["name"];
   type: Chassis["type"] | "";
-  submitType: "new" | "edit";
   rotation: number;
   radius: number;
   length: number;
@@ -16,8 +16,7 @@ export type ChassisFormValues = {
 
 const DEFAULT_CHASSIS_FORM_VALUES: ChassisFormValues = {
   name: "",
-  type: "",
-  submitType: "new",
+  type: "circular",
   rotation: 0,
   radius: 25,
   length: 25,
@@ -44,7 +43,9 @@ export const useChassisForm = create<ChassisFormStore>((set, get) => ({
     set((state) => ({
       values: { ...state.values, [field]: value },
     }));
-    get().validate();
+    if (field !== "id") {
+      get().validate();
+    }
   },
   handleChange: (e) => {
     const { name, value } = e.target;
@@ -81,7 +82,6 @@ export const useChassisForm = create<ChassisFormStore>((set, get) => ({
       values: {
         name: initial?.name ?? DEFAULT_CHASSIS_FORM_VALUES.name,
         type: initial?.type ?? DEFAULT_CHASSIS_FORM_VALUES.type,
-        submitType: DEFAULT_CHASSIS_FORM_VALUES.submitType,
         rotation: initial?.frame ? getRotationFromMatrix(initial.frame) : DEFAULT_CHASSIS_FORM_VALUES.rotation,
         radius: initial?.type === "circular" ? initial.radius : DEFAULT_CHASSIS_FORM_VALUES.radius,
         length: initial?.type === "rectangular" ? initial.length : DEFAULT_CHASSIS_FORM_VALUES.length,

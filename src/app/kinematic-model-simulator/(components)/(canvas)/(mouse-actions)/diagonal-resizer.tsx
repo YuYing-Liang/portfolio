@@ -12,6 +12,8 @@ type ShapeConfig = {
   x: number;
   y: number;
   offset: number;
+  maxDimensionX: number;
+  maxDimensionY: number;
   updateDimensions: (xDimension: number, yDimension: number) => void;
 };
 
@@ -75,7 +77,9 @@ export const DiagonalResizer: FC<ShapeConfig> = (props) => {
 
       if (
         getSizeBasedOnGridUnits(newDimensionX, gridSize) < 1 ||
-        getSizeBasedOnGridUnits(newDimensionY, gridSize) < 1
+        getSizeBasedOnGridUnits(newDimensionY, gridSize) < 1 ||
+        newDimensionX > props.maxDimensionX ||
+        newDimensionY > props.maxDimensionY
       ) {
         e.target.setPosition(markerPosition);
         return;

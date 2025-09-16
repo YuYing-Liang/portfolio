@@ -35,7 +35,7 @@ export const ChassisFormPanel = () => {
                   text={type}
                   isSelected={chassisForm.values.type === type}
                   onClick={() => {
-                    chassisForm.setFieldValue("type", type as Chassis["type"])
+                    chassisForm.setFieldValue("type", type as Chassis["type"]);
                     if (type === "circular") {
                       chassisForm.setFieldValue("rotation", 0);
                     }
@@ -155,17 +155,23 @@ export const ChassisFormPanel = () => {
               }
               rightSectionWidth={50}
             />
-            <Button
-              classNames={{
-                root: "self-end",
-                section: "m-[5px]",
-              }}
-              variant="light"
-              type="submit"
-              rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
-            >
-              Save
-            </Button>
+            <Group gap="5px" align="end">
+              <ActionIcon onClick={chassisForm.resetForm} variant="default" size="lg">
+                <DynamicTablerIcon name="IconCancel" size={18} />
+              </ActionIcon>
+              <Button
+                classNames={{
+                  root: "self-end",
+                  section: "m-[5px]",
+                }}
+                variant="light"
+                type="submit"
+                size="sm"
+                rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
+              >
+                Save
+              </Button>
+            </Group>
           </SimpleGrid>
         </Stack>
       </form>

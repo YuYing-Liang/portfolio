@@ -36,29 +36,16 @@ export default function KinematicModelGenerator() {
         {isConfigurePage && <ConfigurePage />}
         {isSimulatePage && <SimulatePage />}
       </Stage>
-      {isConfigurePage && (
-        <>
-          <Stack className="absolute left-[25px] top-[25px]">
-            <ChassisListPanel />
-            <ChassisFormPanel />
-          </Stack>
-          <Stack className="absolute right-[25px] top-[25px]">
-            <WheelListPanel />
-            <WheelFormPanel />
-          </Stack>
-        </>
-      )}
-      {isSimulatePage && (
-        <>
-          <Stack className="absolute left-[25px] top-[25px]">
-            <ChassisListPanel />
-            <MotorSpeedPanel />
-          </Stack>
-          <Stack className="absolute right-[25px] top-[25px]">
-            <TrajectoryPanel />
-          </Stack>
-        </>
-      )}
+      <Stack className="absolute left-[25px] top-[25px]">
+        <ChassisListPanel />
+        {isConfigurePage && <ChassisFormPanel />}
+        {isSimulatePage && <MotorSpeedPanel />}
+      </Stack>
+      <Stack className="absolute right-[25px] top-[25px]">
+        {isConfigurePage && <WheelListPanel />}
+        {isConfigurePage && <WheelFormPanel />}
+        {isSimulatePage && <TrajectoryPanel />}
+      </Stack>
       <TopBar />
     </div>
   );

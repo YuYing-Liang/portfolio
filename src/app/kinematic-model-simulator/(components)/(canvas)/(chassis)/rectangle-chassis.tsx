@@ -10,6 +10,8 @@ interface RectangleChassisProps {
   width: number;
   length: number;
   rotation: number; // in degrees
+  maxWidth: number;
+  maxLength: number;
   editable?: boolean;
   updateWidth: (newWidth: number) => void;
   updateLength: (newLength: number) => void;
@@ -40,6 +42,7 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
             markerOffset={props.length / 2 + 20}
             labelOffset={20}
             rotation={-props.rotation}
+            maxDimension={props.maxWidth}
             updateDimension={(newWidth) => props.updateWidth(Number((newWidth * 2).toFixed(2)))}
           />
           <DimensionResizer
@@ -50,6 +53,7 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
             markerOffset={props.width / 2 + 20}
             labelOffset={45}
             rotation={-props.rotation}
+            maxDimension={props.maxLength}
             updateDimension={(newLength) => props.updateLength(Number((newLength * 2).toFixed(2)))}
           />
           <DiagonalResizer
@@ -58,6 +62,8 @@ export const RectangleChassis: FC<RectangleChassisProps> = (props) => {
             dimensionX={props.width}
             dimensionY={props.length}
             offset={20}
+            maxDimensionX={props.maxWidth}
+            maxDimensionY={props.maxLength}
             updateDimensions={(newWidth, newLength) => {
               props.updateWidth(Number(newWidth.toFixed(2)));
               props.updateLength(Number(newLength.toFixed(2)));
