@@ -10,12 +10,15 @@ interface RectangleChassisProps {
   base: number;
   height: number;
   rotation: number; // in degrees
+  editable?: boolean;
   updateBase: (newBase: number) => void;
   updateHeight: (newHeight: number) => void;
   updateRotation: (newRotation: number) => void;
 }
 
 export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
+  const isEditable = props.editable ?? true;
+
   return (
     <Group x={props.x} y={props.y} rotation={props.rotation}>
       <Line
@@ -27,46 +30,50 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
         stroke="black"
         strokeWidth={2}
       />
-      <DimensionResizer
-        x={0}
-        y={0}
-        dimension={props.base / 2}
-        direction="x"
-        markerOffset={props.height / 2 + 20}
-        labelOffset={20}
-        rotation={-props.rotation}
-        updateDimension={(newBase) => props.updateBase(Number((newBase * 2).toFixed(2)))}
-      />
-      <DimensionResizer
-        x={0}
-        y={0}
-        dimension={props.height / 2}
-        direction="y"
-        markerOffset={props.base / 2 + 20}
-        labelOffset={45}
-        rotation={-props.rotation}
-        updateDimension={(newHeight) => props.updateHeight(Number((newHeight * 2).toFixed(2)))}
-      />
-      <DiagonalResizer
-        x={0}
-        y={0}
-        dimensionX={props.base}
-        dimensionY={props.height}
-        offset={20}
-        updateDimensions={(newBase, newHeight) => {
-          props.updateBase(Number(newBase.toFixed(2)));
-          props.updateHeight(Number(newHeight.toFixed(2)));
-        }}
-      />
-      <Rotator
-        absoluteX={props.x}
-        absoluteY={props.y}
-        dimensionX={props.base}
-        dimensionY={props.height}
-        offset={15}
-        rotation={props.rotation}
-        updateRotation={props.updateRotation}
-      />
+      {isEditable && (
+        <>
+          <DimensionResizer
+            x={0}
+            y={0}
+            dimension={props.base / 2}
+            direction="x"
+            markerOffset={props.height / 2 + 20}
+            labelOffset={20}
+            rotation={-props.rotation}
+            updateDimension={(newBase) => props.updateBase(Number((newBase * 2).toFixed(2)))}
+          />
+          <DimensionResizer
+            x={0}
+            y={0}
+            dimension={props.height / 2}
+            direction="y"
+            markerOffset={props.base / 2 + 20}
+            labelOffset={45}
+            rotation={-props.rotation}
+            updateDimension={(newHeight) => props.updateHeight(Number((newHeight * 2).toFixed(2)))}
+          />
+          <DiagonalResizer
+            x={0}
+            y={0}
+            dimensionX={props.base}
+            dimensionY={props.height}
+            offset={20}
+            updateDimensions={(newBase, newHeight) => {
+              props.updateBase(Number(newBase.toFixed(2)));
+              props.updateHeight(Number(newHeight.toFixed(2)));
+            }}
+          />
+          <Rotator
+            absoluteX={props.x}
+            absoluteY={props.y}
+            dimensionX={props.base}
+            dimensionY={props.height}
+            offset={15}
+            rotation={props.rotation}
+            updateRotation={props.updateRotation}
+          />
+        </>
+      )}
     </Group>
   );
 };

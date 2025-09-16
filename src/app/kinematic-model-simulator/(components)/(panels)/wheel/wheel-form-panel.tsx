@@ -1,12 +1,15 @@
 import { Button, Group, Paper, SimpleGrid, Stack, Text, TextInput } from "@mantine/core";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
+import { useCanvasState } from "~/app/kinematic-model-simulator/(states)/states";
 import { useWheelForm } from "~/app/kinematic-model-simulator/(states)/wheel-form";
 
 export const WheelFormPanel = () => {
   const wheelForm = useWheelForm();
+  const { setOverlayGrid } = useCanvasState();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setOverlayGrid(false);
     console.log("Wheel Form Values:", {
       name: wheelForm.name,
       length: wheelForm.length,
@@ -14,6 +17,10 @@ export const WheelFormPanel = () => {
       position: { x: wheelForm.x, y: wheelForm.y },
       rotation: wheelForm.rotation,
     });
+  };
+
+  const handleCancel = () => {
+    setOverlayGrid(false);
   };
 
   return (
@@ -24,6 +31,17 @@ export const WheelFormPanel = () => {
             <Text size="md" fw={700}>
               {`Edit Wheel`}
             </Text>
+            <Button
+              classNames={{
+                section: "m-[5px]",
+              }}
+              variant="default"
+              size="xs"
+              leftSection={<DynamicTablerIcon name="IconCancel" size={14} />}
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
           </Group>
           <TextInput
             name="name"

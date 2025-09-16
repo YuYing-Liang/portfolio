@@ -1,14 +1,28 @@
 import { ActionIcon, Button, Group, Paper, Stack, Text } from "@mantine/core";
 import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { type Wheel } from "../../../(database)/tables";
+import { useCanvasState } from "~/app/kinematic-model-simulator/(states)/states";
 
 export const WheelListPanel = () => {
+  const { setOverlayGrid } = useCanvasState();
   const chassisList: Pick<Wheel, "id" | "name">[] = [
     {
       id: 0,
       name: "Wheel 1",
     },
   ];
+
+  const handleAddWheel = () => {
+    setOverlayGrid(true);
+  };
+
+  const handleEditWheel = (id: number) => () => {
+    setOverlayGrid(true);
+  };
+
+  const handleDeleteWheel = (id: number) => () => {
+    setOverlayGrid(false);
+  };
 
   return (
     <Paper shadow="xs" p="xs">
@@ -26,10 +40,10 @@ export const WheelListPanel = () => {
               {chassis.name}
             </Text>
             <Group gap="5px">
-              <ActionIcon size="md" variant="default" color="black">
+              <ActionIcon size="md" variant="default" color="black" onClick={handleEditWheel(chassis.id)}>
                 <DynamicTablerIcon name="IconPencil" size={16} />
               </ActionIcon>
-              <ActionIcon size="md" variant="default" color="black">
+              <ActionIcon size="md" variant="default" color="black" onClick={handleDeleteWheel(chassis.id)}>
                 <DynamicTablerIcon name="IconTrash" size={16} />
               </ActionIcon>
             </Group>
@@ -41,7 +55,7 @@ export const WheelListPanel = () => {
             section: "m-[5px]",
           }}
           variant="light"
-          type="submit"
+          onClick={handleAddWheel}
           leftSection={<DynamicTablerIcon name="IconWheel" size={16} />}
         >
           Add Wheel
