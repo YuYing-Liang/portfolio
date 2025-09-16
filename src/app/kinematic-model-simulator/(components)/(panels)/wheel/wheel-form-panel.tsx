@@ -9,7 +9,7 @@ export const WheelFormPanel = () => {
     values: { id: selectedChassisId },
   } = useChassisForm();
 
-  return (
+  return selectedChassisId !== undefined ? (
     <Paper shadow="xs" p="xs" w={300}>
       <form onSubmit={wheelForm.handleSubmit}>
         <Stack gap="xs">
@@ -128,7 +128,6 @@ export const WheelFormPanel = () => {
               }}
               variant="light"
               type="submit"
-              disabled={selectedChassisId === undefined}
               rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
             >
               Save
@@ -137,5 +136,5 @@ export const WheelFormPanel = () => {
         </Stack>
       </form>
     </Paper>
-  );
+  ) : null;
 };
