@@ -2,7 +2,7 @@
 import { Stack } from "@mantine/core";
 import { TopBar } from "./(components)/(settings)/top-bar";
 import { ChassisListPanel } from "./(components)/(panels)/chassis/chassis-list-panel";
-import { ChassisFormPanel } from "./(components)/(panels)/chassis/chassis-panel-form";
+import { ChassisFormPanel } from "./(components)/(panels)/chassis/chassis-form-panel";
 import { MotorSpeedPanel } from "./(components)/(panels)/motor-speed-panel";
 import { TrajectoryPanel } from "./(components)/(panels)/trajectory-panel";
 import { usePageState } from "./(states)/states";
