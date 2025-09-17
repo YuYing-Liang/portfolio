@@ -12,7 +12,7 @@ export const BASE_FRAME_MATRIX: MatrixWithId = {
   id: 0,
   colors: DEFAULT_AXIS_COLORS,
   name: "Base Frame",
-  pose: [0, 0, 0, 0, 0, 0],
+  pose: [0, 0, 0, -Math.PI / 2, 0, -Math.PI / 2],
 };
 
 export const EULER_POSE_LABELS: Record<EulerAngleOrders, PoseLabels> = {

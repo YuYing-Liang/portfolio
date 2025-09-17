@@ -4,6 +4,7 @@ import { type TriadTreeElement } from "../types";
 import { db } from "./db";
 import type { Matrix, MatrixWithId, Setting } from "./tables";
 import { DEFAULT_SETTINGS } from "./versions";
+import { BASE_FRAME_MATRIX } from "../constants";
 
 export const ensureDefaultMatrix = async (
   table: Table<MatrixWithId, number, MatrixWithId>,
@@ -46,7 +47,7 @@ export const deleteMatrix = async (id: number) => {
 
 export const getMatricesByParentId = async (id: Matrix["parent"]) => {
   return id === undefined
-    ? await db.matrices.filter((matrix) => matrix.parent === undefined).toArray()
+    ? await db.matrices.filter((matrix) => matrix.parent === undefined && matrix.id !== BASE_FRAME_MATRIX.id).toArray()
     : await db.matrices.where({ parent: id }).toArray();
 };
 

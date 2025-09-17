@@ -11,7 +11,11 @@ interface TriadGroupProps {
 export const TriadGroup: FC<TriadGroupProps> = (props) => {
   const id = props.id ?? BASE_FRAME_MATRIX.id;
   const triadData = useLiveQuery(async () => await getMatrix(id));
-  const triadChildren = useLiveQuery(async () => await getMatricesByParentId(props.id));
+  const triadChildren = useLiveQuery(async () =>
+    (await getMatricesByParentId(props.id)).concat(
+      props.id === undefined ? await getMatricesByParentId(BASE_FRAME_MATRIX.id) : [],
+    ),
+  );
 
   return (
     <group

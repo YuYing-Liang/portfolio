@@ -174,8 +174,8 @@ const AXIS_RADIUS = 0.025;
 
 const AXIS_ROTATION: Record<AxisProps["axis"], [number, number, number]> = {
   x: [0, 0, -Math.PI / 2],
-  y: [Math.PI / 2, 0, 0],
-  z: [0, 0, 0],
+  y: [0, 0, 0],
+  z: [Math.PI / 2, 0, 0],
 };
 
 const AXIS_CYLINDER_Z_OFFSET = AXIS_RADIUS / 2;
