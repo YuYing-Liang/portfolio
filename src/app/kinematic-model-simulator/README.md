@@ -4,7 +4,6 @@ This is a web app that generates kinematic models given a certain chassis config
 ### Features (todo)
 - CRUD for chassis
 - CRUD for wheels
-- rotate rollers (in form, too crowded on canvas)
 - lock ratio (for resizing triangular + rectangular chassis)
 - create custom hook for localstorage items
 - alignment helpers for wheels

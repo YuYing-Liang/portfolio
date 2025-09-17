@@ -125,6 +125,7 @@ export const ConfigurePage = () => {
             <RectangleShape
               x={0}
               y={0}
+              fill="lightgray"
               width={wheelForm.values.width}
               length={wheelForm.values.length}
               rotation={wheelForm.values.rotation}
@@ -139,23 +140,21 @@ export const ConfigurePage = () => {
               updateRotation={(newRotation) => {
                 wheelForm.setFieldValue("rotation", newRotation);
               }}
-            />
-            {wheelForm.values.rollerRotation !== undefined &&
-              Array(NUM_ROLLERS)
-                .fill(0)
-                .map((_, index) => (
-                  <RectangleShape
-                    key={index}
-                    x={0}
-                    y={((index - (NUM_ROLLERS - 1) / 2) * (wheelForm.values.length - ROLLER_SIZE_BUFFER)) / NUM_ROLLERS}
-                    width={wheelForm.values.width - ROLLER_SIZE_BUFFER * 1.5}
-                    length={(wheelForm.values.length - ROLLER_SIZE_BUFFER * 4) / NUM_ROLLERS}
-                    rotation={wheelForm.values.rollerRotation!}
-                    maxLength={wheelForm.values.length}
-                    maxWidth={wheelForm.values.width}
-                    editable={false}
-                  />
-                ))}
+            >
+              {wheelForm.values.rollerRotation !== undefined && (
+                <RectangleShape
+                  x={0}
+                  y={0}
+                  fill="gray"
+                  width={Math.min(wheelForm.values.width, wheelForm.values.length) * 0.75}
+                  length={Math.min(wheelForm.values.width, wheelForm.values.length) * 0.25}
+                  rotation={wheelForm.values.rollerRotation}
+                  maxLength={wheelForm.values.length}
+                  maxWidth={wheelForm.values.width}
+                  editable={false}
+                />
+              )}
+            </RectangleShape>
           </Group>
         </Layer>
       )}

@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type PropsWithChildren, type FC } from "react";
 import { Group, Rect } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
@@ -13,12 +13,13 @@ interface RectangleShapeProps {
   maxWidth: number;
   maxLength: number;
   editable?: boolean;
+  fill?: string;
   updateWidth?: (newWidth: number) => void;
   updateLength?: (newLength: number) => void;
   updateRotation?: (newRotation: number) => void;
 }
 
-export const RectangleShape: FC<RectangleShapeProps> = (props) => {
+export const RectangleShape: FC<PropsWithChildren<RectangleShapeProps>> = (props) => {
   const isEditable = props.editable ?? true;
 
   return (
@@ -28,10 +29,11 @@ export const RectangleShape: FC<RectangleShapeProps> = (props) => {
         offsetY={props.length / 2}
         width={props.width}
         height={props.length}
-        fill="skyblue"
+        fill={props.fill ?? "skyblue"}
         stroke="black"
         strokeWidth={2}
       />
+      {props.children}
       {isEditable && (
         <>
           {props.updateWidth !== undefined && (
