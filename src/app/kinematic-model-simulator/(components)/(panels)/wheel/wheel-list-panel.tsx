@@ -70,7 +70,7 @@ export const WheelListPanel = () => {
         </>
       ) : (
         <Text size="sm" c="dimmed">
-          Please select a chassis to manage its wheels.
+          {"Please select a chassis to manage its wheels."}
         </Text>
       )}
     </Paper>

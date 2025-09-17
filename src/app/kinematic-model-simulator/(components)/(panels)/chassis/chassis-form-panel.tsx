@@ -21,160 +21,166 @@ export const ChassisFormPanel = () => {
 
   return (
     <Paper shadow="xs" p="xs" w={300}>
-      <form onSubmit={chassisForm.handleSubmit}>
-        <Stack gap="xs">
-          <Group gap="xs" justify="space-between">
-            <Text size="md" fw={700}>
-              {`Edit Chassis`}
-            </Text>
-            <ActionIconGroup>
-              {Object.entries(CHASSIS_TYPE_TO_ICON_MAP).map(([type, icon], i) => (
-                <ChassisButton
-                  key={i}
-                  icon={icon}
-                  text={type}
-                  isSelected={chassisForm.values.type === type}
-                  onClick={() => {
-                    chassisForm.setFieldValue("type", type as Chassis["type"]);
-                    if (type === "circular") {
-                      chassisForm.setFieldValue("rotation", 0);
-                    }
-                  }}
-                />
-              ))}
-            </ActionIconGroup>
-          </Group>
-          <TextInput
-            name="name"
-            label="Chassis Name"
-            placeholder="Enter chassis name"
-            required
-            value={chassisForm.values.name}
-            onChange={chassisForm.handleChange}
-            error={chassisForm.errors.name}
-          />
-          {chassisForm.values.type === "circular" && (
-            <TextInput
-              name="radius"
-              label="Radius"
-              placeholder="Enter radius"
-              type="number"
-              value={chassisForm.values.radius}
-              onChange={chassisForm.handleChange}
-              error={chassisForm.errors.radius}
-              rightSection={
-                <Text size="sm" c="dimmed">
-                  px
-                </Text>
-              }
-              rightSectionWidth={30}
-            />
-          )}
-          {chassisForm.values.type === "rectangular" && (
-            <SimpleGrid cols={2} spacing={"xs"}>
-              <TextInput
-                name="length"
-                label="Length"
-                placeholder="Enter length"
-                type="number"
-                value={chassisForm.values.length}
-                onChange={chassisForm.handleChange}
-                error={chassisForm.errors.length}
-                rightSection={
-                  <Text size="sm" c="dimmed">
-                    px
-                  </Text>
-                }
-                rightSectionWidth={30}
-              />
-              <TextInput
-                name="width"
-                label="Width"
-                placeholder="Enter width"
-                type="number"
-                value={chassisForm.values.width}
-                onChange={chassisForm.handleChange}
-                error={chassisForm.errors.width}
-                rightSection={
-                  <Text size="sm" c="dimmed">
-                    px
-                  </Text>
-                }
-                rightSectionWidth={30}
-              />
-            </SimpleGrid>
-          )}
-          {chassisForm.values.type === "triangular" && (
-            <SimpleGrid cols={2} spacing={"xs"}>
-              <TextInput
-                name="base"
-                label="Base"
-                placeholder="Enter base"
-                type="number"
-                value={chassisForm.values.base}
-                onChange={chassisForm.handleChange}
-                error={chassisForm.errors.base}
-                rightSection={
-                  <Text size="sm" c="dimmed">
-                    px
-                  </Text>
-                }
-                rightSectionWidth={30}
-              />
-              <TextInput
-                name="height"
-                label="Height"
-                placeholder="Enter height"
-                type="number"
-                value={chassisForm.values.height}
-                onChange={chassisForm.handleChange}
-                error={chassisForm.errors.height}
-                rightSection={
-                  <Text size="sm" c="dimmed">
-                    px
-                  </Text>
-                }
-                rightSectionWidth={30}
-              />
-            </SimpleGrid>
-          )}
-          <SimpleGrid cols={2} spacing={"xs"}>
-            <TextInput
-              name="rotation"
-              label="Rotation"
-              placeholder="Enter rotation"
-              type="number"
-              disabled={chassisForm.values.type === "circular"}
-              value={chassisForm.values.rotation}
-              onChange={chassisForm.handleChange}
-              error={chassisForm.errors.rotation}
-              rightSection={
-                <Text size="sm" c="dimmed">
-                  deg
-                </Text>
-              }
-              rightSectionWidth={50}
-            />
-            <Group gap="5px" align="end">
-              <ActionIcon onClick={chassisForm.resetForm} variant="default" size="lg">
-                <DynamicTablerIcon name="IconCancel" size={18} />
-              </ActionIcon>
-              <Button
-                classNames={{
-                  root: "self-end",
-                  section: "m-[5px]",
-                }}
-                variant="light"
-                type="submit"
-                size="sm"
-                rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
-              >
-                Save
-              </Button>
+      {chassisForm.values.id !== undefined ? (
+        <form onSubmit={chassisForm.handleSubmit}>
+          <Stack gap="xs">
+            <Group gap="xs" justify="space-between">
+              <Text size="md" fw={700}>
+                {`Edit Chassis`}
+              </Text>
+              <ActionIconGroup>
+                {Object.entries(CHASSIS_TYPE_TO_ICON_MAP).map(([type, icon], i) => (
+                  <ChassisButton
+                    key={i}
+                    icon={icon}
+                    text={type}
+                    isSelected={chassisForm.values.type === type}
+                    onClick={() => {
+                      chassisForm.setFieldValue("type", type as Chassis["type"]);
+                      if (type === "circular") {
+                        chassisForm.setFieldValue("rotation", 0);
+                      }
+                    }}
+                  />
+                ))}
+              </ActionIconGroup>
             </Group>
-          </SimpleGrid>
-        </Stack>
-      </form>
+            <TextInput
+              name="name"
+              label="Chassis Name"
+              placeholder="Enter chassis name"
+              required
+              value={chassisForm.values.name}
+              onChange={chassisForm.handleChange}
+              error={chassisForm.errors.name}
+            />
+            {chassisForm.values.type === "circular" && (
+              <TextInput
+                name="radius"
+                label="Radius"
+                placeholder="Enter radius"
+                type="number"
+                value={chassisForm.values.radius}
+                onChange={chassisForm.handleChange}
+                error={chassisForm.errors.radius}
+                rightSection={
+                  <Text size="sm" c="dimmed">
+                    px
+                  </Text>
+                }
+                rightSectionWidth={30}
+              />
+            )}
+            {chassisForm.values.type === "rectangular" && (
+              <SimpleGrid cols={2} spacing={"xs"}>
+                <TextInput
+                  name="length"
+                  label="Length"
+                  placeholder="Enter length"
+                  type="number"
+                  value={chassisForm.values.length}
+                  onChange={chassisForm.handleChange}
+                  error={chassisForm.errors.length}
+                  rightSection={
+                    <Text size="sm" c="dimmed">
+                      px
+                    </Text>
+                  }
+                  rightSectionWidth={30}
+                />
+                <TextInput
+                  name="width"
+                  label="Width"
+                  placeholder="Enter width"
+                  type="number"
+                  value={chassisForm.values.width}
+                  onChange={chassisForm.handleChange}
+                  error={chassisForm.errors.width}
+                  rightSection={
+                    <Text size="sm" c="dimmed">
+                      px
+                    </Text>
+                  }
+                  rightSectionWidth={30}
+                />
+              </SimpleGrid>
+            )}
+            {chassisForm.values.type === "triangular" && (
+              <SimpleGrid cols={2} spacing={"xs"}>
+                <TextInput
+                  name="base"
+                  label="Base"
+                  placeholder="Enter base"
+                  type="number"
+                  value={chassisForm.values.base}
+                  onChange={chassisForm.handleChange}
+                  error={chassisForm.errors.base}
+                  rightSection={
+                    <Text size="sm" c="dimmed">
+                      px
+                    </Text>
+                  }
+                  rightSectionWidth={30}
+                />
+                <TextInput
+                  name="height"
+                  label="Height"
+                  placeholder="Enter height"
+                  type="number"
+                  value={chassisForm.values.height}
+                  onChange={chassisForm.handleChange}
+                  error={chassisForm.errors.height}
+                  rightSection={
+                    <Text size="sm" c="dimmed">
+                      px
+                    </Text>
+                  }
+                  rightSectionWidth={30}
+                />
+              </SimpleGrid>
+            )}
+            <SimpleGrid cols={2} spacing={"xs"}>
+              <TextInput
+                name="rotation"
+                label="Rotation"
+                placeholder="Enter rotation"
+                type="number"
+                disabled={chassisForm.values.type === "circular"}
+                value={chassisForm.values.rotation}
+                onChange={chassisForm.handleChange}
+                error={chassisForm.errors.rotation}
+                rightSection={
+                  <Text size="sm" c="dimmed">
+                    deg
+                  </Text>
+                }
+                rightSectionWidth={50}
+              />
+              <Group gap="5px" align="end">
+                <ActionIcon onClick={chassisForm.resetForm} variant="default" size="lg">
+                  <DynamicTablerIcon name="IconCancel" size={18} />
+                </ActionIcon>
+                <Button
+                  classNames={{
+                    root: "self-end",
+                    section: "m-[5px]",
+                  }}
+                  variant="light"
+                  type="submit"
+                  size="sm"
+                  rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
+                >
+                  Save
+                </Button>
+              </Group>
+            </SimpleGrid>
+          </Stack>
+        </form>
+      ) : (
+        <Text size="sm" c="dimmed">
+          {"Select or add a chassis to edit its properties"}
+        </Text>
+      )}
     </Paper>
   );
 };
