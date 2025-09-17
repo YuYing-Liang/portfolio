@@ -8,6 +8,7 @@ export const WheelFormPanel = () => {
   const {
     values: { id: selectedChassisId },
   } = useChassisForm();
+  const hasRollers = wheelForm.values.rollerRotation !== undefined;
 
   return selectedChassisId !== undefined ? (
     <Paper shadow="xs" p="xs" w={300}>
@@ -51,7 +52,7 @@ export const WheelFormPanel = () => {
                 error={!wheelForm.values.length || wheelForm.values.length <= 0 ? "Length must be positive" : undefined}
                 rightSection={
                   <Text size="sm" c="dimmed">
-                    units
+                    px
                   </Text>
                 }
                 rightSectionWidth={50}
@@ -67,7 +68,7 @@ export const WheelFormPanel = () => {
                 error={!wheelForm.values.width || wheelForm.values.width <= 0 ? "Width must be positive" : undefined}
                 rightSection={
                   <Text size="sm" c="dimmed">
-                    units
+                    px
                   </Text>
                 }
                 rightSectionWidth={50}
@@ -85,7 +86,7 @@ export const WheelFormPanel = () => {
                 error={isNaN(wheelForm.values.x) ? "x must be a number" : undefined}
                 rightSection={
                   <Text size="sm" c="dimmed">
-                    units
+                    px
                   </Text>
                 }
                 rightSectionWidth={50}
@@ -101,11 +102,40 @@ export const WheelFormPanel = () => {
                 error={isNaN(wheelForm.values.y) ? "y must be a number" : undefined}
                 rightSection={
                   <Text size="sm" c="dimmed">
-                    units
+                    px
                   </Text>
                 }
                 rightSectionWidth={50}
               />
+            </SimpleGrid>
+            <SimpleGrid cols={2} spacing={"xs"}>
+              {hasRollers && (
+                <TextInput
+                  name="rollerRotation"
+                  label="Roller Rotation"
+                  placeholder="Enter rotation"
+                  type="number"
+                  value={wheelForm.values.rollerRotation}
+                  onChange={wheelForm.handleChange}
+                  rightSection={
+                    <Text size="sm" c="dimmed">
+                      deg
+                    </Text>
+                  }
+                  rightSectionWidth={50}
+                />
+              )}
+              <Button
+                classNames={{
+                  root: "self-end",
+                  section: "m-[5px]",
+                }}
+                variant="light"
+                leftSection={<DynamicTablerIcon name={hasRollers ? "IconMinus" : "IconPlus"} size={16} />}
+                onClick={() => wheelForm.setFieldValue("rollerRotation", hasRollers ? undefined : 0)}
+              >
+                {"Rollers"}
+              </Button>
             </SimpleGrid>
             <SimpleGrid cols={2} spacing={"xs"}>
               <TextInput

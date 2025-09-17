@@ -15,9 +15,14 @@ import { type DynamicIconProps, DynamicTablerIcon } from "~/app/(components)/Ico
 import { CHASSIS_TYPE_TO_ICON_MAP } from "../../../constants";
 import { useChassisForm } from "../../../(states)/chassis-form";
 import { type Chassis } from "~/app/kinematic-model-simulator/(database)/tables";
+import { useWheelForm } from "~/app/kinematic-model-simulator/(states)/wheel-form";
 
 export const ChassisFormPanel = () => {
   const chassisForm = useChassisForm();
+  const {
+    values: { id: selectedWheelId },
+  } = useWheelForm();
+  const isEditingWheel = selectedWheelId !== undefined;
 
   return (
     <Paper shadow="xs" p="xs" w={300}>
@@ -34,6 +39,7 @@ export const ChassisFormPanel = () => {
                     key={i}
                     icon={icon}
                     text={type}
+                    disabled={isEditingWheel}
                     isSelected={chassisForm.values.type === type}
                     onClick={() => {
                       chassisForm.setFieldValue("type", type as Chassis["type"]);
@@ -53,6 +59,7 @@ export const ChassisFormPanel = () => {
               value={chassisForm.values.name}
               onChange={chassisForm.handleChange}
               error={chassisForm.errors.name}
+              readOnly={isEditingWheel}
             />
             {chassisForm.values.type === "circular" && (
               <TextInput
@@ -69,6 +76,7 @@ export const ChassisFormPanel = () => {
                   </Text>
                 }
                 rightSectionWidth={30}
+                readOnly={isEditingWheel}
               />
             )}
             {chassisForm.values.type === "rectangular" && (
@@ -87,6 +95,7 @@ export const ChassisFormPanel = () => {
                     </Text>
                   }
                   rightSectionWidth={30}
+                  readOnly={isEditingWheel}
                 />
                 <TextInput
                   name="width"
@@ -102,6 +111,7 @@ export const ChassisFormPanel = () => {
                     </Text>
                   }
                   rightSectionWidth={30}
+                  readOnly={isEditingWheel}
                 />
               </SimpleGrid>
             )}
@@ -121,6 +131,7 @@ export const ChassisFormPanel = () => {
                     </Text>
                   }
                   rightSectionWidth={30}
+                  readOnly={isEditingWheel}
                 />
                 <TextInput
                   name="height"
@@ -136,6 +147,7 @@ export const ChassisFormPanel = () => {
                     </Text>
                   }
                   rightSectionWidth={30}
+                  readOnly={isEditingWheel}
                 />
               </SimpleGrid>
             )}
@@ -146,6 +158,7 @@ export const ChassisFormPanel = () => {
                 placeholder="Enter rotation"
                 type="number"
                 disabled={chassisForm.values.type === "circular"}
+                readOnly={isEditingWheel}
                 value={chassisForm.values.rotation}
                 onChange={chassisForm.handleChange}
                 error={chassisForm.errors.rotation}
@@ -157,7 +170,7 @@ export const ChassisFormPanel = () => {
                 rightSectionWidth={50}
               />
               <Group gap="5px" align="end">
-                <ActionIcon onClick={chassisForm.resetForm} variant="default" size="lg">
+                <ActionIcon onClick={chassisForm.resetForm} variant="default" size="lg" disabled={isEditingWheel}>
                   <DynamicTablerIcon name="IconCancel" size={18} />
                 </ActionIcon>
                 <Button
@@ -169,6 +182,7 @@ export const ChassisFormPanel = () => {
                   type="submit"
                   size="sm"
                   rightSection={<DynamicTablerIcon name="IconDeviceFloppy" size={16} />}
+                  disabled={isEditingWheel}
                 >
                   Save
                 </Button>
@@ -189,12 +203,18 @@ interface ChassisButtonProps {
   icon: DynamicIconProps["name"];
   text: string;
   isSelected: boolean;
+  disabled: boolean;
   onClick: () => void;
 }
 
 const ChassisButton: FC<ChassisButtonProps> = (props) => (
-  <Tooltip label={props.text}>
-    <ActionIcon variant={props.isSelected ? "filled" : "light"} size="lg" onClick={props.onClick}>
+  <Tooltip label={props.text} disabled={props.disabled}>
+    <ActionIcon
+      disabled={props.disabled}
+      variant={props.isSelected ? "filled" : "light"}
+      size="lg"
+      onClick={props.onClick}
+    >
       <DynamicTablerIcon name={props.icon} size={18} />
     </ActionIcon>
   </Tooltip>

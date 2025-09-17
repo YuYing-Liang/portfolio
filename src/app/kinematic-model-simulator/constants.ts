@@ -12,3 +12,5 @@ export type Pages = (typeof PAGES)[number];
 
 export const MAX_CHASSIS_SIZE_BUFFER = 100;
 export const MAX_WHEEL_SIZE_BUFFER = 20;
+export const NUM_ROLLERS = 5;
+export const ROLLER_SIZE_BUFFER = 10;

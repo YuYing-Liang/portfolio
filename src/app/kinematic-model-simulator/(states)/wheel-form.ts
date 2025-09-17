@@ -9,6 +9,7 @@ export type WheelFormValues = {
   x: number;
   y: number;
   rotation: number;
+  rollerRotation?: number;
 };
 
 const DEFAULT_WHEEL_FORM_VALUES: WheelFormValues = {

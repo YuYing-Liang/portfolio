@@ -29,12 +29,7 @@ export interface Wheel {
   width: number;
   length: number;
   color: string;
-}
-
-export interface Roller {
-  id: number;
-  wheel: number;
-  frame: MatrixOrientation;
+  roller?: MatrixOrientation;
 }
 
 type Pose = [x: number, y: number, rz: number];
