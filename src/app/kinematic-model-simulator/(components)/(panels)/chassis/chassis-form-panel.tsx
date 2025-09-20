@@ -34,6 +34,14 @@ export const ChassisFormPanel = () => {
                 {`Edit Chassis`}
               </Text>
               <ActionIconGroup>
+                <ActionIcon
+                  onClick={() => chassisForm.resetForm(true)}
+                  variant="default"
+                  size="lg"
+                  disabled={isEditingWheel}
+                >
+                  <DynamicTablerIcon name="IconRestore" size={18} />
+                </ActionIcon>
                 {Object.entries(CHASSIS_TYPE_TO_ICON_MAP).map(([type, icon], i) => (
                   <ChassisButton
                     key={i}
@@ -170,7 +178,12 @@ export const ChassisFormPanel = () => {
                 rightSectionWidth={50}
               />
               <Group gap="5px" align="end">
-                <ActionIcon onClick={chassisForm.resetForm} variant="default" size="lg" disabled={isEditingWheel}>
+                <ActionIcon
+                  onClick={() => chassisForm.resetForm()}
+                  variant="default"
+                  size="lg"
+                  disabled={isEditingWheel}
+                >
                   <DynamicTablerIcon name="IconCancel" size={18} />
                 </ActionIcon>
                 <Button

@@ -32,7 +32,7 @@ type ChassisFormStore = {
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   validate: () => void;
   handleSubmit: () => void;
-  resetForm: () => void;
+  resetForm: (onlyResetForm?: boolean) => void;
   setInitialValues: (initial?: Chassis) => void;
 };
 
@@ -76,7 +76,14 @@ export const useChassisForm = create<ChassisFormStore>((set, get) => ({
       get().resetForm();
     }
   },
-  resetForm: () => set({ values: { ...DEFAULT_CHASSIS_FORM_VALUES }, errors: {} }),
+  resetForm: (onlyResetForm) =>
+    set((currState) => ({
+      values: {
+        ...DEFAULT_CHASSIS_FORM_VALUES,
+        ...(onlyResetForm ? { id: currState.values.id, type: currState.values.type } : {}),
+      },
+      errors: {},
+    })),
   setInitialValues: (initial) => {
     set({
       values: {

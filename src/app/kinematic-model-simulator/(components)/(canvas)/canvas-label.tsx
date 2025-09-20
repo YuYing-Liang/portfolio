@@ -11,8 +11,8 @@ interface CanvasLabelProps {
 }
 
 export const CanvasLabel: FC<CanvasLabelProps> = (props) => {
-  const offsetX = props.width / 2;
-  const offsetY = props.height / 2;
+  const offsetX = (props.width / 2) * (1 - Math.sin((props.rotation ?? 0) * (Math.PI / 180)));
+  const offsetY = (props.height / 2) * (1 + Math.sin((props.rotation ?? 0) * (Math.PI / 180)));
 
   return (
     <Group x={props.x} y={props.y} rotation={props.rotation}>

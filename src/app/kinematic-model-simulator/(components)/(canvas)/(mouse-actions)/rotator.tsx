@@ -1,9 +1,8 @@
-import { useState, useCallback, type FC, useEffect, useMemo } from "react";
+import { useState, useCallback, type FC, useEffect } from "react";
 import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
-import { Arc, Group } from "react-konva";
+import { Arc } from "react-konva";
 import { useHover } from "@mantine/hooks";
-import { CanvasLabel } from "../canvas-label";
 
 const ROTATOR_RADIUS = 18;
 
@@ -21,7 +20,7 @@ export const Rotator: FC<ShapeConfig> = (props) => {
   const { hovered, ref } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const markerPosition: Vector2d = getMarkerPosition(0, 0, props.dimensionX, props.dimensionY, props.offset);
+  const markerPosition: Vector2d = getMarkerPosition(props.absoluteX, props.absoluteY, props.dimensionY, props.offset);
   const isHoverOrDragging = hovered || isDragging;
 
   useEffect(
@@ -41,30 +40,24 @@ export const Rotator: FC<ShapeConfig> = (props) => {
 
   const handleDragMove = useCallback(
     async (e: KonvaEventObject<DragEvent>) => {
-      const position = e.target.absolutePosition();
-      const positionRelativeToCenter = getMarkerPosition(
-        position.x,
-        position.y,
-        props.dimensionX,
-        props.dimensionY,
-        props.offset,
-      );
-      const startingAngle = Math.atan2(markerPosition.y, markerPosition.x);
+      const position = e.target.position();
+      const positionRelativeToCenter = getMarkerPosition(position.x, position.y, props.dimensionY, props.offset);
       const theta =
-        Math.atan2(positionRelativeToCenter.y - props.absoluteY, positionRelativeToCenter.x - props.absoluteX) -
-        startingAngle;
-      const thetaDeg = Math.round((theta * 180) / Math.PI / 5) * 5;
-
+        Math.atan2(positionRelativeToCenter.y - props.absoluteY, positionRelativeToCenter.x - props.absoluteX) +
+        Math.PI / 2;
+      const thetaDeg = Math.round((theta * 180) / Math.PI);
+      const thetaRadRounded = (thetaDeg * Math.PI) / 180;
       const markerPositionRotated = {
-        x: props.absoluteX + (Math.abs(markerPosition.x) + props.dimensionX / 2 + props.offset / 2) * Math.sin(theta),
-        y: props.absoluteY - Math.abs(markerPosition.y) * Math.cos(theta),
+        x: props.absoluteX + (props.dimensionY / 2 + props.offset / 2) * Math.sin(thetaRadRounded),
+        y: props.absoluteY - (props.dimensionY / 2 + props.offset / 2) * Math.cos(thetaRadRounded),
       };
 
-      e.target.setAbsolutePosition(markerPositionRotated);
+      e.target.setPosition(markerPositionRotated);
+      e.target.rotation(thetaDeg - 145);
       setIsDragging(true);
       props.updateRotation(thetaDeg);
     },
-    [markerPosition, props],
+    [props],
   );
 
   const handleDragEnd = () => {
@@ -72,24 +65,23 @@ export const Rotator: FC<ShapeConfig> = (props) => {
   };
 
   return (
-    <Group x={markerPosition.x} y={markerPosition.y}>
-      <Arc
-        ref={ref}
-        innerRadius={ROTATOR_RADIUS - 5}
-        outerRadius={ROTATOR_RADIUS}
-        angle={110}
-        rotation={-145}
-        fill={isHoverOrDragging ? "black" : "gray"}
-        onDragMove={handleDragMove}
-        onDragEnd={handleDragEnd}
-        draggable
-      />
-      <CanvasLabel x={0} y={-50} text={`${props.rotation}deg`} width={75} height={24} rotation={-props.rotation} />
-    </Group>
+    <Arc
+      ref={ref}
+      x={markerPosition.x}
+      y={markerPosition.y}
+      innerRadius={ROTATOR_RADIUS - 5}
+      outerRadius={ROTATOR_RADIUS}
+      angle={110}
+      rotation={-145}
+      fill={isHoverOrDragging ? "black" : "gray"}
+      onDragMove={handleDragMove}
+      onDragEnd={handleDragEnd}
+      draggable
+    />
   );
 };
 
-const getMarkerPosition = (x: number, y: number, dimensionX: number, dimensionY: number, offset: number): Vector2d => {
+const getMarkerPosition = (x: number, y: number, dimensionY: number, offset: number): Vector2d => {
   return {
     x,
     y: y - dimensionY / 2 - offset / 2,
