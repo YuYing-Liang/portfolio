@@ -10,5 +10,4 @@ This is a web app that generates kinematic models given a certain chassis config
 
 ### Bugs
 - not saving sizes in grid units
-- rotator is glitchy (less than before)
 - grid snapping not updating immediately for some reason, useLocalStorage() hook??

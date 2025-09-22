@@ -20,7 +20,13 @@ export const Rotator: FC<ShapeConfig> = (props) => {
   const { hovered, ref } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const markerPosition: Vector2d = getMarkerPosition(props.absoluteX, props.absoluteY, props.dimensionY, props.offset);
+  const markerPosition: Vector2d = getMarkerPosition(
+    props.absoluteX,
+    props.absoluteY,
+    props.dimensionY,
+    props.offset,
+    props.rotation,
+  );
   const isHoverOrDragging = hovered || isDragging;
 
   useEffect(
@@ -41,7 +47,13 @@ export const Rotator: FC<ShapeConfig> = (props) => {
   const handleDragMove = useCallback(
     async (e: KonvaEventObject<DragEvent>) => {
       const position = e.target.position();
-      const positionRelativeToCenter = getMarkerPosition(position.x, position.y, props.dimensionY, props.offset);
+      const positionRelativeToCenter = getMarkerPosition(
+        position.x,
+        position.y,
+        props.dimensionY,
+        props.offset,
+        props.rotation,
+      );
       const theta =
         Math.atan2(positionRelativeToCenter.y - props.absoluteY, positionRelativeToCenter.x - props.absoluteX) +
         Math.PI / 2;
@@ -72,7 +84,7 @@ export const Rotator: FC<ShapeConfig> = (props) => {
       innerRadius={ROTATOR_RADIUS - 5}
       outerRadius={ROTATOR_RADIUS}
       angle={110}
-      rotation={-145}
+      rotation={props.rotation - 145}
       fill={isHoverOrDragging ? "black" : "gray"}
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
@@ -81,9 +93,9 @@ export const Rotator: FC<ShapeConfig> = (props) => {
   );
 };
 
-const getMarkerPosition = (x: number, y: number, dimensionY: number, offset: number): Vector2d => {
+const getMarkerPosition = (x: number, y: number, dimensionY: number, offset: number, rotation: number): Vector2d => {
   return {
-    x,
-    y: y - dimensionY / 2 - offset / 2,
+    x: x + (dimensionY / 2 + offset / 2) * Math.sin((rotation * Math.PI) / 180),
+    y: y - (dimensionY / 2 + offset / 2) * Math.cos((rotation * Math.PI) / 180),
   };
 };
