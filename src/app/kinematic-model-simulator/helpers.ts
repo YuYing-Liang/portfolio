@@ -1,3 +1,4 @@
+import { IndexableType } from "dexie";
 import { type Matrix, type MatrixOrientation } from "./types";
 
 /**
@@ -9,8 +10,8 @@ export const getRotationFromMatrix = (matrix: Matrix | MatrixOrientation): numbe
   const angleCos = Math.acos(matrix[0]);
   const angleSine = Math.asin(-matrix[1]);
 
-  if (angleCos > 0) {
-    if (angleSine < 0) {
+  if (angleCos >= 0) {
+    if (angleSine <= 0) {
       return angleSine;
     }
     return angleCos;
@@ -42,4 +43,14 @@ export const getSizeBasedOnGridUnits = (pixelSize: number, gridUnitSize: number)
 
 export const roundToNearestGridUnit = (pixelValue: number, gridUnitSize: number): number => {
   return Math.round(pixelValue / gridUnitSize) * gridUnitSize;
+};
+
+export const getDefaultName = (name: string, chassisNames: string[]) => {
+  let defaultName = name;
+  let counter = 1;
+  while (chassisNames.includes(defaultName)) {
+    defaultName = `${name} (${counter})`;
+    counter++;
+  }
+  return defaultName;
 };

@@ -1,14 +1,19 @@
 import Dexie, { type EntityTable } from "dexie";
+import { type Chassis, type Wheel, type Trajectory } from "./tables";
 
-// export const db = new Dexie("Database") as Dexie & {
-//   matrices: EntityTable<MatrixWithId, "id">;
-//   settings: EntityTable<Setting, "id">;
-// };
+export class KinematicDB extends Dexie {
+  chassis!: EntityTable<Chassis, "id">;
+  wheels!: EntityTable<Wheel, "id">;
+  trajectories!: EntityTable<Trajectory, "id">;
 
-// db.version(1).stores({
-//   matrices: "++id, name, parent, pose, colors",
-// });
+  constructor() {
+    super("KinematicDB");
+    this.version(1).stores({
+      chassis: "++id, name, type",
+      wheels: "++id, name, chassis",
+      trajectories: "++id, name",
+    });
+  }
+}
 
-// db.matrices.hook("deleting", async (id) => {
-//   await db.matrices.where("parent").equals(id).delete();
-// });
+export const db = new KinematicDB();

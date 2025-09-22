@@ -5,7 +5,7 @@ import { type Chassis } from "../(database)/tables";
 export type ChassisFormValues = {
   id?: Chassis["id"];
   name: Chassis["name"];
-  type: Chassis["type"] | "";
+  type: Chassis["type"];
   rotation: number;
   radius: number;
   length: number;
@@ -14,7 +14,7 @@ export type ChassisFormValues = {
   height: number;
 };
 
-const DEFAULT_CHASSIS_FORM_VALUES: ChassisFormValues = {
+export const DEFAULT_CHASSIS_FORM_VALUES: ChassisFormValues = {
   name: "",
   type: "circular",
   rotation: 0,
@@ -28,10 +28,11 @@ const DEFAULT_CHASSIS_FORM_VALUES: ChassisFormValues = {
 type ChassisFormStore = {
   values: ChassisFormValues;
   errors: Partial<Record<keyof ChassisFormValues, string>>;
+  setErrors: (errors: Partial<Record<keyof ChassisFormValues, string>>) => void;
   setFieldValue: <K extends keyof ChassisFormValues>(field: K, value: ChassisFormValues[K]) => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   validate: () => void;
-  handleSubmit: () => void;
+  handleSubmit: (submitCallback: (values: ChassisFormValues) => Promise<boolean>) => () => Promise<void>;
   resetForm: (onlyResetForm?: boolean) => void;
   setInitialValues: (initial?: Chassis) => void;
 };
@@ -39,6 +40,7 @@ type ChassisFormStore = {
 export const useChassisForm = create<ChassisFormStore>((set, get) => ({
   values: { ...DEFAULT_CHASSIS_FORM_VALUES },
   errors: {},
+  setErrors: (errors) => set({ errors }),
   setFieldValue: (field, value) => {
     set((state) => ({
       values: { ...state.values, [field]: value },
@@ -69,10 +71,11 @@ export const useChassisForm = create<ChassisFormStore>((set, get) => ({
 
     set({ errors });
   },
-  handleSubmit: () => {
+  handleSubmit: (submitCallback) => async () => {
     get().validate();
     if (Object.keys(get().errors).length === 0) {
-      console.log("New Chassis Created:", get().values);
+      const submitResult = await submitCallback(get().values);
+      if (!submitResult) return;
       get().resetForm();
     }
   },
@@ -87,6 +90,7 @@ export const useChassisForm = create<ChassisFormStore>((set, get) => ({
   setInitialValues: (initial) => {
     set({
       values: {
+        id: initial?.id,
         name: initial?.name ?? DEFAULT_CHASSIS_FORM_VALUES.name,
         type: initial?.type ?? DEFAULT_CHASSIS_FORM_VALUES.type,
         rotation: initial?.frame ? getRotationFromMatrix(initial.frame) : DEFAULT_CHASSIS_FORM_VALUES.rotation,

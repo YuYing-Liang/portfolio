@@ -4,50 +4,51 @@ import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { useDisclosure } from "@mantine/hooks";
 import { type Chassis } from "../../../(database)/tables";
 import { CHASSIS_TYPE_TO_ICON_MAP } from "../../../constants";
-import { useChassisForm } from "~/app/kinematic-model-simulator/(states)/chassis-form";
+import { DEFAULT_CHASSIS_FORM_VALUES, useChassisForm } from "~/app/kinematic-model-simulator/(states)/chassis-form";
+import { useLiveQuery } from "dexie-react-hooks";
+import {
+  addChassis,
+  deleteChassis,
+  getAllChassis,
+  getAllChassisNames,
+  getChassis,
+} from "~/app/kinematic-model-simulator/(database)/queries";
+import { getDefaultName } from "~/app/kinematic-model-simulator/helpers";
 
 export const ChassisListPanel = () => {
-  const { setFieldValue } = useChassisForm();
-  const chassisList: Chassis[] = [
-    {
-      id: 0,
-      name: "Chassis 1",
-      frame: [1, 0, 0, 1],
-      type: "circular",
-      radius: 5,
-    },
-    {
-      id: 1,
-      name: "Chassis 2",
-      frame: [1, 0, 0, 1],
-      type: "rectangular",
-      width: 3,
-      length: 4,
-    },
-    {
-      id: 2,
-      name: "Chassis 3",
-      frame: [1, 0, 0, 1],
-      type: "triangular",
-      base: 2,
-      height: 2,
-    },
-    {
-      id: 3,
-      name: "Chassis 4",
-      frame: [1, 0, 0, 1],
-      type: "rectangular",
-      width: 5,
-      length: 5,
-    },
-  ];
+  const chassisList = useLiveQuery(() => getAllChassis()) ?? [];
+  const chassisForm = useChassisForm();
 
-  const handleEdit = (id: number) => {
-    setFieldValue("id", id);
+  const handleEdit = async (id: number) => {
+    const chassisToEdit = await getChassis(id);
+    if (chassisToEdit === undefined) return;
+    chassisForm.setInitialValues(chassisToEdit);
   };
 
-  const handleAddChassis = () => {
-    setFieldValue("id", 0);
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteChassis(id);
+      if (chassisForm.values.id === id) {
+        chassisForm.resetForm();
+      }
+    } catch (error) {
+      console.error("Failed to delete chassis:", error);
+    }
+  };
+
+  const handleAddChassis = async () => {
+    const chassisNames = await getAllChassisNames();
+    const defaultNewChassis: Omit<Chassis & { type: "circular"; radius: number }, "id"> = {
+      name: getDefaultName("New Chassis", Array.from(chassisNames).map(String)),
+      type: "circular",
+      frame: [1, 0, 0, 1],
+      radius: DEFAULT_CHASSIS_FORM_VALUES.radius,
+    };
+    const newChassisId = await addChassis(defaultNewChassis);
+    chassisForm.setInitialValues({
+      id: newChassisId,
+      ...defaultNewChassis,
+    });
   };
 
   return (
@@ -57,14 +58,13 @@ export const ChassisListPanel = () => {
       </Text>
       <Stack gap="xs" mt="sm">
         {chassisList.map((chassis) => (
-          <ChassisListElement
-            key={chassis.id}
-            {...chassis}
-            handleEdit={handleEdit}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            handleDelete={() => {}}
-          />
+          <ChassisListElement key={chassis.id} {...chassis} handleEdit={handleEdit} handleDelete={handleDelete} />
         ))}
+        {chassisList.length === 0 && (
+          <Text size="sm" c="dimmed">
+            You have no chassis created yet.
+          </Text>
+        )}
         <Button
           classNames={{
             root: "self-end",
