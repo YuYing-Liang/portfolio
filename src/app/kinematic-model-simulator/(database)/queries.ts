@@ -16,12 +16,22 @@ export const getAllChassisNames = (excludIds?: number[]) =>
         .toArray()
         .then((chassisList) => chassisList.map((c) => c.name));
 
-export const addWheel = (wheel: Omit<Wheel, "id">) => db.wheels.add(wheel as Wheel);
+export const addWheel = (wheel: Omit<Wheel, "id">) => db.wheels.add(wheel);
 export const getWheel = (id: number) => db.wheels.get(id);
 export const updateWheel = (id: number, changes: Partial<Wheel>) => db.wheels.update(id, changes);
 export const deleteWheel = (id: number) => db.wheels.delete(id);
 export const batchGetWheels = (ids: number[]) => db.wheels.bulkGet(ids);
 export const getWheelsByChassisId = (chassisId: number) => db.wheels.where("chassis").equals(chassisId).toArray();
+export const getWheelNamesByChassisId = (chassisId: number, excludeIds?: number[]) =>
+  db.wheels
+    .where("chassis")
+    .equals(chassisId)
+    .toArray()
+    .then((wheelList) =>
+      wheelList
+        .filter((wheel) => (excludeIds !== undefined ? !excludeIds.includes(wheel.id) : true))
+        .map((wheel) => wheel.name),
+    );
 
 export const addTrajectory = (trajectory: Omit<Trajectory, "id">) => db.trajectories.add(trajectory as Trajectory);
 export const getTrajectory = (id: number) => db.trajectories.get(id);

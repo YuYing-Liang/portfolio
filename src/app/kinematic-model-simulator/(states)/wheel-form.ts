@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { type Wheel } from "../(database)/tables";
+import { getRotationFromMatrix } from "../helpers";
 
 export type WheelFormValues = {
   id?: Wheel["id"];
@@ -12,7 +13,7 @@ export type WheelFormValues = {
   rollerRotation?: number;
 };
 
-const DEFAULT_WHEEL_FORM_VALUES: WheelFormValues = {
+export const DEFAULT_WHEEL_FORM_VALUES: WheelFormValues = {
   name: "New Wheel",
   length: 40,
   width: 20,
@@ -24,17 +25,19 @@ const DEFAULT_WHEEL_FORM_VALUES: WheelFormValues = {
 type WheelFormStore = {
   values: WheelFormValues;
   errors: Partial<Record<keyof WheelFormValues, string>>;
+  setErrors: (errors: Partial<Record<keyof WheelFormValues, string>>) => void;
   setFieldValue: <K extends keyof WheelFormValues>(field: K, value: WheelFormValues[K]) => void;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   validate: () => void;
-  handleSubmit: () => void;
+  handleSubmit: (submitCallback: (values: WheelFormValues) => Promise<boolean>) => () => Promise<void>;
   resetForm: () => void;
-  setInitialValues: (initial?: WheelFormValues) => void;
+  setInitialValues: (initial?: Wheel) => void;
 };
 
 export const useWheelForm = create<WheelFormStore>((set, get) => ({
   values: { ...DEFAULT_WHEEL_FORM_VALUES },
   errors: {},
+  setErrors: (errors) => set({ errors }),
   setFieldValue: (field, value) => {
     set((state) => ({
       values: { ...state.values, [field]: value },
@@ -58,10 +61,11 @@ export const useWheelForm = create<WheelFormStore>((set, get) => ({
 
     set({ errors });
   },
-  handleSubmit: () => {
+  handleSubmit: (submitCallback) => async () => {
     get().validate();
     if (Object.keys(get().errors).length === 0) {
-      console.log("New Wheel Created:", get().values);
+      const submitResult = await submitCallback(get().values);
+      if (!submitResult) return;
       get().resetForm();
     }
   },
@@ -72,9 +76,9 @@ export const useWheelForm = create<WheelFormStore>((set, get) => ({
         name: initial?.name ?? DEFAULT_WHEEL_FORM_VALUES.name,
         length: initial?.length ?? DEFAULT_WHEEL_FORM_VALUES.length,
         width: initial?.width ?? DEFAULT_WHEEL_FORM_VALUES.width,
-        x: initial?.x ?? DEFAULT_WHEEL_FORM_VALUES.x,
-        y: initial?.y ?? DEFAULT_WHEEL_FORM_VALUES.y,
-        rotation: initial?.rotation ?? DEFAULT_WHEEL_FORM_VALUES.rotation,
+        x: initial?.frame ? initial.frame[2] : DEFAULT_WHEEL_FORM_VALUES.x,
+        y: initial?.frame ? initial.frame[5] : DEFAULT_WHEEL_FORM_VALUES.y,
+        rotation: initial?.frame ? getRotationFromMatrix(initial.frame) : DEFAULT_WHEEL_FORM_VALUES.rotation,
         id: initial?.id,
       },
     });

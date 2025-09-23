@@ -37,8 +37,8 @@ export const ChassisFormPanel = () => {
       type: chassisFormValues.type,
       frame: [
         Math.cos((chassisFormValues.rotation * Math.PI) / 180),
-        Math.sin((chassisFormValues.rotation * Math.PI) / 180),
         -Math.sin((chassisFormValues.rotation * Math.PI) / 180),
+        Math.sin((chassisFormValues.rotation * Math.PI) / 180),
         Math.cos((chassisFormValues.rotation * Math.PI) / 180),
       ],
       radius: chassisFormValues.type === "circular" ? chassisFormValues.radius : undefined,
