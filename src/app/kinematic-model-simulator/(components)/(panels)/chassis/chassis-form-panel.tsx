@@ -17,6 +17,7 @@ import { type ChassisFormValues, useChassisForm } from "../../../(states)/chassi
 import { type Chassis } from "~/app/kinematic-model-simulator/(database)/tables";
 import { useWheelForm } from "~/app/kinematic-model-simulator/(states)/wheel-form";
 import { getAllChassisNames, updateChassis } from "~/app/kinematic-model-simulator/(database)/queries";
+import { degreesToRadians } from "~/app/kinematic-model-simulator/helpers";
 
 export const ChassisFormPanel = () => {
   const chassisForm = useChassisForm();
@@ -32,14 +33,15 @@ export const ChassisFormPanel = () => {
       chassisForm.setErrors({ name: "Chassis name already taken" });
       return false;
     }
+    const rotationInRadians = degreesToRadians(chassisFormValues.rotation);
     await updateChassis(chassisFormValues.id, {
       name: chassisFormValues.name,
       type: chassisFormValues.type,
       frame: [
-        Math.cos((chassisFormValues.rotation * Math.PI) / 180),
-        -Math.sin((chassisFormValues.rotation * Math.PI) / 180),
-        Math.sin((chassisFormValues.rotation * Math.PI) / 180),
-        Math.cos((chassisFormValues.rotation * Math.PI) / 180),
+        Math.cos(rotationInRadians),
+        -Math.sin(rotationInRadians),
+        Math.sin(rotationInRadians),
+        Math.cos(rotationInRadians),
       ],
       radius: chassisFormValues.type === "circular" ? chassisFormValues.radius : undefined,
       length: chassisFormValues.type === "rectangular" ? chassisFormValues.length : undefined,

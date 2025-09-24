@@ -2,7 +2,8 @@ import { useState, useCallback, type FC, useEffect } from "react";
 import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
 import { Arc } from "react-konva";
-import { useHover } from "@mantine/hooks";
+import { useHover, useLocalStorage } from "@mantine/hooks";
+import { DEFAULT_SETTINGS, type SettingData } from "../../(settings)/settings";
 
 const ROTATOR_RADIUS = 18;
 
@@ -19,6 +20,11 @@ type ShapeConfig = {
 export const Rotator: FC<ShapeConfig> = (props) => {
   const { hovered, ref } = useHover();
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [gridSnapping, _setGridSnapping] = useLocalStorage<SettingData["gridSnapping"]>({
+    key: "gridSnapping",
+    defaultValue: DEFAULT_SETTINGS.gridSnapping,
+  });
 
   const markerPosition: Vector2d = getMarkerPosition(
     props.absoluteX,
@@ -57,7 +63,7 @@ export const Rotator: FC<ShapeConfig> = (props) => {
       const theta =
         Math.atan2(positionRelativeToCenter.y - props.absoluteY, positionRelativeToCenter.x - props.absoluteX) +
         Math.PI / 2;
-      const thetaDeg = Math.round((theta * 180) / Math.PI);
+      const thetaDeg = Math.round((theta * 180) / Math.PI / (gridSnapping ? 5 : 1)) * (gridSnapping ? 5 : 1);
       const thetaRadRounded = (thetaDeg * Math.PI) / 180;
       const markerPositionRotated = {
         x: props.absoluteX + (props.dimensionY / 2 + props.offset / 2) * Math.sin(thetaRadRounded),
@@ -69,7 +75,7 @@ export const Rotator: FC<ShapeConfig> = (props) => {
       setIsDragging(true);
       props.updateRotation(thetaDeg);
     },
-    [props],
+    [gridSnapping, props],
   );
 
   const handleDragEnd = () => {

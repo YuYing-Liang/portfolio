@@ -21,7 +21,7 @@ export const WheelListPanel = () => {
   const wheelList: Wheel[] =
     useLiveQuery(
       () => (selectedChassisId !== undefined ? getWheelsByChassisId(selectedChassisId) : new Promise(() => [])),
-      [wheelForm.values.id],
+      [selectedChassisId, wheelForm.values.id],
     ) ?? [];
 
   const handleAddWheel = async () => {

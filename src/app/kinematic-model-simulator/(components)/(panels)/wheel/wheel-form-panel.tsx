@@ -3,6 +3,7 @@ import { DynamicTablerIcon } from "~/app/(components)/Icon";
 import { getWheelNamesByChassisId, updateWheel } from "~/app/kinematic-model-simulator/(database)/queries";
 import { useChassisForm } from "~/app/kinematic-model-simulator/(states)/chassis-form";
 import { useWheelForm, type WheelFormValues } from "~/app/kinematic-model-simulator/(states)/wheel-form";
+import { degreesToRadians } from "~/app/kinematic-model-simulator/helpers";
 
 export const WheelFormPanel = () => {
   const wheelForm = useWheelForm();
@@ -19,14 +20,16 @@ export const WheelFormPanel = () => {
       wheelForm.setErrors({ name: "Chassis name already taken" });
       return false;
     }
+    const rotationInRadians = degreesToRadians(wheelFormValues.rotation);
+    const rollerRotationInRadians = degreesToRadians(wheelFormValues.rollerRotation ?? 0);
     await updateWheel(wheelFormValues.id, {
       name: wheelFormValues.name,
       frame: [
-        Math.cos((wheelFormValues.rotation * Math.PI) / 180),
-        -Math.sin((wheelFormValues.rotation * Math.PI) / 180),
+        Math.cos(rotationInRadians),
+        -Math.sin(rotationInRadians),
         wheelFormValues.x,
-        Math.sin((wheelFormValues.rotation * Math.PI) / 180),
-        Math.cos((wheelFormValues.rotation * Math.PI) / 180),
+        Math.sin(rotationInRadians),
+        Math.cos(rotationInRadians),
         wheelFormValues.y,
         0,
         0,
@@ -36,10 +39,10 @@ export const WheelFormPanel = () => {
       length: wheelFormValues.length,
       ...(wheelFormValues.rollerRotation && {
         roller: [
-          Math.cos((wheelFormValues.rollerRotation * Math.PI) / 180),
-          -Math.sin((wheelFormValues.rollerRotation * Math.PI) / 180),
-          Math.sin((wheelFormValues.rollerRotation * Math.PI) / 180),
-          Math.cos((wheelFormValues.rollerRotation * Math.PI) / 180),
+          Math.cos(rollerRotationInRadians),
+          -Math.sin(rollerRotationInRadians),
+          Math.sin(rollerRotationInRadians),
+          Math.cos(rollerRotationInRadians),
         ],
       }),
     });

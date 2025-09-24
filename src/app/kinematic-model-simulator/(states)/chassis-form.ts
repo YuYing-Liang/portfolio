@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getRotationFromMatrix } from "../helpers";
+import { getRotationFromMatrix, radiansToDegrees, roundNumber } from "../helpers";
 import { type Chassis } from "../(database)/tables";
 
 export type ChassisFormValues = {
@@ -76,7 +76,6 @@ export const useChassisForm = create<ChassisFormStore>((set, get) => ({
     if (Object.keys(get().errors).length === 0) {
       const submitResult = await submitCallback(get().values);
       if (!submitResult) return;
-      get().resetForm();
     }
   },
   resetForm: (onlyResetForm) =>
@@ -93,7 +92,9 @@ export const useChassisForm = create<ChassisFormStore>((set, get) => ({
         id: initial?.id,
         name: initial?.name ?? DEFAULT_CHASSIS_FORM_VALUES.name,
         type: initial?.type ?? DEFAULT_CHASSIS_FORM_VALUES.type,
-        rotation: initial?.frame ? getRotationFromMatrix(initial.frame) : DEFAULT_CHASSIS_FORM_VALUES.rotation,
+        rotation: initial?.frame
+          ? roundNumber(radiansToDegrees(getRotationFromMatrix(initial.frame)))
+          : DEFAULT_CHASSIS_FORM_VALUES.rotation,
         radius: initial?.type === "circular" ? initial.radius : DEFAULT_CHASSIS_FORM_VALUES.radius,
         length: initial?.type === "rectangular" ? initial.length : DEFAULT_CHASSIS_FORM_VALUES.length,
         width: initial?.type === "rectangular" ? initial.width : DEFAULT_CHASSIS_FORM_VALUES.width,

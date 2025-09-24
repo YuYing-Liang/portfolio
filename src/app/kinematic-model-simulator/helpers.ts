@@ -38,11 +38,23 @@ export const getMatrixFromRotation = (rotation: number): MatrixOrientation => {
 };
 
 export const getSizeBasedOnGridUnits = (pixelSize: number, gridUnitSize: number): number => {
-  return Number((pixelSize / gridUnitSize).toFixed(2));
+  return roundNumber(pixelSize / gridUnitSize);
 };
 
 export const roundToNearestGridUnit = (pixelValue: number, gridUnitSize: number): number => {
   return Math.round(pixelValue / gridUnitSize) * gridUnitSize;
+};
+
+export const radiansToDegrees = (radians: number) => {
+  return (radians * 180) / Math.PI;
+};
+
+export const degreesToRadians = (degrees: number) => {
+  return (degrees * Math.PI) / 180;
+};
+
+export const roundNumber = (a: number, decimalPlaces = 2) => {
+  return Number(a.toFixed(decimalPlaces));
 };
 
 export const getDefaultName = (name: string, chassisNames: string[]) => {

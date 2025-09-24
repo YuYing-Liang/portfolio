@@ -6,14 +6,24 @@ import { RectangleShape } from "../(components)/(canvas)/(shapes)/rectangle-shap
 import { TriangleChassis } from "../(components)/(canvas)/(shapes)/triangle-chassis";
 import { GridXYLabelled } from "../(components)/(canvas)/grid-xy-labelled";
 import { DEFAULT_SETTINGS, type SettingData } from "../(components)/(settings)/settings";
-import { MAX_CHASSIS_SIZE_BUFFER, MAX_WHEEL_SIZE_BUFFER, NUM_ROLLERS, ROLLER_SIZE_BUFFER } from "../constants";
+import { MAX_CHASSIS_SIZE_BUFFER, MAX_WHEEL_SIZE_BUFFER } from "../constants";
 import { useWheelForm } from "../(states)/wheel-form";
 import { useMemo } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { type Wheel } from "../(database)/tables";
+import { getWheelsByChassisId } from "../(database)/queries";
+import { getRotationFromMatrix, radiansToDegrees, roundNumber } from "../helpers";
+import { WheelShape } from "../(components)/(canvas)/(shapes)/wheel-shape";
 
 export const ConfigurePage = () => {
   const { height, width } = useViewportSize();
   const chassisForm = useChassisForm();
   const wheelForm = useWheelForm();
+  const wheels: Wheel[] =
+    useLiveQuery(
+      () => (chassisForm.values.id !== undefined ? getWheelsByChassisId(chassisForm.values.id) : new Promise(() => [])),
+      [chassisForm.values.id],
+    ) ?? [];
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [gridSize, _setGridSize] = useLocalStorage<SettingData["gridSize"]>({
     key: "gridSize",
@@ -40,75 +50,88 @@ export const ConfigurePage = () => {
     return chassisForm.values.radius * 2;
   }, [chassisForm.values]);
 
-  return (
-    <>
-      {editingChassis && (
-        <Layer listening={!editingWheel}>
-          {chassisForm.values.type === "circular" && (
-            <CircleChassis
-              x={x}
-              y={y}
-              radius={chassisForm.values.radius}
-              rotation={chassisForm.values.rotation}
-              editable={!editingWheel}
-              maxRadius={Math.min(width, height) / 2 - MAX_CHASSIS_SIZE_BUFFER}
-              updateRadius={(newRadius) => {
-                chassisForm.setFieldValue("radius", newRadius);
-              }}
-            />
-          )}
-          {chassisForm.values.type === "rectangular" && (
-            <RectangleShape
-              x={x}
-              y={y}
-              width={chassisForm.values.width}
-              length={chassisForm.values.length}
-              rotation={chassisForm.values.rotation}
-              editable={!editingWheel}
-              maxLength={height - MAX_CHASSIS_SIZE_BUFFER}
-              maxWidth={width - MAX_CHASSIS_SIZE_BUFFER}
-              updateWidth={(newWidth) => {
-                chassisForm.setFieldValue("width", newWidth);
-              }}
-              updateLength={(newLength) => {
-                chassisForm.setFieldValue("length", newLength);
-              }}
-              updateRotation={(newRotation) => {
-                chassisForm.setFieldValue("rotation", newRotation);
-              }}
-            />
-          )}
-          {chassisForm.values.type === "triangular" && (
-            <TriangleChassis
-              x={x}
-              y={y}
-              base={chassisForm.values.base}
-              height={chassisForm.values.height}
-              rotation={chassisForm.values.rotation}
-              editable={!editingWheel}
-              maxBase={width - MAX_CHASSIS_SIZE_BUFFER}
-              maxHeight={height - MAX_CHASSIS_SIZE_BUFFER}
-              updateBase={(newBase) => {
-                chassisForm.setFieldValue("base", newBase);
-              }}
-              updateHeight={(newHeight) => {
-                chassisForm.setFieldValue("height", newHeight);
-              }}
-              updateRotation={(newRotation) => {
-                chassisForm.setFieldValue("rotation", newRotation);
-              }}
-            />
-          )}
-        </Layer>
+  return editingChassis ? (
+    <Layer>
+      {chassisForm.values.type === "circular" && (
+        <CircleChassis
+          x={x}
+          y={y}
+          radius={chassisForm.values.radius}
+          rotation={chassisForm.values.rotation}
+          editable={!editingWheel}
+          maxRadius={Math.min(width, height) / 2 - MAX_CHASSIS_SIZE_BUFFER}
+          updateRadius={(newRadius) => {
+            chassisForm.setFieldValue("radius", newRadius);
+          }}
+        />
+      )}
+      {chassisForm.values.type === "rectangular" && (
+        <RectangleShape
+          x={x}
+          y={y}
+          width={chassisForm.values.width}
+          length={chassisForm.values.length}
+          rotation={chassisForm.values.rotation}
+          editable={!editingWheel}
+          maxLength={height - MAX_CHASSIS_SIZE_BUFFER}
+          maxWidth={width - MAX_CHASSIS_SIZE_BUFFER}
+          updateWidth={(newWidth) => {
+            chassisForm.setFieldValue("width", newWidth);
+          }}
+          updateLength={(newLength) => {
+            chassisForm.setFieldValue("length", newLength);
+          }}
+          updateRotation={(newRotation) => {
+            chassisForm.setFieldValue("rotation", newRotation);
+          }}
+        />
+      )}
+      {chassisForm.values.type === "triangular" && (
+        <TriangleChassis
+          x={x}
+          y={y}
+          base={chassisForm.values.base}
+          height={chassisForm.values.height}
+          rotation={chassisForm.values.rotation}
+          editable={!editingWheel}
+          maxBase={width - MAX_CHASSIS_SIZE_BUFFER}
+          maxHeight={height - MAX_CHASSIS_SIZE_BUFFER}
+          updateBase={(newBase) => {
+            chassisForm.setFieldValue("base", newBase);
+          }}
+          updateHeight={(newHeight) => {
+            chassisForm.setFieldValue("height", newHeight);
+          }}
+          updateRotation={(newRotation) => {
+            chassisForm.setFieldValue("rotation", newRotation);
+          }}
+        />
       )}
       {editingWheel && <GridXYLabelled width={width} height={height} size={gridSize} />}
-      {editingWheel && (
-        <Layer>
-          <Group
-            x={x}
-            y={y}
-            draggable
-            dragBoundFunc={(pos) => {
+      {wheels.map((wheel) => {
+        const isWheelEditable = editingWheel && wheelForm.values.id === wheel.id;
+        return (
+          <WheelShape
+            key={wheel.id}
+            x={isWheelEditable ? wheelForm.values.x : wheel.frame[2]}
+            y={isWheelEditable ? wheelForm.values.y : wheel.frame[5]}
+            editable={isWheelEditable}
+            width={isWheelEditable ? wheelForm.values.width : wheel.width}
+            length={isWheelEditable ? wheelForm.values.length : wheel.length}
+            rotation={
+              isWheelEditable
+                ? wheelForm.values.rotation
+                : roundNumber(radiansToDegrees(getRotationFromMatrix(wheel.frame)))
+            }
+            rollerRotation={
+              isWheelEditable
+                ? wheelForm.values.rollerRotation
+                : wheel.roller !== undefined
+                  ? roundNumber(radiansToDegrees(getRotationFromMatrix(wheel.roller)))
+                  : undefined
+            }
+            maxWheelDimension={maxWheelDimensionSize}
+            onDrag={(pos) => {
               if (gridSnapping) {
                 pos.x = Math.round((pos.x - x) / gridSize) * gridSize + x;
                 pos.y = Math.round((pos.y - y) / gridSize) * gridSize + y;
@@ -121,43 +144,18 @@ export const ConfigurePage = () => {
               wheelForm.setFieldValue("y", newY);
               return { x: newX, y: newY };
             }}
-          >
-            <RectangleShape
-              x={0}
-              y={0}
-              fill="lightgray"
-              width={wheelForm.values.width}
-              length={wheelForm.values.length}
-              rotation={wheelForm.values.rotation}
-              maxLength={maxWheelDimensionSize - MAX_WHEEL_SIZE_BUFFER}
-              maxWidth={maxWheelDimensionSize - MAX_WHEEL_SIZE_BUFFER}
-              updateWidth={(newWidth) => {
-                wheelForm.setFieldValue("width", newWidth);
-              }}
-              updateLength={(newLength) => {
-                wheelForm.setFieldValue("length", newLength);
-              }}
-              updateRotation={(newRotation) => {
-                wheelForm.setFieldValue("rotation", newRotation);
-              }}
-            >
-              {wheelForm.values.rollerRotation !== undefined && (
-                <RectangleShape
-                  x={0}
-                  y={0}
-                  fill="gray"
-                  width={Math.min(wheelForm.values.width, wheelForm.values.length) * 0.75}
-                  length={Math.min(wheelForm.values.width, wheelForm.values.length) * 0.25}
-                  rotation={wheelForm.values.rollerRotation}
-                  maxLength={wheelForm.values.length}
-                  maxWidth={wheelForm.values.width}
-                  editable={false}
-                />
-              )}
-            </RectangleShape>
-          </Group>
-        </Layer>
-      )}
-    </>
-  );
+            updateWidth={(newWidth) => {
+              wheelForm.setFieldValue("width", newWidth);
+            }}
+            updateLength={(newLength) => {
+              wheelForm.setFieldValue("length", newLength);
+            }}
+            updateRotation={(newRotation) => {
+              wheelForm.setFieldValue("rotation", newRotation);
+            }}
+          />
+        );
+      })}
+    </Layer>
+  ) : null;
 };

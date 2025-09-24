@@ -1,5 +1,5 @@
 import { useMemo, type FC } from "react";
-import { Layer, Line, Text } from "react-konva";
+import { Group, Layer, Line, Text } from "react-konva";
 
 interface GridProps {
   width: number;
@@ -25,7 +25,7 @@ export const GridXYLabelled: FC<GridProps> = ({ width, height, size, color = "#7
   const centerY = height / 2;
 
   return (
-    <Layer listening={false}>
+    <Group listening={false}>
       <Line
         key="x-axis"
         points={[0, -height / 2, 0, height / 2]}
@@ -62,6 +62,6 @@ export const GridXYLabelled: FC<GridProps> = ({ width, height, size, color = "#7
           strokeWidth={strokeWidth}
         />
       ))}
-    </Layer>
+    </Group>
   );
 };

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { type Wheel } from "../(database)/tables";
-import { getRotationFromMatrix } from "../helpers";
+import { getRotationFromMatrix, radiansToDegrees, roundNumber } from "../helpers";
 
 export type WheelFormValues = {
   id?: Wheel["id"];
@@ -66,7 +66,6 @@ export const useWheelForm = create<WheelFormStore>((set, get) => ({
     if (Object.keys(get().errors).length === 0) {
       const submitResult = await submitCallback(get().values);
       if (!submitResult) return;
-      get().resetForm();
     }
   },
   resetForm: () => set({ values: { ...DEFAULT_WHEEL_FORM_VALUES }, errors: {} }),
@@ -78,7 +77,12 @@ export const useWheelForm = create<WheelFormStore>((set, get) => ({
         width: initial?.width ?? DEFAULT_WHEEL_FORM_VALUES.width,
         x: initial?.frame ? initial.frame[2] : DEFAULT_WHEEL_FORM_VALUES.x,
         y: initial?.frame ? initial.frame[5] : DEFAULT_WHEEL_FORM_VALUES.y,
-        rotation: initial?.frame ? getRotationFromMatrix(initial.frame) : DEFAULT_WHEEL_FORM_VALUES.rotation,
+        rotation: initial?.frame
+          ? roundNumber(radiansToDegrees(getRotationFromMatrix(initial.frame)))
+          : DEFAULT_WHEEL_FORM_VALUES.rotation,
+        rollerRotation: initial?.roller
+          ? roundNumber(radiansToDegrees(getRotationFromMatrix(initial.roller)))
+          : undefined,
         id: initial?.id,
       },
     });

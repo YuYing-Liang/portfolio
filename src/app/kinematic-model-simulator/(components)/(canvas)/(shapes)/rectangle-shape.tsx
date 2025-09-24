@@ -4,7 +4,7 @@ import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
 import { Rotator } from "../(mouse-actions)/rotator";
 
-interface RectangleShapeProps {
+export interface RectangleShapeProps {
   x: number;
   y: number;
   width: number;
@@ -14,6 +14,7 @@ interface RectangleShapeProps {
   maxLength: number;
   editable?: boolean;
   fill?: string;
+  stroke?: string;
   updateWidth?: (newWidth: number) => void;
   updateLength?: (newLength: number) => void;
   updateRotation?: (newRotation: number) => void;
@@ -31,7 +32,7 @@ export const RectangleShape: FC<PropsWithChildren<RectangleShapeProps>> = (props
           width={props.width}
           height={props.length}
           fill={props.fill ?? "skyblue"}
-          stroke="black"
+          stroke={props.stroke ?? "black"}
           strokeWidth={2}
         />
         {props.children}
