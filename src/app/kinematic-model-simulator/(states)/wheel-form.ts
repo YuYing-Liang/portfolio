@@ -22,7 +22,7 @@ export const DEFAULT_WHEEL_FORM_VALUES: WheelFormValues = {
   rotation: 0,
 };
 
-type WheelFormStore = {
+export type WheelFormStore = {
   values: WheelFormValues;
   errors: Partial<Record<keyof WheelFormValues, string>>;
   setErrors: (errors: Partial<Record<keyof WheelFormValues, string>>) => void;

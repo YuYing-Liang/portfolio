@@ -1,5 +1,5 @@
 import { useMemo, type FC } from "react";
-import { Group, Layer, Line, Text } from "react-konva";
+import { Group, Line } from "react-konva";
 
 interface GridProps {
   width: number;
@@ -21,46 +21,15 @@ export const GridXYLabelled: FC<GridProps> = ({ width, height, size, color = "#7
     return { verticalMarkers, horizontalMarkers };
   }, [width, height, size]);
 
-  const centerX = width / 2;
-  const centerY = height / 2;
-
   return (
     <Group listening={false}>
-      <Line
-        key="x-axis"
-        points={[0, -height / 2, 0, height / 2]}
-        x={centerX}
-        y={centerY}
-        stroke={color}
-        strokeWidth={strokeWidth}
-      />
-      <Line
-        key="y-axis"
-        points={[-width / 2, 0, width / 2, 0]}
-        x={centerX}
-        y={centerY}
-        stroke={color}
-        strokeWidth={strokeWidth}
-      />
+      <Line key="x-axis" points={[0, -height / 2, 0, height / 2]} stroke={color} strokeWidth={strokeWidth} />
+      <Line key="y-axis" points={[-width / 2, 0, width / 2, 0]} stroke={color} strokeWidth={strokeWidth} />
       {verticalMarkers.map((x) => (
-        <Line
-          key={`v-markers-${x}`}
-          points={[x, -5, x, 5]}
-          x={centerX}
-          y={centerY}
-          stroke={color}
-          strokeWidth={strokeWidth}
-        />
+        <Line key={`v-markers-${x}`} points={[x, -5, x, 5]} stroke={color} strokeWidth={strokeWidth} />
       ))}
       {horizontalMarkers.map((y) => (
-        <Line
-          key={`h-markers-${y}`}
-          points={[-5, y, 5, y]}
-          x={centerX}
-          y={centerY}
-          stroke={color}
-          strokeWidth={strokeWidth}
-        />
+        <Line key={`h-markers-${y}`} points={[-5, y, 5, y]} stroke={color} strokeWidth={strokeWidth} />
       ))}
     </Group>
   );

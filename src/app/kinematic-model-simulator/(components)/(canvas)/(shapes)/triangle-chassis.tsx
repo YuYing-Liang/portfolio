@@ -1,10 +1,10 @@
-import { type FC } from "react";
+import { type PropsWithChildren, type FC } from "react";
 import { Group, Line } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 import { DiagonalResizer } from "../(mouse-actions)/diagonal-resizer";
 import { Rotator } from "../(mouse-actions)/rotator";
 
-interface RectangleChassisProps {
+interface TriangleChassisProps {
   x: number;
   y: number;
   base: number;
@@ -18,7 +18,7 @@ interface RectangleChassisProps {
   updateRotation: (newRotation: number) => void;
 }
 
-export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
+export const TriangleChassis: FC<PropsWithChildren<TriangleChassisProps>> = (props) => {
   const isEditable = props.editable ?? true;
 
   return (
@@ -33,6 +33,7 @@ export const TriangleChassis: FC<RectangleChassisProps> = (props) => {
           stroke="black"
           strokeWidth={2}
         />
+        {props.children}
         {isEditable && (
           <>
             <DimensionResizer

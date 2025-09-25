@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type PropsWithChildren, type FC } from "react";
 import { Circle, Group } from "react-konva";
 import { DimensionResizer } from "../(mouse-actions)/dimension-resizer";
 
@@ -12,12 +12,13 @@ interface CircleChassisProps {
   updateRadius: (newRadius: number) => void;
 }
 
-export const CircleChassis: FC<CircleChassisProps> = (props) => {
+export const CircleChassis: FC<PropsWithChildren<CircleChassisProps>> = (props) => {
   const isEditable = props.editable ?? true;
 
   return (
     <Group x={props.x} y={props.y} rotation={props.rotation}>
       <Circle radius={props.radius} fill="skyblue" stroke="black" strokeWidth={2} />
+      {props.children}
       {isEditable && (
         <DimensionResizer
           x={0}

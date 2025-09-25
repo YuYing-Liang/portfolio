@@ -1,4 +1,4 @@
-import { Group } from "react-konva";
+import { Group, type KonvaNodeEvents } from "react-konva";
 import { RectangleShape, type RectangleShapeProps } from "./rectangle-shape";
 import { type FC } from "react";
 import { useLocalStorage } from "@mantine/hooks";
@@ -19,6 +19,7 @@ interface WheelShapeProps {
   updateWidth: RectangleShapeProps["updateWidth"];
   updateLength: RectangleShapeProps["updateLength"];
   updateRotation: RectangleShapeProps["updateRotation"];
+  onClick: KonvaNodeEvents["onClick"];
 }
 
 export const WheelShape: FC<WheelShapeProps> = (props) => (
@@ -28,6 +29,7 @@ export const WheelShape: FC<WheelShapeProps> = (props) => (
     draggable={props.editable}
     dragBoundFunc={props.onDrag}
     opacity={props.editable ? 1.0 : 0.5}
+    onClick={props.onClick}
   >
     <RectangleShape
       x={0}
