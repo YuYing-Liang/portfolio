@@ -82,7 +82,7 @@ export const RectangleShape: FC<PropsWithChildren<RectangleShapeProps>> = (props
           </>
         )}
       </Group>
-      {props.updateRotation !== undefined && isEditable && (
+      {props.updateRotation !== undefined && (
         <Rotator
           absoluteX={props.x}
           absoluteY={props.y}
@@ -90,6 +90,7 @@ export const RectangleShape: FC<PropsWithChildren<RectangleShapeProps>> = (props
           dimensionY={props.length}
           offset={15}
           rotation={props.rotation}
+          editable={isEditable}
           updateRotation={props.updateRotation}
         />
       )}

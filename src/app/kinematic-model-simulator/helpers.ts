@@ -1,4 +1,3 @@
-import { IndexableType } from "dexie";
 import { type Matrix, type MatrixOrientation } from "./types";
 
 /**

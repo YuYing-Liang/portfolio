@@ -1,11 +1,9 @@
 import { useState, useCallback, type FC, useEffect } from "react";
 import { type KonvaEventObject } from "konva/lib/Node";
 import { type Vector2d } from "konva/lib/types";
-import { Arc } from "react-konva";
+import { Arrow } from "react-konva";
 import { useHover, useLocalStorage } from "@mantine/hooks";
 import { DEFAULT_SETTINGS, type SettingData } from "../../(settings)/settings";
-
-const ROTATOR_RADIUS = 18;
 
 type ShapeConfig = {
   dimensionX: number;
@@ -14,6 +12,7 @@ type ShapeConfig = {
   absoluteY: number;
   offset: number;
   rotation: number;
+  editable: boolean;
   updateRotation: (rotation: number) => void;
 };
 
@@ -33,7 +32,7 @@ export const Rotator: FC<ShapeConfig> = (props) => {
     props.offset,
     props.rotation,
   );
-  const isHoverOrDragging = hovered || isDragging;
+  const isHoverOrDragging = (hovered || isDragging) && props.editable;
 
   useEffect(
     function updateCursorOnHoverOrDrag() {
@@ -71,7 +70,7 @@ export const Rotator: FC<ShapeConfig> = (props) => {
       };
 
       e.target.setPosition(markerPositionRotated);
-      e.target.rotation(thetaDeg - 145);
+      e.target.rotation(thetaDeg);
       setIsDragging(true);
       props.updateRotation(thetaDeg);
     },
@@ -83,18 +82,18 @@ export const Rotator: FC<ShapeConfig> = (props) => {
   };
 
   return (
-    <Arc
+    <Arrow
       ref={ref}
       x={markerPosition.x}
       y={markerPosition.y}
-      innerRadius={ROTATOR_RADIUS - 5}
-      outerRadius={ROTATOR_RADIUS}
-      angle={110}
-      rotation={props.rotation - 145}
+      points={[0, -5, 0, -15]}
+      rotation={props.rotation}
+      pointerLength={15}
+      pointerWidth={Math.min(props.dimensionX, 40)}
       fill={isHoverOrDragging ? "black" : "gray"}
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
-      draggable
+      draggable={props.editable}
     />
   );
 };
