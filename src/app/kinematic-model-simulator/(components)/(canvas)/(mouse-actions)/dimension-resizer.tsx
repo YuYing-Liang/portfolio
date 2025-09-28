@@ -115,7 +115,7 @@ export const DimensionResizer: FC<ShapeConfig> = (props) => {
     <>
       <CanvasLabel
         {...getResizerLinePosition(props.direction, props.x, props.y, props.markerOffset + props.labelOffset)}
-        width={70}
+        width={50}
         height={20}
         rotation={props.rotation}
         text={isNaN(props.dimension) ? "N/A" : `${getSizeBasedOnGridUnits(props.dimension * 2, gridSizeDouble)}`}

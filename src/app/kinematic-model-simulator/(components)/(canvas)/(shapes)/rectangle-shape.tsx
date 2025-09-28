@@ -45,7 +45,7 @@ export const RectangleShape: FC<PropsWithChildren<RectangleShapeProps>> = (props
                 dimension={props.width / 2}
                 direction="x"
                 markerOffset={props.length / 2 + 20}
-                labelOffset={20}
+                labelOffset={30}
                 rotation={-props.rotation}
                 maxDimension={props.maxWidth}
                 updateDimension={(newWidth) => props.updateWidth!(Number((newWidth * 2).toFixed(2)))}
@@ -58,7 +58,7 @@ export const RectangleShape: FC<PropsWithChildren<RectangleShapeProps>> = (props
                 dimension={props.length / 2}
                 direction="y"
                 markerOffset={props.width / 2 + 20}
-                labelOffset={45}
+                labelOffset={40}
                 rotation={-props.rotation}
                 maxDimension={props.maxLength}
                 updateDimension={(newLength) => props.updateLength!(Number((newLength * 2).toFixed(2)))}

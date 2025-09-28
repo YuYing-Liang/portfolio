@@ -36,7 +36,7 @@ export const ConfigurePage = () => {
           radius={chassisForm.values.radius}
           rotation={chassisForm.values.rotation}
           editable={!editingWheel}
-          maxRadius={Math.min(width, height) / 2 - MAX_CHASSIS_SIZE_BUFFER}
+          maxRadius={Math.min(width, height) - MAX_CHASSIS_SIZE_BUFFER}
           updateRadius={(newRadius) => {
             chassisForm.setFieldValue("radius", newRadius);
           }}
