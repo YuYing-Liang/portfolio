@@ -6,21 +6,21 @@ import { type Matrix, type MatrixOrientation } from "./types";
  * @returns The rotation in radians mapped between -Math.PI to Math.PI
  */
 export const getRotationFromMatrix = (matrix: Matrix | MatrixOrientation): number => {
-  const angleCos = Math.acos(matrix[0]);
-  const angleSine = Math.asin(-matrix[1]);
+  const cos = matrix[0];
+  const sin = -matrix[1];
+  const angleCos = Math.acos(cos);
+  const angleSin = Math.asin(sin);
 
-  if (angleCos >= 0) {
-    if (angleSine <= 0) {
-      return angleSine;
-    }
+
+  if (cos >= 0  && sin >= 0) {
     return angleCos;
   }
 
-  if (angleSine > 0) {
-    return Math.PI - angleSine;
+  if (cos >= 0 && sin <= 0) {
+    return angleSin;
   }
 
-  return -Math.PI - angleSine;
+  return Math.PI - angleSin;
 };
 
 /**
